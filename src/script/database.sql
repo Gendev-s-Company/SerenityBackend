@@ -18,7 +18,7 @@ create table company(
     companyID varchar(10) primary key,
     name varchar(100) not null,
     phone varchar(12) unique,
-    mail varchar(30) unique  
+    mail varchar(50) unique  
 );
 
 

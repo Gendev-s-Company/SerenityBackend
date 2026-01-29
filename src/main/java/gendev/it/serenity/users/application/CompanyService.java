@@ -17,11 +17,13 @@ public class CompanyService{
     public CompanyService(CompanyRepo repo) {
         this.repo = repo;
     }
+    
     @Transactional
-    public Company create(CompanyDTO companydto){
-
+    public Company create(CompanyDTO companydto) throws Exception{
+        
         return repo.save(companydto.dtoToEntity());
     }
+
     public List<CompanyDTO> findAll(){
         List<Company> list = repo.findAll();
         List<CompanyDTO> results = new ArrayList<CompanyDTO>();
@@ -38,5 +40,29 @@ public class CompanyService{
             throw new Exception( "Company "+id+" introuvable");
         }
         
+    }
+
+    // Update
+    @Transactional
+    public CompanyDTO update(String companyID, CompanyDTO companyDTO) throws Exception {
+        Company company = repo.findById(companyID)
+                .orElseThrow(() -> new Exception("Company " + companyID + " introuvable"));
+
+        company.setName(companyDTO.getName());
+        company.setPhone(companyDTO.getPhone());
+        company.setMail(companyDTO.getMail());
+        
+        // Sauvegarde de la companie
+        Company saved = repo.save(company);
+        return saved.EntityToDTO();
+    }
+
+    // Delete
+    @Transactional
+    public void delete(String companyID) throws Exception {
+        if (!repo.existsById(companyID)) {
+            throw new Exception("Company " + companyID + " introuvable");
+        }
+        repo.deleteById(companyID);
     }
 }

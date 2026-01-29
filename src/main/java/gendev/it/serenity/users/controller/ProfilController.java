@@ -3,30 +3,29 @@ package gendev.it.serenity.users.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import gendev.it.serenity.users.application.CompanyService;
-import gendev.it.serenity.users.domain.dto.CompanyDTO;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import gendev.it.serenity.users.application.ProfilService;
+import gendev.it.serenity.users.domain.dto.ProfilDTO;
 
 @RestController
-@RequestMapping("api/company")
-public class CompanyController {
+@RequestMapping("api/profil")
+public class ProfilController {
 
-    private final CompanyService service;
+    private final ProfilService profilService;
 
-    public CompanyController(CompanyService service) {
-        this.service = service;
+    public ProfilController(ProfilService profilService) {
+        this.profilService = profilService;
     }
-    // Eto mamoaka anle exception depuis setter mandeha automatiquement
-    // afaka afindra any anaty classe controller common
-    // comme les autres fonctions
+    
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleInvalidJson(HttpMessageNotReadableException e) {
        
@@ -36,50 +35,51 @@ public class CompanyController {
                 .body("Erreur de validation : " + cause.getMessage());
     }
 
+    // Creation de profil
     @PostMapping("")
-    public ResponseEntity<?> create(@RequestBody CompanyDTO body) {
+    public ResponseEntity<?> create(@RequestBody ProfilDTO body) {
         try {
-            return new ResponseEntity<>(service.create(body), HttpStatus.CREATED);
+            return new ResponseEntity<>(profilService.create(body), HttpStatus.CREATED);
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
+    // Liste des profils
     @GetMapping("")
     public ResponseEntity<?> getMethodName() {
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(profilService.findAll(), HttpStatus.OK);
     }
 
+    // Profil par ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getMethodName(@PathVariable String id) {
         try {
-            return ResponseEntity.ok(service.findOneById(id));
+            return ResponseEntity.ok(profilService.findOneById(id));
         } catch (Exception e) {
             // TODO: handle exception
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    // Update company
+    // Update profil
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateCompany(@PathVariable String id, @RequestBody CompanyDTO body) {
+    public ResponseEntity<?> updateProfil(@PathVariable String id, @RequestBody ProfilDTO body) {
          try {
-             return ResponseEntity.ok(service.update(id, body));
+             return ResponseEntity.ok(profilService.update(id, body));
          } catch (Exception e) {
              return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
          }
     }
-
-    // Delete user
+    // Delete profil
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletCompany(@PathVariable String id) {
+    public ResponseEntity<?> deleteProfil(@PathVariable String id) {
         try {
-            service.delete(id);
-            return ResponseEntity.ok("Profil supprimé"); // 204 No Content
+            profilService.delete(id);
+        return ResponseEntity.ok("Profil supprimé");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Suppression impossible : des profils sont liés à cette companie");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Suppression impossible : des utilisateurs sont liés à ce profil");
         }
     }
-
 }

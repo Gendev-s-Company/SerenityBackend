@@ -20,6 +20,7 @@ public class UserService {
 
     private final ProfilRepo profilRepository;
     private final UserRepo userRepository;
+    // private final BCryptPasswordEncoder passwordEncoder;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -137,5 +138,46 @@ public class UserService {
             throw new Exception("Utilisateur " + userID + " introuvable");
         }
         userRepository.deleteById(userID);
+    }
+  
+
+
+ 
+    public UserDTO login(UserDTO loginDTO) throws Exception {
+       Users userList = userRepository.findByPhone(loginDTO.getPhone());
+
+    //    if (userList.getPassword().equals(loginDTO.getPassword())) {
+    //             return userList.EntityToDTO();
+    //     } else {
+    //         throw new Exception("Identifiants invalides");
+    //     }
+
+        if (userList == null) {
+            throw new Exception("Utilisateur non trouvé");
+        }else{
+            if (userList.getPassword().equals(loginDTO.getPassword())) {
+                return userList.EntityToDTO();
+            } else {
+                throw new Exception("Identifiants invalides");
+            }
+        }
+    }
+
+
+    @Transactional
+    public String updatePassword(String userId, String oldPassword, String newPassword) throws Exception {
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new Exception("Utilisateur non trouvé"));
+
+        // if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+        //     throw new Exception("L'ancien mot de passe est incorrect");
+        // }
+
+        // String hashedpwd = passwordEncoder.encode(newPassword);
+        user.setPassword(newPassword);
+
+        userRepository.save(user);
+
+        return "Mot de passe mis à jour avec succès";
     }
 }

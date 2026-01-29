@@ -29,13 +29,13 @@ public class Users {
     @JoinColumn(name = "profilid", nullable = false)
     private Profil Profil;
 
-    @Column
+    @Column(unique = true, length = 12)
     private String phone;
 
     @Column
     private LocalDate joineddate= LocalDate.now();
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String password;
 
     @Column

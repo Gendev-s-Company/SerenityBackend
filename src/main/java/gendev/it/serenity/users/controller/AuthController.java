@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import gendev.it.serenity.users.application.UserService;
 import gendev.it.serenity.users.domain.dto.UserDTO;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,11 +22,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("api/auth")
-public class UserController {
+@CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+        RequestMethod.OPTIONS })
+public class AuthController {
 
     private final UserService service;
 
-    public UserController(UserService service) {
+    public AuthController(UserService service) {
         this.service = service;
     }
     // Eto mamoaka anle exception depuis setter mandeha automatiquement

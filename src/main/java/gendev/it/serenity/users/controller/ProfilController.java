@@ -46,7 +46,7 @@ public class ProfilController {
             return new ResponseEntity<>(profilService.create(body), HttpStatus.CREATED);
         } catch (Exception e) {
             // TODO: handle exception
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
         }
     }
 

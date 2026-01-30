@@ -7,11 +7,12 @@ GRANT ALL PRIVILEGES ON DATABASE serenity TO serenity;
 \c postgres
 ALTER DATABASE serenity OWNER TO serenity;
 
-psql -U serenity -d serenity
+
 
 \c serenity
 GRANT ALL ON SCHEMA public TO serenity;
 
+psql -U serenity -d serenity
 ---CREATION DE TABLE ET SEQUENCE
 
 CREATE SEQUENCE company_seq START 1;

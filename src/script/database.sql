@@ -31,7 +31,8 @@ create table profil(
     profilID varchar(10) primary key,
     companyID varchar(10) not null references company(companyID),
     name varchar(30) not null,
-    authority integer check (authority > 0 )
+    authority integer check (authority >= 0 ),
+    status integer check (status >= 0 )
 );
 
 
@@ -44,7 +45,7 @@ create table users(
     phone varchar(12) unique,
     joinedDate date default current_date,
     password varchar(100) not null,
-    status integer check (status > 0 )
+    status integer check (status >= 0 )
 );
 
 

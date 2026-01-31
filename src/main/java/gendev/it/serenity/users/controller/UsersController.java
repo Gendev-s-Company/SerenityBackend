@@ -2,10 +2,8 @@ package gendev.it.serenity.users.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gendev.it.serenity.users.application.UserService;
 import gendev.it.serenity.users.domain.dto.UserDTO;
+import gendev.it.serenity.users.domain.dto.UserResponseDTO;
 
 @RestController
 @RequestMapping("api/user")
@@ -30,14 +29,6 @@ public class UsersController {
         this.userService = userService;
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleInvalidJson(HttpMessageNotReadableException e) {
-       
-        Throwable cause = e.getMostSpecificCause();
-        return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE)
-                .body("Erreur de validation : " + cause.getMessage());
-    }
 
     
 // Creation d'utilsiateur
@@ -71,7 +62,7 @@ public class UsersController {
 
 // Update user
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UserDTO body) {
+    public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody UserResponseDTO body) {
          try {
              return ResponseEntity.ok(userService.update(id, body));
          } catch (Exception e) {

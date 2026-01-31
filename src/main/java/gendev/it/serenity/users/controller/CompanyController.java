@@ -2,7 +2,6 @@ package gendev.it.serenity.users.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,7 +10,6 @@ import gendev.it.serenity.users.domain.dto.CompanyDTO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -24,17 +22,7 @@ public class CompanyController {
     public CompanyController(CompanyService service) {
         this.service = service;
     }
-    // Eto mamoaka anle exception depuis setter mandeha automatiquement
-    // afaka afindra any anaty classe controller common
-    // comme les autres fonctions
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleInvalidJson(HttpMessageNotReadableException e) {
-       
-        Throwable cause = e.getMostSpecificCause();
-        return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE)
-                .body("Erreur de validation : " + cause.getMessage());
-    }
+
 
     @PostMapping("")
     public ResponseEntity<?> create(@RequestBody CompanyDTO body) {

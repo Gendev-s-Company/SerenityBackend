@@ -109,21 +109,20 @@ public class UserService {
 
     // Update
     @Transactional
-    public UserDTO update(String userID, UserDTO userDTO) throws Exception {
+    public UserDTO update(String userID, UserResponseDTO userDTO) throws Exception {
         Users user = userRepository.findById(userID)
                 .orElseThrow(() -> new Exception("Utilisateur " + userID + " introuvable"));
 
         user.setName(userDTO.getName());
         // Modifier profil
         if (!user.getProfil().getProfilID().equals(userDTO.getProfil())) {
-            Profil profil = profilRepository.findById(userDTO.getProfil())
+            Profil profil = profilRepository.findById(userDTO.getProfil().getProfilID())
                     .orElseThrow(() -> new Exception("Profil introuvable"));
             user.setProfil(profil);
         }
 
         user.setPhone(userDTO.getPhone());
-        user.setJoineddate(userDTO.getJoineddate());
-        user.setPassword(userDTO.getPassword());
+        user.setJoineddate(userDTO.getJoinedDate());
         user.setStatus(userDTO.getStatus());
 
         // Sauvegarde de l'utilisateur

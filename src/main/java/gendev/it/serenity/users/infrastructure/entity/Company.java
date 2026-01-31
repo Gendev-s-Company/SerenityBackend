@@ -1,5 +1,6 @@
 package gendev.it.serenity.users.infrastructure.entity;
 
+import gendev.it.serenity.common.infrastructure.BaseEntity;
 import gendev.it.serenity.users.domain.dto.CompanyDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Company {
+public class Company extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String companyID;
@@ -28,7 +29,8 @@ public class Company {
     private String mail;
 
 
-    public CompanyDTO EntityToDTO(){
+    @Override
+    public CompanyDTO entityToDTO() {
         return new CompanyDTO(companyID, name, phone, mail);
     }
 }

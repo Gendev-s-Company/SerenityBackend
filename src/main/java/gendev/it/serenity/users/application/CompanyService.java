@@ -28,13 +28,13 @@ public class CompanyService{
         List<Company> list = repo.findAll();
         List<CompanyDTO> results = new ArrayList<CompanyDTO>();
         for (Company company : list) {
-            results.add(company.EntityToDTO());
+            results.add(company.entityToDTO());
         }
         return results;
     }
     public CompanyDTO findOneById(String id) throws Exception{
         try {
-            return repo.findByCompanyID(id).EntityToDTO();
+            return repo.findByCompanyID(id).entityToDTO();
         } catch (Exception e) {
             // TODO: handle exception
             throw new Exception( "Company "+id+" introuvable");
@@ -54,7 +54,7 @@ public class CompanyService{
         
         // Sauvegarde de la companie
         Company saved = repo.save(company);
-        return saved.EntityToDTO();
+        return saved.entityToDTO();
     }
 
     // Delete

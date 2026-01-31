@@ -18,7 +18,7 @@ public class UserResponseDTO {
         this.name = name;
         this.profil = profil;
         this.phone = phone;
-        this.joinedDate = joinedDate;
+        this.joinedDate = joinedDate; 
         this.status = status;
     }
 

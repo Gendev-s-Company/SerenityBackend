@@ -2,10 +2,8 @@ package gendev.it.serenity.users.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,15 +27,7 @@ public class ProfilController {
     public ProfilController(ProfilService profilService) {
         this.profilService = profilService;
     }
-    
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleInvalidJson(HttpMessageNotReadableException e) {
-       
-        Throwable cause = e.getMostSpecificCause();
-        return ResponseEntity
-                .status(HttpStatus.NOT_ACCEPTABLE)
-                .body("Erreur de validation : " + cause.getMessage());
-    }
+
 
     // Creation de profil
     @PostMapping("")

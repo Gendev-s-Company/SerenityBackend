@@ -1,5 +1,6 @@
 package gendev.it.serenity.users.domain.dto;
 
+import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.users.infrastructure.entity.Company;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,7 @@ import java.util.regex.Pattern;
 
 @NoArgsConstructor
 @Getter
-public class CompanyDTO {
+public class CompanyDTO extends DTO{
     
     private String companyID = null;
 

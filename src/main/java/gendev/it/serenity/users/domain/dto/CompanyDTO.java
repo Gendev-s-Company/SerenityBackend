@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 @NoArgsConstructor
 @Getter
-public class CompanyDTO extends DTO{
+public class CompanyDTO extends DTO<Company>{
     
     private String companyID = null;
 
@@ -17,7 +17,7 @@ public class CompanyDTO extends DTO{
     private String phone;
     
     private String mail;
-
+    
     public CompanyDTO(String companyID, String name, String phone, String mail) {
         this.companyID = companyID;
         this.name = name;

@@ -1,5 +1,6 @@
 package gendev.it.serenity.users.infrastructure.entity;
 
+import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
 import gendev.it.serenity.users.domain.dto.CompanyDTO;
 import jakarta.persistence.Column;
@@ -32,5 +33,21 @@ public class Company extends BaseEntity{
     @Override
     public CompanyDTO entityToDTO() {
         return new CompanyDTO(companyID, name, phone, mail);
+    }
+
+
+    @Override
+    public String getId() {
+        // TODO Auto-generated method stub
+        return companyID;
+    }
+
+
+    @Override
+    public void updateFromDTO(DTO cdto) {
+        CompanyDTO dto = (CompanyDTO) cdto;
+        setMail(dto.getMail());
+        setPhone(dto.getPhone());
+        setName(dto.getName());
     }
 }

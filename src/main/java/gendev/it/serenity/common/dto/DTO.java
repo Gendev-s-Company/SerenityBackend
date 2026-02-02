@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @MappedSuperclass
 @Getter
 @NoArgsConstructor
-public abstract class DTO<T extends BaseEntity> {
+public  class DTO<T extends BaseEntity> {
     private int status;
-    public abstract T dtoToEntity();
+    public T dtoToEntity() throws Exception{
+        throw new Exception("Vous devez créé une fonction dans votre classe fille");
+    }
     public void setStatus(int status) {
         if (status<0) {
             throw new IllegalArgumentException("Le status ne peut pas être négatif");

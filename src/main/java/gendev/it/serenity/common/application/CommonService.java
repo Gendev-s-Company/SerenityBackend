@@ -26,7 +26,7 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
     }
 
     @Transactional
-    public D save(D model) {
+    public D save(D model) throws Exception {
         T res = jpa.save((T) model.dtoToEntity());
         return (D) res.entityToDTO();
     }
@@ -42,6 +42,9 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
     @Transactional
     public D update(D model, ID id) throws Exception {
         T init = findActiveByID(id);
+        if (init.getId() instanceof String && !init.getId().equals(id)) 
+            throw new Exception("Modification impossible");
+        
         init.updateFromDTO(model);
         return (D)jpa.save(init).entityToDTO();
     }
@@ -59,7 +62,7 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
         jpa.save(model);
     }
 
-    public List<DTO> findAll() {
+    public List<D> findAll() {
         return ListEntityToListDto(jpa.findAllByStatus(0));
     }
 
@@ -78,17 +81,17 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
     }
 
     // function de conversion d'une liste de entity vers une liste de dto
-    private List<DTO> ListEntityToListDto(List<T> list) {
-        List<DTO> result = new ArrayList<DTO>();
+    private List<D> ListEntityToListDto(List<T> list) {
+        List<D> result = new ArrayList<D>();
         for (T row : list) {
-            result.add(row.entityToDTO());
+            result.add((D)row.entityToDTO());
         }
         return result;
     }
 
     // delete maina be
     @Transactional
-    public void delete(DTO model) {
+    public void delete(D model) throws Exception {
         jpa.delete((T) model.dtoToEntity());
     }
 }

@@ -65,7 +65,14 @@ public class CompanyDTO extends DTO<Company>{
         return Pattern.matches(regex, mail);
     }
 
-    public Company dtoToEntity(){
+    @Override
+    public Company dtoToEntity() throws Exception {
+        // TODO Auto-generated method stub
         return new Company(getCompanyID(),getName(),getPhone(),getMail());
     }
+    // @Override
+    // public Company dtoToEntity(){
+    //     return new Company(getCompanyID(),getName(),getPhone(),getMail());
+    // }
+    
 }

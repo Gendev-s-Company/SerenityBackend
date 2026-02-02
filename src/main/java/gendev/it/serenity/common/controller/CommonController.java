@@ -17,7 +17,7 @@ import gendev.it.serenity.common.infrastructure.BaseEntity;
 /*
  * Classe dont tous les controller entity réalisant un crud
  */
-public class CommonController<S extends CommonService> {
+public class CommonController<D extends DTO,S extends CommonService> {
     private final S service;
 
     public CommonController(S service) {
@@ -29,7 +29,7 @@ public class CommonController<S extends CommonService> {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> saveModel(@RequestBody DTO model) {
+    public ResponseEntity<?> saveModel(@RequestBody D model) {
         try {
             return new ResponseEntity<>(service.save(model), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -39,7 +39,7 @@ public class CommonController<S extends CommonService> {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateModel(@RequestBody DTO model,@PathVariable String id) {
+    public ResponseEntity<?> updateModel(@RequestBody D model,@PathVariable String id) {
         try {
             service.update(model, id);
             return ResponseEntity.ok("Modification réussi");
@@ -86,7 +86,7 @@ public class CommonController<S extends CommonService> {
 
     @GetMapping("/{page}/{size}")
     public ResponseEntity<?> findAllpaginateModel(@PathVariable("page") int page, @PathVariable("size") int size,
-            @RequestParam(name = "field", defaultValue = "creationdate", required = false) String field,
+            @RequestParam(name = "field", defaultValue = "name", required = false) String field,
             @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort) {
         try {
             return ResponseEntity.ok(service.getPaginated(page, size, field, sort));

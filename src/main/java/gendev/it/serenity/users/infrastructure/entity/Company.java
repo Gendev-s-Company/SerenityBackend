@@ -49,5 +49,6 @@ public class Company extends BaseEntity{
         setMail(dto.getMail());
         setPhone(dto.getPhone());
         setName(dto.getName());
+        setStatus(dto.getStatus());
     }
 }

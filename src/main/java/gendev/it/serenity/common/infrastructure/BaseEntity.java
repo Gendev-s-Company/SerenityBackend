@@ -9,8 +9,8 @@ import lombok.Setter;
 @MappedSuperclass
 @Getter
 @Setter
-public abstract class BaseEntity implements EntityInterface {
+public abstract class BaseEntity<D extends DTO> implements EntityInterface {
     @Column
     public int status;
-    public abstract DTO entityToDTO();
+    public abstract D entityToDTO();
 }

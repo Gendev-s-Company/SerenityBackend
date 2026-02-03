@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.common.dto.DTO;
-import gendev.it.serenity.common.infrastructure.BaseEntity;
 
 /*
  * Classe dont tous les controller entity réalisant un crud
@@ -39,9 +38,9 @@ public class CommonController<D extends DTO,S extends CommonService> {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateModel(@RequestBody D model,@PathVariable String id) {
+    public ResponseEntity<?> updateModel(@RequestBody D model,@PathVariable String id,@RequestParam(name = "status", required = false) Integer status) {
         try {
-            service.update(model, id);
+            service.update(model, id, status);
             return ResponseEntity.ok("Modification réussi");
         } catch (Exception e) {
             e.printStackTrace();
@@ -53,7 +52,7 @@ public class CommonController<D extends DTO,S extends CommonService> {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable String id) {
         try {
-            service.deleteById(id);
+            service.deleteById(id, 0);
             return ResponseEntity.ok("Suppression réussi");
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,9 +63,9 @@ public class CommonController<D extends DTO,S extends CommonService> {
     }
 
     @GetMapping("")
-    public ResponseEntity<?> findAllModel(@RequestParam(value = "key", required = false) String key) {
+    public ResponseEntity<?> findAllModel(@RequestParam(name = "status", required = false) Integer status) {
         try {
-            return ResponseEntity.ok(service.findAll());
+            return ResponseEntity.ok(service.findAll(status));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -75,9 +74,9 @@ public class CommonController<D extends DTO,S extends CommonService> {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findEntityByID(@PathVariable String id) {
+    public ResponseEntity<?> findEntityByID(@PathVariable String id,@RequestParam(name = "status", required = false) Integer status) {
         try {
-            return ResponseEntity.ok(service.findById(id));
+            return ResponseEntity.ok(service.findById(id, status));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -87,26 +86,16 @@ public class CommonController<D extends DTO,S extends CommonService> {
     @GetMapping("/{page}/{size}")
     public ResponseEntity<?> findAllpaginateModel(@PathVariable("page") int page, @PathVariable("size") int size,
             @RequestParam(name = "field", defaultValue = "name", required = false) String field,
-            @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort) {
+            @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
+            @RequestParam(name = "status", required = false) Integer status
+        ) {
         try {
-            return ResponseEntity.ok(service.getPaginated(page, size, field, sort));
+            return ResponseEntity.ok(service.getPaginated(page, size, field, sort, status));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 
         }
     }
-
-    // @GetMapping("/count")
-    // public ResponseEntity<?> countAllModel() {
-    // try {
-    // return ResponseEntity.ok(new ToJsonData<>(getService().getJpa().count(),
-    // null));
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // return new ResponseEntity<>(new ToJsonData<>(null, e.getMessage()),
-    // org.springframework.http.HttpStatus.NOT_ACCEPTABLE);
-    // }
-    // }
 
 }

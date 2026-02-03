@@ -1,4 +1,5 @@
 package gendev.it.serenity.users.domain.dto;
+import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.users.infrastructure.entity.Company;
 import gendev.it.serenity.users.infrastructure.entity.Profil;
 import lombok.Getter;
@@ -7,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class ProfilDTO {
+public class ProfilDTO extends DTO<Profil> {
 
     private String profilID;  
     private String companyid;
@@ -57,8 +58,7 @@ public class ProfilDTO {
         this.authority=authority;
     }
 
-
     public Profil dtoToEntity(Company company) {
-        return new Profil(company, name, authority);
+        return new Profil(profilID, company, name, authority);
     }
 }

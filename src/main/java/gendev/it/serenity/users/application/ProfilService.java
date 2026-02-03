@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.users.domain.dto.ProfilDTO;
 import gendev.it.serenity.users.infrastructure.entity.Company;
 import gendev.it.serenity.users.infrastructure.entity.Profil;
@@ -14,7 +15,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @Service
-public class ProfilService {
+public class ProfilService extends CommonService<Profil,ProfilDTO,String, ProfilRepo> {
 
     private final ProfilRepo profilRepository;
     private final CompanyRepo companyRepository;
@@ -23,10 +24,10 @@ public class ProfilService {
     private EntityManager entityManager;
 
 
-    public ProfilService(ProfilRepo profilRepository,
-                         CompanyRepo companyRepository) {
-        this.profilRepository = profilRepository;
+    public ProfilService(ProfilRepo profilRepository,CompanyRepo companyRepository) {
+        super(profilRepository); 
         this.companyRepository = companyRepository;
+        this.profilRepository = profilRepository;
     }
 
     // Generateur de'ID Profil
@@ -54,7 +55,7 @@ public class ProfilService {
 
         Profil saved = profilRepository.save(profil);
 
-        return saved.EntityToDTO(); // Retourner le profil avec ID
+        return saved.entityToDTO(); // Retourner le profil avec ID
     }
 
 
@@ -76,7 +77,7 @@ public class ProfilService {
     // Trouver un profil
     public ProfilDTO findOneById(String id) throws Exception{
         try {
-            return profilRepository.findByProfilID(id).EntityToDTO();
+            return profilRepository.findByProfilID(id).entityToDTO();
         } catch (Exception e) {
             // TODO: handle exception
             throw new Exception( "Profil "+id+" introuvable");
@@ -102,7 +103,7 @@ public class ProfilService {
         }
         // Sauvegarde de la companie
         Profil saved = profilRepository.save(profil);
-        return saved.EntityToDTO();
+        return saved.entityToDTO();
     }
 
 

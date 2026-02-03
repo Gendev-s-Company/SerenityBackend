@@ -63,7 +63,7 @@ public class UserService {
             .map(u -> new UserResponseDTO(
                     u.getUserID(),
                     u.getName(),
-                    u.getProfil().EntityToDTO(),
+                    u.getProfil().entityToDTO(),
                     u.getPhone(),
                     u.getJoineddate(),
                     u.getStatus()

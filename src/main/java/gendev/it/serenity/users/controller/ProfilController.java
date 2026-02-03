@@ -11,44 +11,51 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import gendev.it.serenity.common.controller.CommonController;
 import gendev.it.serenity.users.application.ProfilService;
 import gendev.it.serenity.users.domain.dto.ProfilDTO;
 
 @RestController
 @RequestMapping("api/profil")
-@CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
-        RequestMethod.OPTIONS })
-public class ProfilController {
+@CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.OPTIONS })
+public class ProfilController extends CommonController<ProfilDTO, ProfilService> {
 
-    private final ProfilService profilService;
+     private final ProfilService profilService;
 
-    public ProfilController(ProfilService profilService) {
-        this.profilService = profilService;
+    public ProfilController(ProfilService service) {
+        super(service);
+        this.profilService = service;
     }
 
 
     // Creation de profil
+    @Override
     @PostMapping("")
-    public ResponseEntity<?> create(@RequestBody ProfilDTO body) {
+    public ResponseEntity<?> saveModel(@RequestBody ProfilDTO body) {
         try {
             return new ResponseEntity<>(profilService.create(body), HttpStatus.CREATED);
         } catch (Exception e) {
-            // TODO: handle exception
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
     // Liste des profils
-    @GetMapping("")
-    public ResponseEntity<?> getMethodName() {
-        return new ResponseEntity<>(profilService.findAll(), HttpStatus.OK);
+    @Override
+    // @GetMapping("")
+    public ResponseEntity<?> findAllModel(@RequestParam(name = "status", required = false) Integer status) {
+        return profilService.findAll().isEmpty()
+                ? ResponseEntity.status(HttpStatus.NO_CONTENT).body("Aucun profil n'est disponible")
+                : ResponseEntity.ok(profilService.findAll());
     }
 
     // Profil par ID
+    @Override
     @GetMapping("/{id}")
-    public ResponseEntity<?> getMethodName(@PathVariable String id) {
+    public ResponseEntity<?> findEntityByID(@PathVariable String id,@RequestParam(name = "status", required = false) Integer status) {
         try {
             return ResponseEntity.ok(profilService.findOneById(id));
         } catch (Exception e) {
@@ -58,17 +65,20 @@ public class ProfilController {
     }
 
     // Update profil
+    @Override
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProfil(@PathVariable String id, @RequestBody ProfilDTO body) {
+    public ResponseEntity<?> updateModel(@RequestBody ProfilDTO body, @PathVariable String id, @RequestParam(name = "status", required = false) Integer status) {
          try {
              return ResponseEntity.ok(profilService.update(id, body));
          } catch (Exception e) {
-             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(e.getMessage());
          }
     }
+
     // Delete profil
+    @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProfil(@PathVariable String id) {
+    public ResponseEntity<?> deleteById(@PathVariable String id) {
         try {
             profilService.delete(id);
         return ResponseEntity.ok("Profil supprimé");
@@ -76,4 +86,6 @@ public class ProfilController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Suppression impossible : des utilisateurs sont liés à ce profil");
         }
     }
+
+
 }

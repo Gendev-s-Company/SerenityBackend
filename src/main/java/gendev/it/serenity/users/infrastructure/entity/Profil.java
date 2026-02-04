@@ -21,7 +21,7 @@ import tools.jackson.core.ObjectReadContext.Base;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Profil extends BaseEntity {
+public class Profil extends BaseEntity<ProfilDTO> {
 
     @Id
     @Column(name = "profilid", length = 30, nullable = false, updatable = false)

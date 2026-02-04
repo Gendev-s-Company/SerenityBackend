@@ -2,7 +2,10 @@ package gendev.it.serenity.users.domain.dto;
 
 import java.time.LocalDate;
 
-public class UserResponseDTO {
+import gendev.it.serenity.common.dto.DTO;
+import gendev.it.serenity.users.infrastructure.entity.Users;
+
+public class UserResponseDTO extends DTO<Users> {
     private String userID;
     private String name;
     private ProfilDTO profil; 

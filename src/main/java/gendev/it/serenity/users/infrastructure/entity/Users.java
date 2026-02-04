@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @Entity
-public class Users extends BaseEntity {
+public class Users extends BaseEntity<UserDTO> {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private String userID;

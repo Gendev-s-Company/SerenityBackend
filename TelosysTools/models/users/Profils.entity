@@ -1,0 +1,7 @@
+// Entity profils
+
+Profils {
+  profilID: string { @Id @GeneratedValue(IDENTITY)};
+  name: string;
+  company: Companys;
+}

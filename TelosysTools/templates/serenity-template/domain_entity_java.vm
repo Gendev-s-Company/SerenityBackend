@@ -30,83 +30,38 @@ import lombok.*;
 @Entity
 public class ${entity.name} extends BaseEntity {
 
-    //--- ENTITY ATTRIBUTES 
+//--- ENTITY ATTRIBUTES 
 #foreach( $attribute in $entity.keyAttributes )
-    private $attribute.formattedType(10) $attribute.name #if($attribute.hasInitialValue())= ${attribute.ini} #end;
+    @Id
+#if ( $attribute.isGeneratedValue() )
+    @GeneratedValue(strategy=GenerationType.AUTO) 
 #end
+    @Column(name="$attribute.databaseName")
+    private $attribute.formattedType(10) $attribute.name;
+#end
+
 #foreach( $attribute in $entity.nonKeyAttributes )
-    private $attribute.formattedType(10) $attribute.name #if($attribute.hasInitialValue())= ${attribute.ini} #end;
+    @Column(name="$attribute.databaseName")
+    private $attribute.formattedType(10) $attribute.name;
 #end
 #if ( $entity.hasLinks() )
-    //--- ENTITY LINKS ( RELATIONSHIP )
-$___#foreach( $link in $entity.links )
-    private ${link.formattedFieldType(10)} $link.fieldName ; 
-$___#end
-#end
-
-    
-
-     //--- GETTERS & SETTERS FOR ATTRIBUTES
-#foreach( $attribute in $entity.keyAttributes )
-    public void ${attribute.setter}( $attribute.type $attribute.name ) {
-        this.$attribute.name = $attribute.name ;
-    }
-    public $attribute.type ${attribute.getter}() {
-        return this.$attribute.name;
-    }
-
-#end
-#foreach( $attribute in $entity.nonKeyAttributes )
-    public void ${attribute.setter}( $attribute.type $attribute.name ) {
-        this.$attribute.name = $attribute.name ;
-    }
-    public $attribute.type ${attribute.getter}() {
-        return this.$attribute.name;
-    }
-
-#end
-## #if ( $entity.hasLinks() )
-##     //--- GETTERS FOR LINKS
-## $___#foreach( $link in $entity.links )
-##     public $link.fieldType ${link.getter}() {
-##         return this.$link.fieldName;
-##     } 
-## $___#end
-## #end
-#if ( $entity.hasLinks() )
-    //--- ENTITY LINKS ( RELATIONSHIP )
+    //--- ENTITY LINKS ( RELATIONSHIPS )
 #foreach( $link in $entity.links )
-
-    #if( $link.isManyToOne() )
-    @ManyToOne
-    @JoinColumn(name = "$link.joinColumnName")
-    private $link.fieldType $link.fieldName;
+    #if( $link.isCardinalityManyToOne() )
+        @ManyToOne
+        @JoinColumn(name = "$link.joinColumnName")
+    #elseif( $link.isCardinalityOneToOne() )
+        @OneToOne
+        @JoinColumn(name = "$link.joinColumnName")
+    #elseif( $link.isCardinalityOneToMany() )
+        @OneToMany(mappedBy = "$link.mappedBy")
+    #elseif( $link.isCardinalityManyToMany() )
+        @ManyToMany
+        @JoinTable(name = "$link.joinTableName")
     #end
-
-    #if( $link.isOneToOne() )
-    @OneToOne
-    @JoinColumn(name = "$link.joinColumnName")
-    private $link.fieldType $link.fieldName;
-    #end
-
-    #if( $link.isOneToMany() )
-    @OneToMany(mappedBy = "$link.mappedBy")
-    private List<$link.fieldType> $link.fieldName;
-    #end
-
-    #if( $link.isManyToMany() )
-    @ManyToMany
-    @JoinTable(
-        name = "$link.joinTableName",
-        joinColumns = @JoinColumn(name = "$link.joinColumnName"),
-        inverseJoinColumns = @JoinColumn(name = "$link.inverseJoinColumnName")
-    )
-    private List<$link.fieldType> $link.fieldName;
-    #end
-
+    private ${link.fieldType} $link.fieldName; 
 #end
 #end
-
 
 ##--- toString specific method
 	@Override

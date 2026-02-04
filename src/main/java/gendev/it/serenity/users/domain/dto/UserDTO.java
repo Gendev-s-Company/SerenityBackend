@@ -15,7 +15,7 @@ public class UserDTO extends DTO<Users> {
     private String name;
     private String profilID;
     private String phone;
-    private LocalDate joineddate;
+    private LocalDate joineddate = LocalDate.now();
     private String password;
 
 

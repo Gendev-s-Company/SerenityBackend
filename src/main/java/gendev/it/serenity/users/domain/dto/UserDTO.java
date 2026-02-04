@@ -2,80 +2,61 @@ package gendev.it.serenity.users.domain.dto;
 
 import java.time.LocalDate;
 
-import gendev.it.serenity.users.infrastructure.entity.Profil;
+import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.users.infrastructure.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class UserDTO {
-    private String userID;
+public class UserDTO extends DTO<Users> {
+
+    private String userID =null;
     private String name;
-    private String profil;
+    private String profilID;
     private String phone;
     private LocalDate joineddate;
     private String password;
-    private int status;
 
-    public UserDTO(String name, String profil, String phone, LocalDate joineddate, String password, int status) {
+
+    public UserDTO(String userID, String name, String profilID, String phone, LocalDate joineddate, String password) {
+        this.userID = userID;
         this.name = name;
-        this.profil = profil;
+        this.profilID = profilID;
         this.phone = phone;
         this.joineddate = joineddate;
         this.password = password;
-        this.status = status;
     }
+    
 
-    public UserDTO(String userID, String name, String profil, String phone, LocalDate joineddate, String password,
-            int status) {
-        this.userID = userID;
+    public UserDTO(String name, String profilID, String phone, LocalDate joineddate, String password) {
         this.name = name;
-        this.profil = profil;
+        this.profilID = profilID;
         this.phone = phone;
         this.joineddate = joineddate;
         this.password = password;
-        this.status = status;
     }
 
-    public UserDTO(String userID, String name, String profil, String phone, LocalDate joineddate, int status) {
-        this.userID = userID;
-        this.name = name;
-        this.profil = profil;
-        this.phone = phone;
-        this.joineddate = joineddate;
-        this.status = status;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
 
     public void setName(String name) throws Exception {
-        if (name.isBlank()) {
+        if (name == null || name.isBlank()) {
             throw new Exception("Veuillez entrer un nom valide");
         }
         this.name = name;
     }
 
-    public void setProfil(String profil) throws Exception {
-        if (profil.isBlank()) {
+    public void setProfilID(String profilID) throws Exception {
+        if (profilID == null || profilID.isBlank()) {
             throw new Exception("Veuillez choisir un profil existant");
         }
-        this.profil = profil;
+        this.profilID = profilID;
     }
 
     public void setPhone(String phone) throws Exception {
-    
-        if (phone == null || phone.length() > 12) {
-            throw new Exception("Format du numéro de téléphone invalide : veuillez vérifier.");
+        if (phone != null && phone.length() > 12) {
+            throw new Exception("Format du numéro de téléphone invalide");
         }
         this.phone = phone;
-    }
-
-    public void setJoineddate(LocalDate joineddate) {
-
-        this.joineddate = joineddate;
     }
 
     public void setPassword(String password) throws Exception {
@@ -85,12 +66,16 @@ public class UserDTO {
         this.password = password;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setJoineddate(LocalDate joineddate) {
+        this.joineddate = joineddate;
     }
-
-    public Users dtoToEntity(Profil profil) {
-        return new Users(getName(), profil, getPhone(), getJoineddate(), getPassword(), getStatus());
+    public Users dtoToEntity()throws Exception {
+        return new Users(
+                name,
+                profilID, //profil sera injecté dans le SERVICE
+                phone,
+                joineddate,
+                password
+        );
     }
-
 }

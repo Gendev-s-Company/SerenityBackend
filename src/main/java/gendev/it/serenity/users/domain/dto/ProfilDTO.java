@@ -15,14 +15,13 @@ public class ProfilDTO extends DTO<Profil> {
     private String name;
     private int authority;
 
-    //Constructeur pour CREATE (entrée client)
-    public ProfilDTO(String companyid, String name, int authority) {
+    public ProfilDTO(String companyid, String name, int authority, int status) {
         this.companyid = companyid;
         this.name = name;
         this.authority = authority;
+        this.setStatus(status);
     }
 
-    //Constructeur pour READ (sortie API)
     public ProfilDTO(String profilID, String companyid, String name, int authority) {
         this.profilID = profilID;
         this.companyid = companyid;
@@ -30,11 +29,16 @@ public class ProfilDTO extends DTO<Profil> {
         this.authority = authority;
     }
 
-    // getters
-    public String getProfilID() { return profilID; }
-    public String getCompanyid() { return companyid; }
-    public String getName() { return name; }
-    public int getAuthority() { return authority; }
+
+    public ProfilDTO(String profilID, String companyid, String name, int authority, int status) {
+        this.profilID = profilID;
+        this.companyid = companyid;
+        this.name = name;
+        this.authority = authority;
+        this.setStatus(status);
+    }
+
+
 
     // setters autorisés (input)
     public void setCompanyid(String companyid) throws Exception {
@@ -58,7 +62,15 @@ public class ProfilDTO extends DTO<Profil> {
         this.authority=authority;
     }
 
-    public Profil dtoToEntity(Company company) {
+
+
+    @Override
+    public Profil dtoToEntity() throws Exception {
+        // TODO Auto-generated method stub
+        Company company = new Company();
+        company.setCompanyID(this.companyid);
         return new Profil(profilID, company, name, authority);
     }
+
+    
 }

@@ -5,7 +5,8 @@ import gendev.it.serenity.users.domain.dto.CompanyDTO;
 import gendev.it.serenity.users.domain.dto.ProfilDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -21,10 +22,9 @@ import tools.jackson.core.ObjectReadContext.Base;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class Profil extends BaseEntity {
-
+public class Profil extends BaseEntity<ProfilDTO> {
     @Id
-    @Column(name = "profilid", length = 30, nullable = false, updatable = false)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private String profilID;
 
     @ManyToOne
@@ -44,7 +44,8 @@ public class Profil extends BaseEntity {
             profilID,           
             company.getCompanyID(),
             name,
-            authority
+            authority,
+            this.getStatus()
         );
     }
 

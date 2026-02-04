@@ -25,7 +25,6 @@ public class UserResponseDTO extends DTO<Users> {
         this.profil = profil;
         this.phone = phone;
         this.joinedDate = joinedDate; 
-        System.out.println(status);
         setStatus(status);
     }
     

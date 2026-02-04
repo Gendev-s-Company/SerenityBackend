@@ -6,20 +6,29 @@
 
 package ${target.javaPackageFromFolder(${SRC})};
 
-import java.io.Serializable;
-
 #foreach( $import in $java.imports($entity) )
 import $import;
 #end
+import gendev.it.serenity.common.dto.DTO;
+import gendev.it.serenity.common.infrastructure.BaseEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.*;
 /**
  * Domain class for entity "${entity.name}"
  *
  * @author MyRanto
  *
  */
-public class ${entity.name} implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class ${entity.name} extends BaseEntity {
 
     //--- ENTITY ATTRIBUTES 
 #foreach( $attribute in $entity.keyAttributes )
@@ -35,12 +44,7 @@ $___#foreach( $link in $entity.links )
 $___#end
 #end
 
-    /**
-     * Constructor
-     */
-    public ${entity.name}() {
-		super();
-    }
+    
 
      //--- GETTERS & SETTERS FOR ATTRIBUTES
 #foreach( $attribute in $entity.keyAttributes )
@@ -61,14 +65,48 @@ $___#end
     }
 
 #end
+## #if ( $entity.hasLinks() )
+##     //--- GETTERS FOR LINKS
+## $___#foreach( $link in $entity.links )
+##     public $link.fieldType ${link.getter}() {
+##         return this.$link.fieldName;
+##     } 
+## $___#end
+## #end
 #if ( $entity.hasLinks() )
-    //--- GETTERS FOR LINKS
-$___#foreach( $link in $entity.links )
-    public $link.fieldType ${link.getter}() {
-        return this.$link.fieldName;
-    } 
-$___#end
+    //--- ENTITY LINKS ( RELATIONSHIP )
+#foreach( $link in $entity.links )
+
+    #if( $link.isManyToOne() )
+    @ManyToOne
+    @JoinColumn(name = "$link.joinColumnName")
+    private $link.fieldType $link.fieldName;
+    #end
+
+    #if( $link.isOneToOne() )
+    @OneToOne
+    @JoinColumn(name = "$link.joinColumnName")
+    private $link.fieldType $link.fieldName;
+    #end
+
+    #if( $link.isOneToMany() )
+    @OneToMany(mappedBy = "$link.mappedBy")
+    private List<$link.fieldType> $link.fieldName;
+    #end
+
+    #if( $link.isManyToMany() )
+    @ManyToMany
+    @JoinTable(
+        name = "$link.joinTableName",
+        joinColumns = @JoinColumn(name = "$link.joinColumnName"),
+        inverseJoinColumns = @JoinColumn(name = "$link.inverseJoinColumnName")
+    )
+    private List<$link.fieldType> $link.fieldName;
+    #end
+
 #end
+#end
+
 
 ##--- toString specific method
 	@Override

@@ -1,5 +1,8 @@
 // Entity Companys
 
 Companys {
-  myfield : string ; // field example 
+  companyID: string { @Id @GeneratedValue(IDENTITY)};
+  name: string;
+  phone: string;
+  mail: string;
 }

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gendev.it.serenity.users.application.UserService;
 import gendev.it.serenity.users.domain.dto.UserDTO;
+import gendev.it.serenity.users.domain.dto.UserResponseDTO;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +34,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO body) {
         try {
-            UserDTO loggedUser = service.login(body);
+            UserResponseDTO loggedUser = service.login(body);
             return new ResponseEntity<>(loggedUser, HttpStatus.OK);
             
         } catch (Exception e) {

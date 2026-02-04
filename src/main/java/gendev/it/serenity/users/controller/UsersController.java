@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import gendev.it.serenity.common.controller.CommonController;
 import gendev.it.serenity.users.application.UserService;
 import gendev.it.serenity.users.domain.dto.UserDTO;
+import gendev.it.serenity.users.domain.dto.UserResponseDTO;
 
 
 
@@ -16,7 +17,7 @@ import gendev.it.serenity.users.domain.dto.UserDTO;
 @RequestMapping("api/user")
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
         RequestMethod.OPTIONS })
-public class UsersController extends CommonController<UserDTO,UserService> {
+public class UsersController extends CommonController<UserResponseDTO,UserService> {
 
 
     public UsersController(UserService service) {

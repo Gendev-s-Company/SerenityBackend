@@ -4,75 +4,57 @@ import java.time.LocalDate;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.users.infrastructure.entity.Users;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@Getter
 public class UserResponseDTO extends DTO<Users> {
-    private String userID;
+    private String userID=null;
     private String name;
     private ProfilDTO profil; 
     private String phone;
-    private LocalDate joinedDate;
-    private int status;
+    private LocalDate joinedDate = LocalDate.now();
 
  
 
     public UserResponseDTO(String userID, String name, ProfilDTO profil, String phone, LocalDate joinedDate,
-            int status) {
+            Integer status) {
         this.userID = userID;
         this.name = name;
         this.profil = profil;
         this.phone = phone;
         this.joinedDate = joinedDate; 
-        this.status = status;
+        System.out.println(status);
+        setStatus(status);
     }
+    
 
-    // ----- Getters -----
-    public String getUserID() {
-        return userID;
-    }
 
-    public String getName() {
-        return name;
-    }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public LocalDate getJoinedDate() {
-        return joinedDate;
-    }
-
-    public ProfilDTO getProfil() {
-        return profil;
-    }
 
     // ----- Setters (optionnel, selon besoin) -----
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
+  
 
-    public void setName(String name) {
+    public void setName(String name) throws Exception {
+        if (name == null || name.isBlank()) {
+            throw new Exception("Veuillez entrer un nom valide");
+        }
         this.name = name;
     }
 
-    public void setPhone(String phone) {
+    public void setProfilID(ProfilDTO profilID) throws Exception {
+        if (profilID == null) {
+            throw new Exception("Veuillez choisir un profil existant");
+        }
+        this.profil = profilID;
+    }
+
+    public void setPhone(String phone) throws Exception {
+        if (phone != null && phone.length() > 12) {
+            throw new Exception("Format du numéro de téléphone invalide");
+        }
         this.phone = phone;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public void setJoinedDate(LocalDate joinedDate) {
-        this.joinedDate = joinedDate;
-    }
-
-    public void setProfil(ProfilDTO profil) {
-        this.profil = profil;
     }
 }
 

@@ -36,20 +36,19 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
     private T findByIdAndStatus(ID id, Integer status) throws Exception {
         int state = status != null ? status : State.ACTIVE;
         return jpa.findAllByStatus(state).stream()
-                .filter(entity -> entity.getId().equals(id))
+                 .filter(entity -> String.valueOf(entity.getId()).equals(String.valueOf(id)))
                 .findFirst()
-                .orElseThrow(() -> new Exception("ID introuvable ou inactif : " + id));
+                .orElseThrow(() -> new Exception("ID introuvable ou inactif : " + id));    
     }
 
     @Transactional
     public D update(D model, ID id, Integer status) throws Exception {
         T init = findByIdAndStatus(id, status);
         Object entityID = init.getId();
-        if (entityID instanceof String && !entityID.equals(id)) 
+        if (!entityID.toString().equals(String.valueOf(id))) {
             throw new Exception("Modification impossible, ID different");
-        if (entityID instanceof Integer && entityID!=id) 
-            throw new Exception("Modification impossible, ID different");
-        
+        }
+       
         init.updateFromDTO(model);
         return (D)jpa.save(init).entityToDTO();
     }

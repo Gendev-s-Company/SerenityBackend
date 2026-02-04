@@ -1,11 +1,11 @@
 package gendev.it.serenity.users.infrastructure.entity;
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
-import gendev.it.serenity.users.domain.dto.CompanyDTO;
 import gendev.it.serenity.users.domain.dto.ProfilDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -13,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tools.jackson.core.ObjectReadContext.Base;
 
 
 @Setter
@@ -22,9 +21,8 @@ import tools.jackson.core.ObjectReadContext.Base;
 @NoArgsConstructor
 @Entity
 public class Profil extends BaseEntity<ProfilDTO> {
-
     @Id
-    @Column(name = "profilid", length = 30, nullable = false, updatable = false)
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private String profilID;
 
     @ManyToOne
@@ -44,7 +42,8 @@ public class Profil extends BaseEntity<ProfilDTO> {
             profilID,           
             company.getCompanyID(),
             name,
-            authority
+            authority,
+            this.getStatus()
         );
     }
 

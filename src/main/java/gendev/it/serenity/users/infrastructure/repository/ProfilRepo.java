@@ -10,6 +10,5 @@ import gendev.it.serenity.users.infrastructure.entity.Profil;
 public interface ProfilRepo extends CommonRepository<Profil, String>
 {
 
-    Profil findByProfilID(String profilID);
 
 }

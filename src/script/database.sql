@@ -57,3 +57,4 @@ create table workschedule(
     startTime timestamp not null,
     endTime timestamp check (startTime < endTime)
 );
+alter table workschedule add COLUMN status integer check (status >= 0);

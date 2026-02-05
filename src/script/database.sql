@@ -57,3 +57,4 @@ create table workschedule(
     startTime timestamp not null,
     endTime timestamp check (startTime < endTime)
 );
+

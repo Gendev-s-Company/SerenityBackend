@@ -17,6 +17,15 @@ public class UserService extends CommonService<Users, UserResponseDTO, String, U
     public UserService(UserRepo repo) {
         super(repo);
     }
+    
+    @Override
+    public UserResponseDTO save(UserResponseDTO model) throws Exception {
+        // TODO Auto-generated method stub
+        Users user = model.dtoToEntity();
+        user.setPassword("1234");
+        getJpa().save(user);
+        return user.entityToDTO();
+    }
 
     public UserResponseDTO login(UserDTO loginDTO) throws Exception {
         Users user =getJpa().findByPhone(loginDTO.getPhone());

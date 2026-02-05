@@ -3,6 +3,7 @@ package gendev.it.serenity.users.domain.dto;
 import java.time.LocalDate;
 
 import gendev.it.serenity.common.dto.DTO;
+import gendev.it.serenity.users.infrastructure.entity.Profil;
 import gendev.it.serenity.users.infrastructure.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,13 +13,13 @@ import lombok.NoArgsConstructor;
 public class UserResponseDTO extends DTO<Users> {
     private String userID=null;
     private String name;
-    private ProfilDTO profil; 
+    private Profil profil; 
     private String phone;
     private LocalDate joinedDate = LocalDate.now();
 
  
 
-    public UserResponseDTO(String userID, String name, ProfilDTO profil, String phone, LocalDate joinedDate,
+    public UserResponseDTO(String userID, String name, Profil profil, String phone, LocalDate joinedDate,
             Integer status) {
         this.userID = userID;
         this.name = name;
@@ -42,7 +43,7 @@ public class UserResponseDTO extends DTO<Users> {
         this.name = name;
     }
 
-    public void setProfilID(ProfilDTO profilID) throws Exception {
+    public void setProfilID(Profil profilID) throws Exception {
         if (profilID == null) {
             throw new Exception("Veuillez choisir un profil existant");
         }
@@ -55,5 +56,16 @@ public class UserResponseDTO extends DTO<Users> {
         }
         this.phone = phone;
     }
+
+
+
+
+
+    @Override
+    public Users dtoToEntity() throws Exception {
+        // TODO Auto-generated method stub
+        return new Users(userID, name, profil, phone, joinedDate, getStatus());
+    }
+    
 }
 

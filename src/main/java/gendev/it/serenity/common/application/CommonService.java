@@ -68,7 +68,9 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
 
     public List<D> findAll(Integer status) {
         int state = status != null ? status : State.ACTIVE;
-        return ListEntityToListDto(jpa.findAllByStatus(state));
+        System.out.println(state);
+        List<T> l= jpa.findAllByStatus(state);
+        return ListEntityToListDto(l);
     }
 
     /*

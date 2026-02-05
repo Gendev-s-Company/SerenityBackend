@@ -52,10 +52,21 @@ public class Users extends BaseEntity<UserResponseDTO> {
         this.joineddate = joineddate;
         this.password = password;
     }
+    
+
+    public Users(String userID, String name, Profil profil, String phone, LocalDate joineddate, int status) {
+        this.userID = userID;
+        this.name = name;
+        this.profil = profil;
+        this.phone = phone;
+        this.joineddate = joineddate;
+        setStatus(status);
+    }
+
 
     @Override
     public UserResponseDTO entityToDTO() {
-        return new UserResponseDTO(userID,name,profil.entityToDTO(),phone,joineddate,getStatus());
+        return new UserResponseDTO(userID,name,profil,phone,joineddate,getStatus());
     }
 
     @Override
@@ -69,7 +80,7 @@ public class Users extends BaseEntity<UserResponseDTO> {
         UserResponseDTO dto= (UserResponseDTO) udto;
         setName(dto.getName());
         try {
-            setProfil(dto.getProfil().dtoToEntity());
+            setProfil(dto.getProfil());
         } catch (Exception e) {
             // TODO Auto-generated catch block
             System.out.println(e.getMessage());

@@ -3,12 +3,9 @@ package gendev.it.serenity.users.infrastructure.repository;
 import org.springframework.stereotype.Repository;
 
 import gendev.it.serenity.common.repo.CommonRepository;
-import gendev.it.serenity.users.infrastructure.entity.Profil;
-
+import gendev.it.serenity.users.infrastructure.entity.Workschedule;
 
 @Repository
-public interface ProfilRepo extends CommonRepository<Profil, String>
-{
-
+public interface WorkscheduleRepo extends CommonRepository<Workschedule,Integer> {
 
 }

@@ -38,7 +38,7 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
         return jpa.findAllByStatus(state).stream()
                  .filter(entity -> String.valueOf(entity.getId()).equals(String.valueOf(id)))
                 .findFirst()
-                .orElseThrow(() -> new Exception("ID introuvable ou inactif : " + id));     
+                .orElseThrow(() -> new Exception("ID introuvable ou inactif : " + id));    
     }
 
     @Transactional
@@ -48,7 +48,7 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
         if (!entityID.toString().equals(String.valueOf(id))) {
             throw new Exception("Modification impossible, ID different");
         }
-        
+       
         init.updateFromDTO(model);
         return (D)jpa.save(init).entityToDTO();
     }
@@ -68,7 +68,9 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
 
     public List<D> findAll(Integer status) {
         int state = status != null ? status : State.ACTIVE;
-        return ListEntityToListDto(jpa.findAllByStatus(state));
+        System.out.println(state);
+        List<T> l= jpa.findAllByStatus(state);
+        return ListEntityToListDto(l);
     }
 
     /*

@@ -1,4 +1,5 @@
 package gendev.it.serenity.users.domain.dto;
+import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.users.infrastructure.entity.Company;
 import gendev.it.serenity.users.infrastructure.entity.Profil;
 import lombok.Getter;
@@ -7,21 +8,20 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class ProfilDTO {
+public class ProfilDTO extends DTO<Profil> {
 
     private String profilID;  
     private String companyid;
     private String name;
     private int authority;
 
-    //Constructeur pour CREATE (entrée client)
-    public ProfilDTO(String companyid, String name, int authority) {
+    public ProfilDTO(String companyid, String name, int authority, int status) {
         this.companyid = companyid;
         this.name = name;
         this.authority = authority;
+        this.setStatus(status);
     }
 
-    //Constructeur pour READ (sortie API)
     public ProfilDTO(String profilID, String companyid, String name, int authority) {
         this.profilID = profilID;
         this.companyid = companyid;
@@ -29,11 +29,16 @@ public class ProfilDTO {
         this.authority = authority;
     }
 
-    // getters
-    public String getProfilID() { return profilID; }
-    public String getCompanyid() { return companyid; }
-    public String getName() { return name; }
-    public int getAuthority() { return authority; }
+
+    public ProfilDTO(String profilID, String companyid, String name, int authority, int status) {
+        this.profilID = profilID;
+        this.companyid = companyid;
+        this.name = name;
+        this.authority = authority;
+        this.setStatus(status);
+    }
+
+
 
     // setters autorisés (input)
     public void setCompanyid(String companyid) throws Exception {
@@ -58,7 +63,14 @@ public class ProfilDTO {
     }
 
 
-    public Profil dtoToEntity(Company company) {
-        return new Profil(company, name, authority);
+
+    @Override
+    public Profil dtoToEntity() throws Exception {
+        // TODO Auto-generated method stub
+        Company company = new Company();
+        company.setCompanyID(this.companyid);
+        return new Profil(profilID, company, name, authority);
     }
+
+    
 }

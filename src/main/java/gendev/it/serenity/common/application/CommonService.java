@@ -41,6 +41,9 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
                 .orElseThrow(() -> new Exception("ID introuvable ou inactif : " + id));    
     }
 
+
+    
+
     @Transactional
     public D update(D model, ID id, Integer status) throws Exception {
         T init = findByIdAndStatus(id, status);
@@ -57,6 +60,8 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
     public D findById(ID id, Integer status) throws Exception {
         return (D)findByIdAndStatus(id, status).entityToDTO();
     }
+
+    
 
     // mamafa azy by update status
     @Transactional
@@ -102,4 +107,6 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
     public void delete(D model) throws Exception {
         jpa.delete((T) model.dtoToEntity());
     }
+
+
 }

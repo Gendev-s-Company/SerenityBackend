@@ -18,7 +18,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Company extends BaseEntity{
+public class Company extends BaseEntity<CompanyDTO>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String companyID;

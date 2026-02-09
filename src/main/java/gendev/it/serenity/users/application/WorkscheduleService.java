@@ -1,9 +1,14 @@
 package gendev.it.serenity.users.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.users.domain.dto.WorkscheduleDTO;
+import gendev.it.serenity.users.infrastructure.entity.Users;
 import gendev.it.serenity.users.infrastructure.entity.Workschedule;
 import gendev.it.serenity.users.infrastructure.repository.WorkscheduleRepo;
 
@@ -21,5 +26,37 @@ public class WorkscheduleService extends CommonService<Workschedule, Workschedul
         dto.validate();
         return super.save(dto);
     }
+
+
+    @Autowired
+    public UserService userService;
+
+    public List<WorkscheduleDTO> getByAuthority(String userid) throws Exception {
+        Users user = userService.getJpa().findById(String.valueOf(userid))
+                .orElseThrow(() -> new Exception("Utilisateur non trouvé"));
+
+
+        int authority_user = user.getProfil().getAuthority();
+
+        if (authority_user >= 4) {
+            return super.findAll(null);
+        } else {
+
+          return getJpa().findByUserIDAndStatus(userid, 0)
+                    .stream()
+                    .map(entity -> (WorkscheduleDTO) entity.entityToDTO())
+                    .collect(Collectors.toList());
+        }
+    
+    }
+
+    public List<WorkscheduleDTO> choiceSearch(List<String> userids) throws Exception {
+        return getJpa().findByUserIDInAndStatus(userids, 0)
+                .stream()
+                .map(entity -> (WorkscheduleDTO) entity.entityToDTO())
+                .toList();
+    }
+    
+
 
 }

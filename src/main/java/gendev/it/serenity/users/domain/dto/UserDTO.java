@@ -3,6 +3,7 @@ package gendev.it.serenity.users.domain.dto;
 import java.time.LocalDate;
 
 import gendev.it.serenity.common.dto.DTO;
+import gendev.it.serenity.users.infrastructure.entity.Profil;
 import gendev.it.serenity.users.infrastructure.entity.Users;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class UserDTO extends DTO<Users> {
     private String name;
     private String profilID;
     private String phone;
-    private LocalDate joineddate;
+    private LocalDate joineddate = LocalDate.now();
     private String password;
 
 
@@ -70,9 +71,11 @@ public class UserDTO extends DTO<Users> {
         this.joineddate = joineddate;
     }
     public Users dtoToEntity()throws Exception {
+        Profil p = new Profil();
+        p.setProfilID(profilID);
         return new Users(
                 name,
-                profilID, //profil sera injecté dans le SERVICE
+                p, //profil sera injecté dans le SERVICE
                 phone,
                 joineddate,
                 password

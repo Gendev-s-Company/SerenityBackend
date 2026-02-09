@@ -13,10 +13,10 @@ public  class DTO<T extends BaseEntity> {
     public T dtoToEntity() throws Exception{
         throw new Exception("Vous devez créé une fonction dans votre classe fille");
     }
-    public void setStatus(int status) {
+    public void setStatus(Integer state) {
+        this.status = state!=null ? state : 0;
         if (status<0) {
             throw new IllegalArgumentException("Le status ne peut pas être négatif");
         }
-        this.status = status;
     }
 }

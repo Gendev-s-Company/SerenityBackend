@@ -58,6 +58,8 @@ create table workschedule(
     endTime timestamp check (startTime < endTime),
     status integer check (status >= 0)
 );
+alter table workschedule add COLUMN status integer check (status >= 0);
+
 
 ALTER TABLE workschedule
 ADD COLUMN color VARCHAR(7) NOT NULL DEFAULT '#2196F3';

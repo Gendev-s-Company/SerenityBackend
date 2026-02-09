@@ -5,12 +5,14 @@ import java.time.LocalDate;
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
 import gendev.it.serenity.users.domain.dto.UserDTO;
+import gendev.it.serenity.users.domain.dto.UserResponseDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +21,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @Entity
-public class Users extends BaseEntity {
+public class Users extends BaseEntity<UserResponseDTO> {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private String userID;
@@ -27,8 +29,9 @@ public class Users extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+    @ManyToOne
     @JoinColumn(name = "profilid", nullable = false)
-    private String profilID;
+    private Profil profil;
 
     @Column(unique = true, length = 12)
     private String phone;
@@ -42,17 +45,28 @@ public class Users extends BaseEntity {
     protected Users() {}
 
 
-    public Users(String name, String profilID, String phone, LocalDate joineddate, String password) {
+    public Users(String name, Profil profilID, String phone, LocalDate joineddate, String password) {
         this.name = name;
-        this.profilID = profilID;
+        this.profil = profilID;
         this.phone = phone;
         this.joineddate = joineddate;
         this.password = password;
     }
+    
+
+    public Users(String userID, String name, Profil profil, String phone, LocalDate joineddate, int status) {
+        this.userID = userID;
+        this.name = name;
+        this.profil = profil;
+        this.phone = phone;
+        this.joineddate = joineddate;
+        setStatus(status);
+    }
+
 
     @Override
-    public UserDTO entityToDTO() {
-        return new UserDTO(userID,name,profilID,phone,joineddate,password);
+    public UserResponseDTO entityToDTO() {
+        return new UserResponseDTO(userID,name,profil,phone,joineddate,getStatus());
     }
 
     @Override
@@ -61,14 +75,19 @@ public class Users extends BaseEntity {
 
     }
 
+
     @Override
     public void updateFromDTO(DTO udto) {
-        UserDTO dto= (UserDTO) udto;
+        UserResponseDTO dto= (UserResponseDTO) udto;
         setName(dto.getName());
-        setProfilID(dto.getProfilID());
+        try {
+            setProfil(dto.getProfil());
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            System.out.println(e.getMessage());
+        }
         setPhone(dto.getPhone());
-        setJoineddate(dto.getJoineddate());
-        setPassword(dto.getPassword());
+        setJoineddate(dto.getJoinedDate());
         setStatus(dto.getStatus());
 
     }

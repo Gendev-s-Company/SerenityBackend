@@ -14,20 +14,23 @@ public class WorkscheduleDTO extends DTO<Workschedule> {
     public String userID;
     public LocalDateTime  starttime;
     public LocalDateTime  endtime;
+    public String color;
 
     
-    public WorkscheduleDTO(Integer scheduleID, String userID, LocalDateTime  starttime, LocalDateTime  endtime) {
+    public WorkscheduleDTO(Integer scheduleID, String userID, LocalDateTime  starttime, LocalDateTime  endtime,String color) {
         this.scheduleID = scheduleID;
         this.userID = userID;
         this.starttime = starttime;
         this.endtime = endtime;
+        this.color=color;
     }
 
 
-    public WorkscheduleDTO(String userID, LocalDateTime  starttime, LocalDateTime  endtime) {
+    public WorkscheduleDTO(String userID, LocalDateTime  starttime, LocalDateTime  endtime,String color) {
         this.userID = userID;
         this.starttime = starttime;
         this.endtime = endtime;
+        this.color=color;
     }
 
 
@@ -48,14 +51,23 @@ public class WorkscheduleDTO extends DTO<Workschedule> {
 
 
 
-    public void setEndTime(LocalDateTime endtime) throws Exception {
+    public void setEndtime(LocalDateTime endtime) throws Exception {
         this.endtime = endtime;
     }
+        
+    public void setColor(String color) throws Exception {
+        if (color == null || color.isBlank()) {
+            throw new Exception("Veuillez choisir une couleur valide");
+        }
+        this.color = color;
+    }
+
     public Workschedule dtoToEntity()throws Exception {
         return new Workschedule(
                 userID,
                 starttime, 
-                endtime
+                endtime,
+                color
         );
     }
 

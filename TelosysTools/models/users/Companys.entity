@@ -1,0 +1,8 @@
+// Entity Companys
+
+Companys {
+  companyID: string { @Id @GeneratedValue(IDENTITY)};
+  name: string;
+  phone: string;
+  mail: string;
+}

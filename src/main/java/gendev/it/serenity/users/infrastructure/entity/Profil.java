@@ -40,7 +40,7 @@ public class Profil extends BaseEntity<ProfilDTO> {
     public ProfilDTO entityToDTO() {
         return new ProfilDTO(
             profilID,           
-            company.getCompanyID(),
+            company.entityToDTO(),
             name,
             authority,
             this.getStatus()

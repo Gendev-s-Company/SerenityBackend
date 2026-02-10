@@ -99,7 +99,9 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
         }
         return result;
     }
-
+    public List<D> conversion(List<T> list){
+        return ListEntityToListDto(list);
+    }
     // delete maina be
     @Transactional
     public void delete(D model) throws Exception {

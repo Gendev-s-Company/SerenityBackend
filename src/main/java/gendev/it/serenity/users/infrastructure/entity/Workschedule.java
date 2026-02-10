@@ -1,6 +1,5 @@
 package gendev.it.serenity.users.infrastructure.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import gendev.it.serenity.common.dto.DTO;
@@ -34,15 +33,18 @@ public class Workschedule extends BaseEntity{
 
     @Column
     LocalDateTime endtime;
+    
+    @Column
+    private String color;
 
     protected Workschedule() {}
 
     
-
-    public Workschedule(String userID, LocalDateTime  starttime, LocalDateTime endtime) {
+    public Workschedule(String userID, LocalDateTime starttime, LocalDateTime endtime, String color) {
         this.userID = userID;
         this.starttime = starttime;
         this.endtime = endtime;
+        this.color = color;
     }
 
 
@@ -58,11 +60,12 @@ public class Workschedule extends BaseEntity{
         setStarttime(dto.getStarttime());
         setEndtime(dto.getEndtime());
         setStatus(dto.getStatus());
+        setColor(dto.getColor());
     }
 
     @Override
     public DTO entityToDTO() {
-        return new WorkscheduleDTO(scheduleID,userID,starttime,endtime);
+        return new WorkscheduleDTO(scheduleID,userID,starttime,endtime,color);
     }
 
 }

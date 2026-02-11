@@ -67,7 +67,7 @@ public class CompanyDTO extends DTO<Company>{
     }
 
     @Override
-    public Company dtoToEntity() throws Exception {
+    public Company dtoToEntity()  {
         // TODO Auto-generated method stub
         return new Company(getCompanyID(),getName(),getPhone(),getMail());
     }

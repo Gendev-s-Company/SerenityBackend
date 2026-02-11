@@ -1,7 +1,6 @@
 package gendev.it.serenity.users.domain.dto;
 
 import gendev.it.serenity.common.dto.DTO;
-import gendev.it.serenity.users.infrastructure.entity.Company;
 import gendev.it.serenity.users.infrastructure.entity.Profil;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

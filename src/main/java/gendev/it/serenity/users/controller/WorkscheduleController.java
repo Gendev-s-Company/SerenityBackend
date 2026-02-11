@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import gendev.it.serenity.common.controller.CommonController;
-import gendev.it.serenity.users.application.UserService;
 import gendev.it.serenity.users.application.WorkscheduleService;
 import gendev.it.serenity.users.domain.dto.WorkscheduleDTO;
 
@@ -25,9 +24,8 @@ public class WorkscheduleController extends CommonController<WorkscheduleDTO,Wor
     private final UserService userService;
 
 
-    public WorkscheduleController(WorkscheduleService service, UserService userService) {
+    public WorkscheduleController(WorkscheduleService service) {
         super(service);
-        this.userService = userService;
     }
 
 

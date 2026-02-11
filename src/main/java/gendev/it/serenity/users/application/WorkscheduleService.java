@@ -10,20 +10,26 @@ import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.users.domain.dto.WorkscheduleDTO;
 import gendev.it.serenity.users.infrastructure.entity.Users;
 import gendev.it.serenity.users.infrastructure.entity.Workschedule;
+import gendev.it.serenity.users.infrastructure.repository.UserRepo;
 import gendev.it.serenity.users.infrastructure.repository.WorkscheduleRepo;
 
 @Service
 public class WorkscheduleService extends CommonService<Workschedule, WorkscheduleDTO,Integer, WorkscheduleRepo> {
 
-    public WorkscheduleService(WorkscheduleRepo repo) {
+    private final UserRepo usersRepo;
+
+    public WorkscheduleService(WorkscheduleRepo repo,UserRepo userRepo) {
         super(repo);
-        //TODO Auto-generated constructor stub
+        this.usersRepo=userRepo;
     }
+
+    
     @Override
     public WorkscheduleDTO save(WorkscheduleDTO dto)throws Exception  {
 
         // Validation
         dto.validate();
+
         return super.save(dto);
     }
 
@@ -57,7 +63,8 @@ public class WorkscheduleService extends CommonService<Workschedule, Workschedul
                 .map(entity -> (WorkscheduleDTO) entity.entityToDTO())
                 .toList();
     }
-    
 
+
+    
 
 }

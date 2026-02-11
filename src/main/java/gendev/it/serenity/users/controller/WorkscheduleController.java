@@ -21,9 +21,6 @@ import gendev.it.serenity.users.domain.dto.WorkscheduleDTO;
         RequestMethod.OPTIONS })
 public class WorkscheduleController extends CommonController<WorkscheduleDTO,WorkscheduleService> {
 
-    private final UserService userService;
-
-
     public WorkscheduleController(WorkscheduleService service) {
         super(service);
     }
@@ -43,7 +40,7 @@ public class WorkscheduleController extends CommonController<WorkscheduleDTO,Wor
 
 
     @GetMapping("/calendar/choice")
-    public ResponseEntity<List<WorkscheduleDTO>> getByMultipleIds(@RequestParam List<String> userids) {
+    public ResponseEntity<List<WorkscheduleDTO>> findByMultipleIds(@RequestParam List<String> userids) {
         try {
             return ResponseEntity.ok(getService().choiceSearch(userids));
         } catch (Exception e) {

@@ -1,6 +1,9 @@
 package gendev.it.serenity.users.application;
 
 
+import java.util.List;
+
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
@@ -9,7 +12,9 @@ import gendev.it.serenity.users.domain.dto.UserResponseDTO;
 import gendev.it.serenity.users.infrastructure.entity.Users;
 import gendev.it.serenity.users.infrastructure.repository.UserRepo;
 import jakarta.transaction.Transactional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 @Service
 public class UserService extends CommonService<Users, UserResponseDTO, String, UserRepo> {
@@ -51,5 +56,6 @@ public class UserService extends CommonService<Users, UserResponseDTO, String, U
 
         return "Mot de passe mis à jour avec succès";
     }
+
 }
 

@@ -40,3 +40,49 @@ CREATE TRIGGER trigger_users_id
 BEFORE INSERT ON users
     FOR EACH ROW
         EXECUTE FUNCTION generate_users_id();
+
+-- \\\\\\\\\\\\\\\\\PARTIE HOTEL/////////////////
+----POUR LA TABLE activity
+CREATE OR REPLACE FUNCTION generate_activity_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.activityID := 'ACTI' || LPAD(nextval('activity_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_activity_id
+BEFORE INSERT ON activity
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_activity_id();
+
+----POUR LA TABLE activityPhoto
+CREATE OR REPLACE FUNCTION generate_activityPhoto_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.photoID := 'ACTP' || LPAD(nextval('activityPhoto_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_activityPhoto_id
+BEFORE INSERT ON activityPhoto
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_activityPhoto_id();
+
+----POUR LA TABLE activityOrder
+CREATE OR REPLACE FUNCTION generate_activityOrder_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.acOrderID := 'ACTO' || LPAD(nextval('activityOrder_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_activity_id
+BEFORE INSERT ON activityOrder
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_activityOrder_id();

@@ -12,6 +12,7 @@ import gendev.it.serenity.users.application.ProfilService;
 import gendev.it.serenity.users.domain.dto.ProfilDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -20,11 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.OPTIONS })
 public class ProfilController extends CommonController<ProfilDTO, ProfilService> {
 
-    // private final ProfilService profilService;
 
     public ProfilController(ProfilService service) {
         super(service);
-        // this.profilService = service;
     }
 
     @GetMapping("/profil")
@@ -38,13 +37,8 @@ public class ProfilController extends CommonController<ProfilDTO, ProfilService>
         }
     }
 
-    @GetMapping("/paginate/{page}/{size}")
-    public ResponseEntity<?> getPaginate(
-        @PathVariable(name ="page" ) int page,
-        @PathVariable(name ="size" ) int size,
-        @RequestParam(name ="companyId" ) String companyId,
-        @RequestParam(name = "field", defaultValue = "name", required = false) String field,
-        @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort) {
+    @GetMapping("/paginate")
+    public ResponseEntity<?> getPaginate(@RequestParam String companyId,@RequestParam int page,@RequestParam int size,@RequestParam String field,@RequestParam String sort) {
         return ResponseEntity.ok(
                 getService().getPaginateByCompany(companyId, page, size, field, sort, 0)
         );

@@ -43,9 +43,10 @@ public class WorkscheduleService extends CommonService<Workschedule, Workschedul
 
 
         int authority_user = user.getProfil().getAuthority();
-
+        String company = user.getProfil().getCompany().getCompanyID();
         if (authority_user >= 4) {
-            return super.findAll(null);
+            List<Workschedule> list = getJpa().findStatusAndCompany(0, company);
+            return super.conversion(list);
         } else {
 
           return getJpa().findByUserIDAndStatus(userid, 0)

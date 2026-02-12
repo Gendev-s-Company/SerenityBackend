@@ -36,7 +36,7 @@ public class CompanyDTO extends DTO<Company>{
     }
 
     public void setName(String name) throws Exception {
-        if (name.isBlank()) {
+        if (name.isBlank() && !isSkipValidation()) {
             throw new Exception("Veuillez entrer un nom valide");
         }
         this.name = name;
@@ -45,7 +45,7 @@ public class CompanyDTO extends DTO<Company>{
     public void setPhone(String phone) throws Exception {
         // eto asina verification hoe bon format ve ilay phone sinon  exception
         // exemple ito
-        if (phone.length()>10) {
+        if (phone.length()>10 && !isSkipValidation()) {
             throw new Exception("Veuillez vérifier la longueur du numéro telephone");
         }
         this.phone = phone;
@@ -53,7 +53,8 @@ public class CompanyDTO extends DTO<Company>{
 
     public void setMail(String mail) {
         // eto asina verification hoe bon format ve ilay mail sinon  exception
-        if(!isValidEmail(mail)){
+        System.out.println(isSkipValidation());
+        if(!isValidEmail(mail) && !isSkipValidation()){
             throw new IllegalArgumentException("Format d'email invalide");
         }
         this.mail = mail;
@@ -66,7 +67,7 @@ public class CompanyDTO extends DTO<Company>{
     }
 
     @Override
-    public Company dtoToEntity() throws Exception {
+    public Company dtoToEntity()  {
         // TODO Auto-generated method stub
         return new Company(getCompanyID(),getName(),getPhone(),getMail());
     }

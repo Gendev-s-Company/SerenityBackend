@@ -13,6 +13,8 @@ ALTER DATABASE serenity OWNER TO serenity;
  GRANT ALL ON SCHEMA public TO serenity;
 
 psql - U serenity - d serenity 
+
+-- \\\\\\\\\\\\\\\\\PARTIE UTILISATEUR/////////////////
 ---CREATION DE TABLE ET SEQUENCE
 CREATE SEQUENCE company_seq START 1;
 
@@ -63,3 +65,43 @@ alter table workschedule add COLUMN status integer check (status >= 0);
 
 ALTER TABLE workschedule
 ADD COLUMN color VARCHAR(7) NOT NULL DEFAULT '#2196F3';
+
+
+-- \\\\\\\\\\\\\\\\\PARTIE HOTEL/////////////////
+CREATE SEQUENCE activity_seq START 1;
+create table activity(
+    activityID varchar(10) primary key,
+    companyID varchar(10) not null references company(companyID),
+    name varchar(100) not null,
+    description text,
+    status integer check (status >= 0)
+);
+
+CREATE SEQUENCE activityPhoto_seq START 1;
+create table activityPhoto(
+    photoID  varchar(10) primary key,
+    activityID varchar(10) not null references activity(activityID),
+    path varchar(500) not null,
+    status integer check (status >= 0)
+);
+
+
+create table activityPrice(
+    priceID  serial primary key,
+    activityID varchar(10) not null references activity(activityID),
+    hourPrice INTEGER not null DEFAULT 0,
+    price NUMERIC(15, 2) not null DEFAULT 0,
+    dateChanged date default current_date,
+    status integer check (status >= 0)
+);
+
+CREATE SEQUENCE activityOrder_seq START 1;
+create table activityOrder(
+    acOrderID  VARCHAR(10) primary key,
+    activityID varchar(10) not null references activity(activityID),
+    userID varchar(10) not null references users(userID),
+    price NUMERIC(15, 2) not null DEFAULT 0,
+    duration INTEGER not null DEFAULT 1,
+    dateOrder date default current_date,
+    status integer check (status >= 0)
+);

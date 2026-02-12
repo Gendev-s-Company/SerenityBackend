@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public  class DTO<T extends BaseEntity> {
+    private boolean skipValidation = false;
     private int status;
     public T dtoToEntity() throws Exception{
         throw new Exception("Vous devez créé une fonction dans votre classe fille");
@@ -19,4 +20,11 @@ public  class DTO<T extends BaseEntity> {
             throw new IllegalArgumentException("Le status ne peut pas être négatif");
         }
     }
+    public void setSkipValidation(boolean skipValidation) {
+        this.skipValidation = skipValidation;
+    }
+    public void setStatus(int status) {
+        this.status = status;
+    }
+    
 }

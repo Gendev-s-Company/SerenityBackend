@@ -12,9 +12,11 @@ import gendev.it.serenity.hotel.infrastructure.entity.Activity;
 
 @Repository
 public interface ActivityRepo extends CommonRepository<Activity, String>{
+    @Override
     @Query("SELECT a FROM Activity a WHERE a.status = :status AND a.company.id = :company")
     List<Activity> findAllByStatusAndCompany(int status, String company);
 
+    @Override
     @Query("SELECT a FROM Activity a WHERE a.status = :status AND a.company.id = :company")
     Page<Activity> findPaginateByStatusAndCompany(int status, String company, Pageable pageable);
 }

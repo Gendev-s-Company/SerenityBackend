@@ -11,6 +11,8 @@ import gendev.it.serenity.common.repo.CommonRepository;
 import gendev.it.serenity.common.utils.State;
 import gendev.it.serenity.hotel.domain.dto.ActivityDTO;
 import gendev.it.serenity.hotel.infrastructure.entity.Activity;
+import gendev.it.serenity.users.domain.dto.UserResponseDTO;
+import gendev.it.serenity.users.infrastructure.entity.Users;
 import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
@@ -108,13 +110,20 @@ public class CommonService<T extends BaseEntity, D extends DTO, ID, JPA extends 
     }
 
     public List<D> findAllByCompany(String company, Integer state) throws Exception {
-        throw new Exception("Veuillez implémenter la function findAllByCompany");
+        // throw new Exception("Veuillez implémenter la function findAllByCompany");
+        int status = state != null ? state : 0;
+        List<T> result = getJpa().findAllByStatusAndCompany(status, company);
+        return ListEntityToListDto(result);
     }
 
     public Page<D> paginateAllByCompany(int pageNumber, int pageSize, String field, String sort,
             Integer status, String company) throws Exception {
-        throw new Exception("Veuillez implémenter la function paginateAllByCompany");
-
+        // throw new Exception("Veuillez implémenter la function paginateAllByCompany");
+        Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, field));
+        int state = status != null ? status : 0;
+        return getJpa().findPaginateByStatusAndCompany(state, company, pageable)
+                .map(p -> (D) p.entityToDTO());
     }
 
 }

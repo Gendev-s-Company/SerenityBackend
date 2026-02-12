@@ -56,18 +56,6 @@ public class UserService extends CommonService<Users, UserResponseDTO, String, U
 
         return "Mot de passe mis à jour avec succès";
     }
-    public List<UserResponseDTO> findAllByCompany(String company, Integer state){
-        int status = state != null ? state : 0;
-        List<Users> result = getJpa().findAllByStatusAndCompany(status, company);
-        return super.conversion(result);
-    }
-    public Page<UserResponseDTO> paginateAllByCompany(int pageNumber, int pageSize, String field, String sort, Integer status, String company){
-        Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, field));
-        int state = status != null ? status : 0; 
-        return getJpa().findPaginateByStatusAndCompany(state, company, pageable)
-                .map(p -> (UserResponseDTO) p.entityToDTO());
-    }
 
 }
 

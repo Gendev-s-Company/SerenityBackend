@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import gendev.it.serenity.common.repo.CommonRepository;
+import gendev.it.serenity.hotel.infrastructure.entity.Activity;
 import gendev.it.serenity.users.infrastructure.entity.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,11 +18,20 @@ public interface UserRepo extends CommonRepository<Users, String> {
 
     Users findByPhone(String phone);
 
+    // @Query("SELECT u FROM Users u WHERE u.status = :status AND u.profil.company.id = :company")
+    // List<Users> findAllByStatusAndCompany(int status, String company);
+
+    // @Query("SELECT u FROM Users u WHERE u.status = :status AND u.profil.company.id = :company")
+    // Page<Users> findPaginateByStatusAndCompany(int status, String company, Pageable pageable);
+
+    @Override
     @Query("SELECT u FROM Users u WHERE u.status = :status AND u.profil.company.id = :company")
     List<Users> findAllByStatusAndCompany(int status, String company);
 
+    @Override
     @Query("SELECT u FROM Users u WHERE u.status = :status AND u.profil.company.id = :company")
     Page<Users> findPaginateByStatusAndCompany(int status, String company, Pageable pageable);
+
     // User findByPhoneAndPassword(String phone, String password);
 
     // User findByName(String name);

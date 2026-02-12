@@ -9,13 +9,15 @@ import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
 import gendev.it.serenity.common.repo.CommonRepository;
 import gendev.it.serenity.common.utils.State;
+import gendev.it.serenity.hotel.domain.dto.ActivityDTO;
+import gendev.it.serenity.hotel.infrastructure.entity.Activity;
 import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends CommonRepository<T, ID>> {
+public class CommonService<T extends BaseEntity, D extends DTO, ID, JPA extends CommonRepository<T, ID>> {
     private final JPA jpa;
 
     public CommonService(JPA jpa) {
@@ -36,13 +38,10 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
     private T findByIdAndStatus(ID id, Integer status) throws Exception {
         int state = status != null ? status : State.ACTIVE;
         return jpa.findAllByStatus(state).stream()
-                 .filter(entity -> String.valueOf(entity.getId()).equals(String.valueOf(id)))
+                .filter(entity -> String.valueOf(entity.getId()).equals(String.valueOf(id)))
                 .findFirst()
-                .orElseThrow(() -> new Exception("ID introuvable ou inactif : " + id));    
+                .orElseThrow(() -> new Exception("ID introuvable ou inactif : " + id));
     }
-
-
-    
 
     @Transactional
     public D update(D model, ID id, Integer status) throws Exception {
@@ -51,17 +50,15 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
         if (!entityID.toString().equals(String.valueOf(id))) {
             throw new Exception("Modification impossible, ID different");
         }
-       
+
         init.updateFromDTO(model);
-        return (D)jpa.save(init).entityToDTO();
+        return (D) jpa.save(init).entityToDTO();
     }
 
     // mamadika azy ho lasa dto
     public D findById(ID id, Integer status) throws Exception {
-        return (D)findByIdAndStatus(id, status).entityToDTO();
+        return (D) findByIdAndStatus(id, status).entityToDTO();
     }
-
-    
 
     // mamafa azy by update status
     @Transactional
@@ -95,18 +92,29 @@ public class CommonService<T extends BaseEntity, D extends DTO,ID, JPA extends C
     private List<D> ListEntityToListDto(List<T> list) {
         List<D> result = new ArrayList<D>();
         for (T row : list) {
-            result.add((D)row.entityToDTO());
+            result.add((D) row.entityToDTO());
         }
         return result;
     }
-    public List<D> conversion(List<T> list){
+
+    public List<D> conversion(List<T> list) {
         return ListEntityToListDto(list);
     }
+
     // delete maina be
     @Transactional
     public void delete(D model) throws Exception {
         jpa.delete((T) model.dtoToEntity());
     }
 
+    public List<D> findAllByCompany(String company, Integer state) throws Exception {
+        throw new Exception("Veuillez implémenter la function findAllByCompany");
+    }
+
+    public Page<D> paginateAllByCompany(int pageNumber, int pageSize, String field, String sort,
+            Integer status, String company) throws Exception {
+        throw new Exception("Veuillez implémenter la function paginateAllByCompany");
+
+    }
 
 }

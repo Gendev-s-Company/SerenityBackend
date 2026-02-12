@@ -98,4 +98,29 @@ public class CommonController<D extends DTO,S extends CommonService> {
         }
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<?> findAllByCompany(@RequestParam(name = "status", required = false) Integer status, @RequestParam String company) {
+        try {
+            return ResponseEntity.ok(service.findAllByCompany(company,status));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+        }
+    }
+    @GetMapping("/all/{page}/{size}")
+    public ResponseEntity<?> findAllpaginateModelByCompany(@PathVariable("page") int page, @PathVariable("size") int size,
+            @RequestParam(name = "field", defaultValue = "name", required = false) String field,
+            @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
+            @RequestParam(name = "status", required = false) Integer status,
+            @RequestParam String company
+        ) {
+        try {
+            return ResponseEntity.ok(service.paginateAllByCompany(page, size, field, sort, status,company));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        }
+    }
 }

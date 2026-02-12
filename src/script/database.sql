@@ -90,6 +90,7 @@ create table activityPrice(
     priceID  serial primary key,
     activityID varchar(10) not null references activity(activityID),
     hourPrice NUMERIC(15, 2) not null DEFAULT 0,
+    price NUMERIC(15, 2) not null DEFAULT 0,
     dateChanged date default current_date,
     status integer check (status >= 0)
 );

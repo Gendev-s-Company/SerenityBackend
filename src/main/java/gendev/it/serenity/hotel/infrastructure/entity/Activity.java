@@ -15,6 +15,7 @@ import lombok.Setter;
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
 import gendev.it.serenity.hotel.domain.dto.ActivityDTO;
+import gendev.it.serenity.users.domain.dto.CompanyDTO;
 import gendev.it.serenity.users.infrastructure.entity.Company;
 
 @Setter
@@ -62,6 +63,10 @@ public class Activity extends BaseEntity<ActivityDTO> {
     @Override
     public ActivityDTO entityToDTO() {
         // TODO Auto-generated method stub
-        return new ActivityDTO(activityID, company.entityToDTO(), name, description, getStatus());
+        CompanyDTO comp = null;
+        if (company!=null) {
+            comp = company.entityToDTO();
+        }
+        return new ActivityDTO(activityID, comp, name, description, getStatus());
     }
 }

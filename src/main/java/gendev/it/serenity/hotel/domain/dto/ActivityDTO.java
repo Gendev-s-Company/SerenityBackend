@@ -3,6 +3,7 @@ package gendev.it.serenity.hotel.domain.dto;
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.hotel.infrastructure.entity.Activity;
 import gendev.it.serenity.users.domain.dto.CompanyDTO;
+import gendev.it.serenity.users.infrastructure.entity.Company;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,7 @@ public class ActivityDTO extends DTO<Activity> {
     }
 
     public void setCompany(CompanyDTO company) throws Exception {
-        if (company == null) {
+        if (company == null && !isSkipValidation()) {
             throw new Exception("Veuillez entrer le nom d'une companie valide ");
         }
         company.setSkipValidation(true);
@@ -37,7 +38,7 @@ public class ActivityDTO extends DTO<Activity> {
     }
 
     public void setName(String name) throws Exception {
-        if (name.isBlank()) {
+        if (name.isBlank() && !isSkipValidation()) {
             throw new Exception("Veuillez entrer un nom valide");
         }
         this.name = name;
@@ -48,9 +49,13 @@ public class ActivityDTO extends DTO<Activity> {
     }
 
     @Override
-    public Activity dtoToEntity() throws Exception {
+    public Activity dtoToEntity() {
         // TODO Auto-generated method stub
-        return new Activity(activityID, company.dtoToEntity(), name, description, getStatus());
+        Company comp = null;
+        if (company!=null) {
+            comp = company.dtoToEntity();
+        }
+        return new Activity(activityID, comp, name, description, getStatus());
     }
 
 }

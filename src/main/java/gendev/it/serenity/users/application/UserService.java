@@ -7,7 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
-import gendev.it.serenity.users.domain.dto.ProfilDTO;
 import gendev.it.serenity.users.domain.dto.UserDTO;
 import gendev.it.serenity.users.domain.dto.UserResponseDTO;
 import gendev.it.serenity.users.infrastructure.entity.Users;
@@ -59,14 +58,14 @@ public class UserService extends CommonService<Users, UserResponseDTO, String, U
     }
     public List<UserResponseDTO> findAllByCompany(String company, Integer state){
         int status = state != null ? state : 0;
-        List<Users> result = getJpa().findAllByCompany(company, status);
+        List<Users> result = getJpa().findAllByStatusAndCompany(status, company);
         return super.conversion(result);
     }
     public Page<UserResponseDTO> paginateAllByCompany(int pageNumber, int pageSize, String field, String sort, Integer status, String company){
         Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, field));
         int state = status != null ? status : 0; 
-        return getJpa().paginateAllByStatusAndCompany(company, state, pageable)
+        return getJpa().findPaginateByStatusAndCompany(state, company, pageable)
                 .map(p -> (UserResponseDTO) p.entityToDTO());
     }
 

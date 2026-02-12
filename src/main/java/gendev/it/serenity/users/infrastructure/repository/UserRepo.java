@@ -18,10 +18,10 @@ public interface UserRepo extends CommonRepository<Users, String> {
     Users findByPhone(String phone);
 
     @Query("SELECT u FROM Users u WHERE u.status = :status AND u.profil.company.id = :company")
-    List<Users> findAllByCompany(String company, int status);
+    List<Users> findAllByStatusAndCompany(int status, String company);
 
     @Query("SELECT u FROM Users u WHERE u.status = :status AND u.profil.company.id = :company")
-    Page<Users> paginateAllByStatusAndCompany(String company,int status, Pageable page);
+    Page<Users> findPaginateByStatusAndCompany(int status, String company, Pageable pageable);
     // User findByPhoneAndPassword(String phone, String password);
 
     // User findByName(String name);

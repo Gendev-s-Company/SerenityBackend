@@ -72,6 +72,21 @@ BEFORE INSERT ON activityPhoto
     FOR EACH ROW
         EXECUTE FUNCTION generate_activityPhoto_id();
 
+----POUR LA TABLE customer
+CREATE OR REPLACE FUNCTION generate_customer_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.customerid := 'CUST' || LPAD(nextval('customer_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_customer_id
+BEFORE INSERT ON customer
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_customer_id();
+
 ----POUR LA TABLE activityOrder
 CREATE OR REPLACE FUNCTION generate_activityOrder_id()
 RETURNS TRIGGER AS $$
@@ -82,7 +97,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_activity_id
+CREATE TRIGGER trigger_activityOrder_id
 BEFORE INSERT ON activityOrder
     FOR EACH ROW
         EXECUTE FUNCTION generate_activityOrder_id();

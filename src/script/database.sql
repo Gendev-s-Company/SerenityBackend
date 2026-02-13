@@ -95,11 +95,20 @@ create table activityPrice(
     status integer check (status >= 0)
 );
 
+CREATE SEQUENCE customer_seq START 1;
+create table customer(
+    customerID VARCHAR(10) primary key,
+    name varchar(100) not null,
+    phone varchar(12) unique,
+    mail varchar(50) unique,
+    status integer check (status >= 0)
+);
+
 CREATE SEQUENCE activityOrder_seq START 1;
 create table activityOrder(
     acOrderID  VARCHAR(10) primary key,
     activityID varchar(10) not null references activity(activityID),
-    userID varchar(10) not null references users(userID),
+    customerID varchar(10) not null references customer(customerID),
     price NUMERIC(15, 2) not null DEFAULT 0,
     duration INTEGER not null DEFAULT 1,
     dateOrder date default current_date,

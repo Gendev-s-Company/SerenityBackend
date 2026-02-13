@@ -52,7 +52,11 @@ public class Profil extends BaseEntity<ProfilDTO> {
         // TODO Auto-generated method stub
         return profilID;
     }
+    
 
+    public Profil(String profilID) {
+        this.profilID = profilID;
+    }
 
     @Override
     public void updateFromDTO(DTO cdto) {

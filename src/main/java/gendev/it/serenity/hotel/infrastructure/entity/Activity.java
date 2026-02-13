@@ -37,6 +37,10 @@ public class Activity extends BaseEntity<ActivityDTO> {
 
 
     
+    public Activity(String activityID) {
+        this.activityID = activityID;
+    }
+
     public Activity(String activityID, Company company, String name, String description, int status) {
         this.activityID = activityID;
         this.company = company;

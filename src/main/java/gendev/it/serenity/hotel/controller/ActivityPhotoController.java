@@ -23,6 +23,13 @@ public class ActivityPhotoController extends CommonController<ActivityPhotoDTO, 
         super(service);
         //TODO Auto-generated constructor stub
     }
+    
+    // @Override
+    // public ResponseEntity<?> saveModel(ActivityPhotoDTO model) {
+    //     // TODO Auto-generated method stub
+    //     return super.saveModel(model);
+    // }
+
     @GetMapping("/byActivity")
     public ResponseEntity<?> findAllByCompany(@RequestParam(name = "status", required = false) Integer status,
             @RequestParam String activityid) {

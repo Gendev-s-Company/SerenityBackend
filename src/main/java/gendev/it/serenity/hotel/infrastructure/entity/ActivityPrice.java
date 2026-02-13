@@ -60,7 +60,7 @@ public class ActivityPrice extends BaseEntity<ActivityPriceDTO> {
     public void updateFromDTO(DTO cdto) {
         // TODO Auto-generated method stub
         ActivityPriceDTO dto = (ActivityPriceDTO) cdto;
-        setActivity(dto.getActivity().dtoToEntity());
+        setActivity(new Activity(dto.getActivity().getActivityID()));
         setDateChanged(dto.getDateChanged());
         setPrice(dto.getPrice());
         setHourPrice(dto.getHourPrice());

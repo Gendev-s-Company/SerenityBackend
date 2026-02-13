@@ -9,10 +9,6 @@ import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
 import gendev.it.serenity.common.repo.CommonRepository;
 import gendev.it.serenity.common.utils.State;
-import gendev.it.serenity.hotel.domain.dto.ActivityDTO;
-import gendev.it.serenity.hotel.infrastructure.entity.Activity;
-import gendev.it.serenity.users.domain.dto.UserResponseDTO;
-import gendev.it.serenity.users.infrastructure.entity.Users;
 import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.Page;

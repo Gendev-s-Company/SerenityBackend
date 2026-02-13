@@ -54,6 +54,11 @@ public class Users extends BaseEntity<UserResponseDTO> {
     }
     
 
+    public Users(String userID) {
+        this.userID = userID;
+    }
+
+
     public Users(String userID, String name, Profil profil, String phone, LocalDate joineddate, int status) {
         this.userID = userID;
         this.name = name;

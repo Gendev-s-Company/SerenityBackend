@@ -31,7 +31,8 @@ public class ActivityPhotoDTO extends DTO<ActivityPhoto> {
         // TODO Auto-generated method stub
         Activity p = null;
         if (activity != null) {
-            p = activity.dtoToEntity();   
+            // p = activity.dtoToEntity();   
+            p = new Activity(activity.getActivityID());
         }
         return new ActivityPhoto(photoID, p, path, getStatus());
     }
@@ -56,7 +57,7 @@ public class ActivityPhotoDTO extends DTO<ActivityPhoto> {
         this.files = files;
     }
 
-    public void setUploadFiles(MultipartFile uploadFiles) {
+    public void setUploadFile(MultipartFile uploadFiles) {
         this.uploadFile = uploadFiles;
     }
     

@@ -4,7 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,11 +27,15 @@ public class ActivityPhotoController extends CommonController<ActivityPhotoDTO, 
         //TODO Auto-generated constructor stub
     }
     
-    // @Override
-    // public ResponseEntity<?> saveModel(ActivityPhotoDTO model) {
-    //     // TODO Auto-generated method stub
-    //     return super.saveModel(model);
-    // }
+    @PostMapping("/save")
+    public ResponseEntity<?> saveActivityPhoto(@ModelAttribute ActivityPhotoDTO model) {
+        try {
+            return new ResponseEntity<>(getService().save(model), HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
+        }
+    }
 
     @GetMapping("/byActivity")
     public ResponseEntity<?> findAllByCompany(@RequestParam(name = "status", required = false) Integer status,

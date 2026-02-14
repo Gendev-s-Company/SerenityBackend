@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import gendev.it.serenity.common.dto.DTO;
+import gendev.it.serenity.hotel.infrastructure.entity.Activity;
 import gendev.it.serenity.hotel.infrastructure.entity.ActivityPrice;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,8 +35,13 @@ public class ActivityPriceDTO extends DTO<ActivityPrice> {
         if (dateChanged == null) {
             dateChanged = LocalDate.now();
         }
+         Activity p = null;
+        if (activity != null) {
+            // p = activity.dtoToEntity();   
+            p = new Activity(activity.getActivityID());
+        }
         // TODO Auto-generated method stub
-        return new ActivityPrice(priceID, activity.dtoToEntity(), price, hourPrice, dateChanged, getStatus());
+        return new ActivityPrice(priceID, p, price, hourPrice, dateChanged, getStatus());
     }
 
     public void setPriceID(Integer priceID) {

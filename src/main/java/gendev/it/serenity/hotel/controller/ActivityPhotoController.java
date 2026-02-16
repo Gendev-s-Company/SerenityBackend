@@ -18,7 +18,7 @@ import gendev.it.serenity.hotel.application.ActivityPhotoService;
 import gendev.it.serenity.hotel.domain.dto.ActivityPhotoDTO;
 
 @RestController
-@RequestMapping("api/hotel/activityphoto")
+@RequestMapping("hotel/activityphoto")
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 public class ActivityPhotoController extends CommonController<ActivityPhotoDTO, ActivityPhotoService> {
 

@@ -10,7 +10,7 @@ import gendev.it.serenity.users.application.CompanyService;
 import gendev.it.serenity.users.domain.dto.CompanyDTO;
 
 @RestController
-@RequestMapping("api/company")
+@RequestMapping("company")
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 public class CompanyController extends CommonController<CompanyDTO,CompanyService> {
 

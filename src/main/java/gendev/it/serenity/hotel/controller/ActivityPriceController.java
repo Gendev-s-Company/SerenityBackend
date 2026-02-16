@@ -15,7 +15,7 @@ import gendev.it.serenity.hotel.application.ActivityPriceService;
 import gendev.it.serenity.hotel.domain.dto.ActivityPriceDTO;
 
 @RestController
-@RequestMapping("api/hotel/activityPrice")
+@RequestMapping("hotel/activityPrice")
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 public class ActivityPriceController extends CommonController<ActivityPriceDTO,ActivityPriceService> {
 

@@ -10,7 +10,7 @@ import gendev.it.serenity.customer.application.CustomerService;
 import gendev.it.serenity.customer.domain.dto.CustomerDTO;
 
 @RestController
-@RequestMapping("api/customer")
+@RequestMapping("customer")
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 public class CustomerController extends CommonController<CustomerDTO,CustomerService> {
 

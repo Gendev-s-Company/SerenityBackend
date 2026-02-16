@@ -41,10 +41,11 @@ public class ActivityOrderDTO extends DTO<ActivityOrder> {
         Activity act = null;
         Customer u = null;
         if (activity != null) {
-            act = activity.dtoToEntity();
+            act = new Activity(activity.getActivityID());
+            // act = activity.dtoToEntity();
         }
         if (customer != null) {
-            u = customer.dtoToEntity();
+            u = new Customer(customer.getCustomerID());
         }
         if (dateOrder == null) {
             dateOrder = LocalDate.now();

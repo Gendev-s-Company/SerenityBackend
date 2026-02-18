@@ -43,18 +43,21 @@ public class ActivityOrder extends BaseEntity<ActivityOrderDTO> {
     private BigDecimal price;
     @Column
     private Integer duration;
+    @Column
+    private Integer state;
 
     @Column(name = "dateorder")
     private LocalDate dateOrder;
 
     public ActivityOrder(String acOrderID, Activity activity, Customer user, BigDecimal price, Integer duration,
-            LocalDate dateOrder, int status) {
+            LocalDate dateOrder, Integer state,int status) {
         this.acOrderID = acOrderID;
         this.activity = activity;
         this.customer = user;
         this.price = price;
         this.duration = duration;
         this.dateOrder = dateOrder;
+        this.state = state;
         setStatus(status);
     }
 
@@ -73,6 +76,7 @@ public class ActivityOrder extends BaseEntity<ActivityOrderDTO> {
         setPrice(dto.getPrice());
         setDuration(dto.getDuration());
         setDateOrder(dto.getDateOrder());
+        setState(state);
     }
 
     @Override
@@ -85,6 +89,6 @@ public class ActivityOrder extends BaseEntity<ActivityOrderDTO> {
         if (customer != null) {
             u = customer.entityToDTO();
         }
-        return new ActivityOrderDTO(acOrderID, act, u, price, duration, dateOrder, status);
+        return new ActivityOrderDTO(acOrderID, act, u, price, duration, dateOrder, state,status);
     }
 }

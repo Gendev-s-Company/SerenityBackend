@@ -114,3 +114,5 @@ create table activityOrder(
     dateOrder date default current_date,
     status integer check (status >= 0)
 );
+
+alter table activityOrder add column state integer check (state >= 0);

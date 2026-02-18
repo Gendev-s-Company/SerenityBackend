@@ -2,6 +2,7 @@ package gendev.it.serenity.hotel.domain.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.customer.domain.dto.CustomerDTO;
@@ -21,10 +22,10 @@ public class ActivityOrderDTO extends DTO<ActivityOrder> {
     private CustomerDTO customer;
     private BigDecimal price;
     private Integer duration = 1;
-    private LocalDate dateOrder = LocalDate.now();
+    private LocalDateTime dateOrder = LocalDateTime.now();
     
     public ActivityOrderDTO(String acOrderID, ActivityDTO activity, CustomerDTO user, BigDecimal price,
-            Integer duration, LocalDate dateOrder, int status) {
+            Integer duration, LocalDateTime dateOrder, int status) {
         this.acOrderID = acOrderID;
         this.activity = activity;
         this.customer = user;
@@ -48,7 +49,7 @@ public class ActivityOrderDTO extends DTO<ActivityOrder> {
             u = new Customer(customer.getCustomerID());
         }
         if (dateOrder == null) {
-            dateOrder = LocalDate.now();
+            dateOrder = LocalDateTime.now();
         }
         return new ActivityOrder(acOrderID, act, u, price, duration, dateOrder, getStatus());
     }
@@ -93,9 +94,9 @@ public class ActivityOrderDTO extends DTO<ActivityOrder> {
     }
 
 
-    public void setDateOrder(LocalDate dateOrder) {
+    public void setDateOrder(LocalDateTime dateOrder) {
         if (dateOrder==null) {
-            dateOrder = LocalDate.now();
+            dateOrder = LocalDateTime.now();
         }
         this.dateOrder = dateOrder;
     }

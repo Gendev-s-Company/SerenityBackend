@@ -2,6 +2,7 @@ package gendev.it.serenity.hotel.infrastructure.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
@@ -45,10 +46,10 @@ public class ActivityOrder extends BaseEntity<ActivityOrderDTO> {
     private Integer duration;
 
     @Column(name = "dateorder")
-    private LocalDate dateOrder;
+    private LocalDateTime dateOrder;
 
     public ActivityOrder(String acOrderID, Activity activity, Customer user, BigDecimal price, Integer duration,
-            LocalDate dateOrder, int status) {
+            LocalDateTime dateOrder, int status) {
         this.acOrderID = acOrderID;
         this.activity = activity;
         this.customer = user;

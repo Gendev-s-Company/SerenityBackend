@@ -38,7 +38,7 @@ public class ActivityPhotoController extends CommonController<ActivityPhotoDTO, 
     }
 
     @GetMapping("/byActivity")
-    public ResponseEntity<?> findAllByCompany(@RequestParam(name = "status", required = false) Integer status,
+    public ResponseEntity<?> findAllByActivity(@RequestParam(name = "status", required = false) Integer status,
             @RequestParam String activityid) {
         try {
             return ResponseEntity.ok(getService().findAllByActivity(activityid, status));
@@ -51,7 +51,7 @@ public class ActivityPhotoController extends CommonController<ActivityPhotoDTO, 
 
     // endpoint a utiliser pour l'affichage des prix d'activité
     @GetMapping("/byActivity/{page}/{size}")
-    public ResponseEntity<?> findAllpaginateModelByCompany(@PathVariable("page") int page,
+    public ResponseEntity<?> findAllpaginateModelByActivity(@PathVariable("page") int page,
             @PathVariable("size") int size,
             @RequestParam(name = "field", defaultValue = "dateChanged", required = false) String field,
             @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,

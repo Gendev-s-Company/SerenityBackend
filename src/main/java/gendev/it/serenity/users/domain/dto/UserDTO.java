@@ -3,6 +3,7 @@ package gendev.it.serenity.users.domain.dto;
 import java.time.LocalDate;
 
 import gendev.it.serenity.common.dto.DTO;
+import gendev.it.serenity.common.utils.Utils;
 import gendev.it.serenity.users.infrastructure.entity.Profil;
 import gendev.it.serenity.users.infrastructure.entity.Users;
 import lombok.Getter;
@@ -54,7 +55,7 @@ public class UserDTO extends DTO<Users> {
     }
 
     public void setPhone(String phone) throws Exception {
-        if (phone != null && phone.length() > 12) {
+        if (phone != null && phone.length() > Utils.phoneLengthValidation) {
             throw new Exception("Format du numéro de téléphone invalide");
         }
         this.phone = phone;

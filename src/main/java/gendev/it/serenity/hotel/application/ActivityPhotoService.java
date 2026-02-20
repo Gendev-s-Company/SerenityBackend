@@ -31,14 +31,15 @@ public class ActivityPhotoService extends CommonService<ActivityPhoto, ActivityP
 
     @Transactional
     public String saves(ActivityPhotoCreateDTO model) throws Exception {
-        for (MultipartFile row : model.getUploadFile()) {
-            ActivityPhotoDTO photo = new ActivityPhotoDTO();
-            photo.setSkipValidation(true);
-            photo.setActivity(new ActivityDTO(model.getActivityID()));
-            photo.setStatus(0);
-            photo.setUploadFile(row);
-            photo = save(photo);
-        }
+        if(model.getUploadFile() != null)
+            for (MultipartFile row : model.getUploadFile()) {
+                ActivityPhotoDTO photo = new ActivityPhotoDTO();
+                photo.setSkipValidation(true);
+                photo.setActivity(new ActivityDTO(model.getActivityID()));
+                photo.setStatus(0);
+                photo.setUploadFile(row);
+                photo = save(photo);
+            }
         return "Enregistrement réussi";
     }
 

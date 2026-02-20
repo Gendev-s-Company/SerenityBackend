@@ -46,7 +46,7 @@ public class CompanyDTO extends DTO<Company>{
         // eto asina verification hoe bon format ve ilay phone sinon  exception
         // exemple ito
         if (phone.length()>10 && !isSkipValidation()) {
-            throw new Exception("Veuillez vérifier la longueur du numéro telephone");
+            throw new Exception("Veuillez vérifier la longueur du numéro telephone COMPANY");
         }
         this.phone = phone;
     }

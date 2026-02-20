@@ -1,5 +1,6 @@
 package gendev.it.serenity.hotel.application;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +22,16 @@ public class ActivityPriceService extends CommonService<ActivityPrice, ActivityP
     public ActivityPriceService(ActivityPriceRepo jpa) {
         super(jpa);
     }
-
+    // maka prix farany
+    public ActivityPriceDTO findLastPrice(String activity, Integer state) throws Exception{
+        int status = state != null ? state : 0;
+        ActivityPrice last = getJpa().findLastByStatusAndDateChangedDesc(activity, status);
+        ActivityPriceDTO res = new ActivityPriceDTO();
+        res.setHourPrice(1);
+        res.setPrice(new BigDecimal(0));
+        return last != null ? last.entityToDTO() : res;
+        
+    }
      public List<ActivityPriceDTO> findAllByActivity(String activityID, Integer state) throws Exception {
         int status = state != null ? state : 0;
         List<ActivityPrice> result = getJpa().findAllBActivity(activityID, status);

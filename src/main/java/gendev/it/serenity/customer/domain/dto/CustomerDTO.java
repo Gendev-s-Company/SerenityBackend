@@ -3,6 +3,7 @@ package gendev.it.serenity.customer.domain.dto;
 import java.util.regex.Pattern;
 
 import gendev.it.serenity.common.dto.DTO;
+import gendev.it.serenity.common.utils.Utils;
 import gendev.it.serenity.customer.infrastructure.entity.Customer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,8 +48,8 @@ public class CustomerDTO extends DTO<Customer>{
     public void setPhone(String phone) throws Exception {
         // eto asina verification hoe bon format ve ilay phone sinon  exception
         // exemple ito
-        if (phone.length()>10 && !isSkipValidation()) {
-            throw new Exception("Veuillez vérifier la longueur du numéro telephone CLIENT");
+        if (phone.length()>Utils.phoneLengthValidation && !isSkipValidation()) {
+            throw new Exception("Veuillez vérifier la longueur du numéro telephone");
         }
         this.phone = phone;
     }

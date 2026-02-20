@@ -23,6 +23,16 @@ public class ActivityPriceController extends CommonController<ActivityPriceDTO,A
         super(service);
         //TODO Auto-generated constructor stub
     }
+     @GetMapping("/lastPrice")
+    public ResponseEntity<?> findLastPrice(@RequestParam(name = "status", required = false) Integer status, @RequestParam String activityid) {
+        try {
+            return ResponseEntity.ok(getService().findLastPrice(activityid, status));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+        }
+    }
 
     @GetMapping("/byActivity")
     public ResponseEntity<?> findAllByCompany(@RequestParam(name = "status", required = false) Integer status, @RequestParam String activityid) {

@@ -15,6 +15,6 @@ public interface ActivityPhotoRepo extends CommonRepository<ActivityPhoto, Strin
     @Query("SELECT a FROM ActivityPhoto a where a.activity.activityID = :activity and a.status=:status")
     List<ActivityPhoto> findAllBActivity(String activity, int status);
 
-    @Query("SELECT a FROM ActivityPrice a where a.activity.activityID = :activity and a.status=:status")
+    @Query("SELECT a FROM ActivityPhoto a where a.activity.activityID = :activity and a.status=:status")
     Page<ActivityPhoto> findAllBActivity(String activity, int status, Pageable page);
 }

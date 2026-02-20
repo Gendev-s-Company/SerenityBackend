@@ -53,7 +53,7 @@ public class ActivityPhotoController extends CommonController<ActivityPhotoDTO, 
     @GetMapping("/byActivity/{page}/{size}")
     public ResponseEntity<?> findAllpaginateModelByActivity(@PathVariable("page") int page,
             @PathVariable("size") int size,
-            @RequestParam(name = "field", defaultValue = "dateChanged", required = false) String field,
+            @RequestParam(name = "field", defaultValue = "photoID", required = false) String field,
             @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
             @RequestParam(name = "status", required = false) Integer status,
             @RequestParam String activityid) {

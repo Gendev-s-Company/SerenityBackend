@@ -17,6 +17,10 @@ public class ActivityDTO extends DTO<Activity> {
     private String name;
     private String description;
     
+    public ActivityDTO(String activityID) {
+        this.activityID = activityID;
+    }
+
     public ActivityDTO(String activityID, CompanyDTO company, String name, String description, int status) {
         this.activityID = activityID;
         this.company = company;

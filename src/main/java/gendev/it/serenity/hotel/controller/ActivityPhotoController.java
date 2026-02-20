@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gendev.it.serenity.common.controller.CommonController;
 import gendev.it.serenity.hotel.application.ActivityPhotoService;
+import gendev.it.serenity.hotel.domain.dto.ActivityPhotoCreateDTO;
 import gendev.it.serenity.hotel.domain.dto.ActivityPhotoDTO;
 
 @RestController
@@ -28,9 +29,9 @@ public class ActivityPhotoController extends CommonController<ActivityPhotoDTO, 
     }
     
     @PostMapping("/save")
-    public ResponseEntity<?> saveActivityPhoto(@ModelAttribute ActivityPhotoDTO model) {
+    public ResponseEntity<?> saveActivityPhoto(@ModelAttribute ActivityPhotoCreateDTO model) {
         try {
-            return new ResponseEntity<>(getService().save(model), HttpStatus.CREATED);
+            return new ResponseEntity<>(getService().saves(model), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());

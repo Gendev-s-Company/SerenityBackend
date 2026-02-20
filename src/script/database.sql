@@ -115,4 +115,4 @@ create table activityOrder(
     status integer check (status >= 0)
 );
 
-alter table activityOrder add column state integer check (state >= 0);
+alter table activityOrder add column state integer default 0 check (state >= 0);

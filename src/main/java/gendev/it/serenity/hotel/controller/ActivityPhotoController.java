@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gendev.it.serenity.common.controller.CommonController;
 import gendev.it.serenity.hotel.application.ActivityPhotoService;
+import gendev.it.serenity.hotel.domain.dto.ActivityPhotoCreateDTO;
 import gendev.it.serenity.hotel.domain.dto.ActivityPhotoDTO;
 
 @RestController
@@ -28,9 +29,9 @@ public class ActivityPhotoController extends CommonController<ActivityPhotoDTO, 
     }
     
     @PostMapping("/save")
-    public ResponseEntity<?> saveActivityPhoto(@ModelAttribute ActivityPhotoDTO model) {
+    public ResponseEntity<?> saveActivityPhoto(@ModelAttribute ActivityPhotoCreateDTO model) {
         try {
-            return new ResponseEntity<>(getService().save(model), HttpStatus.CREATED);
+            return new ResponseEntity<>(getService().saves(model), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
@@ -53,7 +54,7 @@ public class ActivityPhotoController extends CommonController<ActivityPhotoDTO, 
     @GetMapping("/byActivity/{page}/{size}")
     public ResponseEntity<?> findAllpaginateModelByActivity(@PathVariable("page") int page,
             @PathVariable("size") int size,
-            @RequestParam(name = "field", defaultValue = "dateChanged", required = false) String field,
+            @RequestParam(name = "field", defaultValue = "photoID", required = false) String field,
             @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
             @RequestParam(name = "status", required = false) Integer status,
             @RequestParam String activityid) {

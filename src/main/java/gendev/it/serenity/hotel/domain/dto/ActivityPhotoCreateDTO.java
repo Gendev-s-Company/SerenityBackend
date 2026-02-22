@@ -10,9 +10,9 @@ import lombok.Setter;
 @Getter
 public class ActivityPhotoCreateDTO {
     private String activityID;
-    private List<MultipartFile> uploadFile;
+    private MultipartFile[] uploadFile;
 
-    public ActivityPhotoCreateDTO(String activityID, List<MultipartFile> uploadFile) {
+    public ActivityPhotoCreateDTO(String activityID, MultipartFile[] uploadFile) {
         this.activityID = activityID;
         this.uploadFile = uploadFile;
     }
@@ -24,8 +24,8 @@ public class ActivityPhotoCreateDTO {
         this.activityID = activityID;
     }
 
-    public void setUploadFile(List<MultipartFile> uploadFile) throws Exception {
-         if (uploadFile == null) {
+    public void setUploadFile(MultipartFile[] uploadFile) throws Exception {
+         if (uploadFile == null || uploadFile.length == 0) {
             throw new Exception("Veuillez mettre au moins une photo");
         }
         this.uploadFile = uploadFile;

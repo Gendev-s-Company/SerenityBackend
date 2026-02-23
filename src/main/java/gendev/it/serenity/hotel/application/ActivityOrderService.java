@@ -9,20 +9,27 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
-import gendev.it.serenity.customer.domain.dto.CustomerDTO;
-import gendev.it.serenity.customer.infrastructure.entity.Customer;
 import gendev.it.serenity.hotel.domain.dto.ActivityOrderDTO;
 import gendev.it.serenity.hotel.domain.dto.ActivityPriceDTO;
 import gendev.it.serenity.hotel.infrastructure.entity.ActivityOrder;
-import gendev.it.serenity.hotel.infrastructure.entity.ActivityPrice;
 import gendev.it.serenity.hotel.infrastructure.repository.ActivityOrderRepo;
 
 @Service
 public class ActivityOrderService extends CommonService<ActivityOrder, ActivityOrderDTO, String, ActivityOrderRepo>{
-
-    public ActivityOrderService(ActivityOrderRepo jpa) {
+    private final ActivityPriceService priceService;
+    public ActivityOrderService(ActivityOrderRepo jpa, ActivityPriceService priceService) {
         super(jpa);
+        this.priceService = priceService;
         //TODO Auto-generated constructor stub
+    }
+
+
+    @Override
+    public ActivityOrderDTO save(ActivityOrderDTO model) throws Exception {
+        // TODO Auto-generated method stub
+        ActivityPriceDTO price = priceService.findLastPrice(model.getActivity().getActivityID(), 0);
+        model.setPrice(price.getPrice());
+        return super.save(model);
     }
 
 

@@ -24,6 +24,7 @@ public class ActivityOrderDTO extends DTO<ActivityOrder> {
     private Integer duration = 1;
     private LocalDateTime dateOrder = LocalDateTime.now();
     private Integer state = 0;
+    private BigDecimal totalPrice;
     
     public ActivityOrderDTO(String acOrderID, ActivityDTO activity, CustomerDTO user, BigDecimal price,
             Integer duration, LocalDateTime dateOrder, Integer state, int status) {
@@ -104,6 +105,11 @@ public class ActivityOrderDTO extends DTO<ActivityOrder> {
     }
     public void setState(Integer state) {
         this.state = state;
+    }
+
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
     
 }

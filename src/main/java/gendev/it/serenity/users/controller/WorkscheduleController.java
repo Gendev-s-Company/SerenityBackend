@@ -16,7 +16,7 @@ import gendev.it.serenity.users.application.WorkscheduleService;
 import gendev.it.serenity.users.domain.dto.WorkscheduleDTO;
 
 @RestController
-@RequestMapping("api/workschedule")
+@RequestMapping("workschedule")
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
         RequestMethod.OPTIONS })
 public class WorkscheduleController extends CommonController<WorkscheduleDTO,WorkscheduleService> {

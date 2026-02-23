@@ -1,6 +1,7 @@
 package gendev.it.serenity.users.domain.dto;
 
 import gendev.it.serenity.common.dto.DTO;
+import gendev.it.serenity.common.utils.Utils;
 import gendev.it.serenity.users.infrastructure.entity.Company;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,7 +46,7 @@ public class CompanyDTO extends DTO<Company>{
     public void setPhone(String phone) throws Exception {
         // eto asina verification hoe bon format ve ilay phone sinon  exception
         // exemple ito
-        if (phone.length()>10 && !isSkipValidation()) {
+        if (phone.length()>Utils.phoneLengthValidation && !isSkipValidation()) {
             throw new Exception("Veuillez vérifier la longueur du numéro telephone");
         }
         this.phone = phone;

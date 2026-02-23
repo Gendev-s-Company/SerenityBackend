@@ -114,3 +114,8 @@ create table activityOrder(
     dateOrder date default current_date,
     status integer check (status >= 0)
 );
+
+-- code à effectuer
+alter table activityOrder drop column dateOrder;
+alter table activityOrder add COLUMN dateOrder timestamp default current_timestamp;
+alter table activityOrder add column state integer default 0 check (state >= 0);

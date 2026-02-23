@@ -9,13 +9,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.common.dto.FileDTO;
 import gendev.it.serenity.common.utils.FileHandler;
+import gendev.it.serenity.hotel.domain.dto.ActivityDTO;
+import gendev.it.serenity.hotel.domain.dto.ActivityPhotoCreateDTO;
 import gendev.it.serenity.hotel.domain.dto.ActivityPhotoDTO;
 import gendev.it.serenity.hotel.infrastructure.entity.ActivityPhoto;
 import gendev.it.serenity.hotel.infrastructure.repository.ActivityPhotoRepo;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ActivityPhotoService extends CommonService<ActivityPhoto, ActivityPhotoDTO, String, ActivityPhotoRepo> {
@@ -23,6 +27,20 @@ public class ActivityPhotoService extends CommonService<ActivityPhoto, ActivityP
     public ActivityPhotoService(ActivityPhotoRepo jpa) {
         super(jpa);
         // TODO Auto-generated constructor stub
+    }
+
+    @Transactional
+    public String saves(ActivityPhotoCreateDTO model) throws Exception {
+        if(model.getUploadFile() != null)
+            for (MultipartFile row : model.getUploadFile()) {
+                ActivityPhotoDTO photo = new ActivityPhotoDTO();
+                photo.setSkipValidation(true);
+                photo.setActivity(new ActivityDTO(model.getActivityID()));
+                photo.setStatus(0);
+                photo.setUploadFile(row);
+                photo = save(photo);
+            }
+        return "Enregistrement réussi";
     }
 
     @Override

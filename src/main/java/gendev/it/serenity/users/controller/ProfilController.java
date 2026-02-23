@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@RequestMapping("api/profil")
+@RequestMapping("profil")
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.OPTIONS })
 public class ProfilController extends CommonController<ProfilDTO, ProfilService> {
 

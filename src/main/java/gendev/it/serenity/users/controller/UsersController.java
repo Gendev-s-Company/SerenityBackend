@@ -17,7 +17,7 @@ import gendev.it.serenity.users.domain.dto.UserResponseDTO;
 
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("user")
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
         RequestMethod.OPTIONS })
 public class UsersController extends CommonController<UserResponseDTO,UserService> {

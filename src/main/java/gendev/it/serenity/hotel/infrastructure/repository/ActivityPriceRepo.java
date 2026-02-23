@@ -18,4 +18,7 @@ public interface ActivityPriceRepo extends CommonRepository<ActivityPrice, Integ
 
     @Query("SELECT a FROM ActivityPrice a where a.activity.activityID = :activity and a.status=:status")
     Page<ActivityPrice> findAllBActivity(String activity, int status, Pageable page);
+
+    @Query("SELECT a FROM ActivityPrice a where a.activity.activityID = :activity and a.status=:status and a.dateChanged is not null order by a.dateChanged desc limit 1")
+    ActivityPrice findLastByStatusAndDateChangedDesc(String activity, int status);
 }

@@ -15,14 +15,29 @@ import gendev.it.serenity.hotel.infrastructure.entity.ActivityOrder;
 import gendev.it.serenity.hotel.infrastructure.repository.ActivityOrderRepo;
 
 @Service
-public class ActivityOrderService extends CommonService<ActivityOrder, ActivityOrderDTO, String, ActivityOrderRepo>{
+public class ActivityOrderService extends CommonService<ActivityOrder, ActivityOrderDTO, String, ActivityOrderRepo> {
     private final ActivityPriceService priceService;
+
     public ActivityOrderService(ActivityOrderRepo jpa, ActivityPriceService priceService) {
         super(jpa);
         this.priceService = priceService;
-        //TODO Auto-generated constructor stub
+        // TODO Auto-generated constructor stub
     }
 
+    public Page<ActivityOrderDTO> paginateAllByCompanyAndState(int pageNumber, int pageSize, String field, String sort,
+            Integer status, String company, int state) throws Exception {
+        // throw new Exception("Veuillez implémenter la function paginateAllByCompany");
+        Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, field));
+        int states = status != null ? status : 0;
+
+        if (state == -1) {
+            return getJpa().findPaginateByStatusAndCompany(states, company, pageable)
+                    .map(p -> (ActivityOrderDTO) p.entityToDTO());
+        }
+        return getJpa().findPaginateByStatusAndCompanyAndState(states, company, state, pageable)
+                .map(p -> (ActivityOrderDTO) p.entityToDTO());
+    }
 
     @Override
     public ActivityOrderDTO save(ActivityOrderDTO model) throws Exception {
@@ -31,7 +46,6 @@ public class ActivityOrderService extends CommonService<ActivityOrder, ActivityO
         model.setPrice(price.getPrice());
         return super.save(model);
     }
-
 
     public List<ActivityOrderDTO> findAllByActivity(String activityID, Integer state) throws Exception {
         int status = state != null ? state : 0;

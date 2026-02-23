@@ -25,6 +25,23 @@ public class ActivityOrderController extends CommonController<ActivityOrderDTO, 
         // TODO Auto-generated constructor stub
     }
 
+    @GetMapping("/byState/{page}/{size}")
+    public ResponseEntity<?> findAllpaginateModelByCompanyAndState(@PathVariable("page") int page,
+            @PathVariable("size") int size,
+            @RequestParam(name = "field", defaultValue = "name", required = false) String field,
+            @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
+            @RequestParam(name = "status", required = false) Integer status,
+            @RequestParam Integer state,
+            @RequestParam String company) {
+        try {
+            return ResponseEntity.ok(getService().paginateAllByCompanyAndState(page, size, field, sort, status, company, state));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        }
+    }
+
     @GetMapping("/byActivity")
     public ResponseEntity<?> findAllByActivity(@RequestParam(name = "status", required = false) Integer status,
             @RequestParam String activityid) {
@@ -55,7 +72,8 @@ public class ActivityOrderController extends CommonController<ActivityOrderDTO, 
     }
 
     @GetMapping("/bycustomer")
-    public ResponseEntity<?> findAllByCustomer(@RequestParam(name = "status", required = false) Integer status, @RequestParam String customerid) {
+    public ResponseEntity<?> findAllByCustomer(@RequestParam(name = "status", required = false) Integer status,
+            @RequestParam String customerid) {
         try {
             return ResponseEntity.ok(getService().findAllByCustomer(customerid, status));
         } catch (Exception e) {
@@ -64,16 +82,17 @@ public class ActivityOrderController extends CommonController<ActivityOrderDTO, 
 
         }
     }
+
     // endpoint a utiliser pour l'affichage des prix d'activité
     @GetMapping("/bycustomer/{page}/{size}")
-    public ResponseEntity<?> findAllpaginateModelByCustomer(@PathVariable("page") int page, @PathVariable("size") int size,
+    public ResponseEntity<?> findAllpaginateModelByCustomer(@PathVariable("page") int page,
+            @PathVariable("size") int size,
             @RequestParam(name = "field", defaultValue = "dateChanged", required = false) String field,
             @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
             @RequestParam(name = "status", required = false) Integer status,
-            @RequestParam String customerid
-        ) {
+            @RequestParam String customerid) {
         try {
-            return ResponseEntity.ok(getService().paginateAllByCustomer(page, size, field, sort, status,customerid));
+            return ResponseEntity.ok(getService().paginateAllByCustomer(page, size, field, sort, status, customerid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

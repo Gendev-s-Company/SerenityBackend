@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/hotel/activityorder")
+@RequestMapping("hotel/activityorder")
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
 public class ActivityOrderController extends CommonController<ActivityOrderDTO, ActivityOrderService> {
 

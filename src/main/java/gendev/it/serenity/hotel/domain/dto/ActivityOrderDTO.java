@@ -23,9 +23,10 @@ public class ActivityOrderDTO extends DTO<ActivityOrder> {
     private BigDecimal price;
     private Integer duration = 1;
     private LocalDateTime dateOrder = LocalDateTime.now();
+    private Integer state = 0;
     
     public ActivityOrderDTO(String acOrderID, ActivityDTO activity, CustomerDTO user, BigDecimal price,
-            Integer duration, LocalDateTime dateOrder, int status) {
+            Integer duration, LocalDateTime dateOrder, Integer state, int status) {
         this.acOrderID = acOrderID;
         this.activity = activity;
         this.customer = user;
@@ -33,6 +34,7 @@ public class ActivityOrderDTO extends DTO<ActivityOrder> {
         this.duration = duration;
         this.dateOrder = dateOrder;
         setStatus(status);
+        this.state =  state;
     }
     
 
@@ -51,7 +53,7 @@ public class ActivityOrderDTO extends DTO<ActivityOrder> {
         if (dateOrder == null) {
             dateOrder = LocalDateTime.now();
         }
-        return new ActivityOrder(acOrderID, act, u, price, duration, dateOrder, getStatus());
+        return new ActivityOrder(acOrderID, act, u, price, duration, dateOrder, state,getStatus());
     }
 
 
@@ -99,6 +101,9 @@ public class ActivityOrderDTO extends DTO<ActivityOrder> {
             dateOrder = LocalDateTime.now();
         }
         this.dateOrder = dateOrder;
+    }
+    public void setState(Integer state) {
+        this.state = state;
     }
     
 }

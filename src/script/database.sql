@@ -104,6 +104,10 @@ create table customer(
     status integer check (status >= 0)
 );
 
+alter table customer add column cin varchar(30) default null;
+alter table customer add column companyID varchar(10) references company(companyID);
+alter table customer add column address varchar(50) default null;
+
 CREATE SEQUENCE activityOrder_seq START 1;
 create table activityOrder(
     acOrderID  VARCHAR(10) primary key,
@@ -119,3 +123,16 @@ create table activityOrder(
 alter table activityOrder drop column dateOrder;
 alter table activityOrder add COLUMN dateOrder timestamp default current_timestamp;
 alter table activityOrder add column state integer default 0 check (state >= 0);
+
+
+--////////Partie chambre\\\\\\\\\
+
+
+CREATE SEQUENCE roomType_seq START 1;
+create table roomType(
+    typeID VARCHAR(10) primary key,
+    companyID varchar(10) not null references company(companyID),
+    name varchar(100) not null,
+    description text,
+    status integer check (status >= 0)
+);

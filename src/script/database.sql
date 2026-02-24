@@ -136,3 +136,16 @@ create table roomType(
     description text,
     status integer check (status >= 0)
 );
+
+CREATE SEQUENCE room_seq START 1;
+create table room(
+    roomID VARCHAR(10) primary key,
+    typeID varchar(10) not null references roomType(typeID),
+    name varchar(100) not null,
+    description text,
+    peoples integer default 1,
+    bed integer default 1,
+    status integer check (status >= 0),
+    state integer default 0 check (state >= 0)
+);
+

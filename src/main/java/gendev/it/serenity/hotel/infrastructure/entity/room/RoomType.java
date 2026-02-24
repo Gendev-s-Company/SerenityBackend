@@ -3,6 +3,7 @@ package gendev.it.serenity.hotel.infrastructure.entity.room;
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
 import gendev.it.serenity.hotel.domain.dto.room.RoomTypeDTO;
+import gendev.it.serenity.users.domain.dto.CompanyDTO;
 import gendev.it.serenity.users.infrastructure.entity.Company;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -63,6 +64,10 @@ public class RoomType extends BaseEntity<RoomTypeDTO>{
     @Override
     public RoomTypeDTO entityToDTO() {
         // TODO Auto-generated method stub
-        return new RoomTypeDTO(typeID, company.entityToDTO(), name, description, getStatus());
+        CompanyDTO comp = null;
+        if (company!=null) {
+            comp = company.entityToDTO();
+        }
+        return new RoomTypeDTO(typeID, comp, name, description, getStatus());
     }
 }

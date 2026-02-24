@@ -123,3 +123,16 @@ create table activityOrder(
 alter table activityOrder drop column dateOrder;
 alter table activityOrder add COLUMN dateOrder timestamp default current_timestamp;
 alter table activityOrder add column state integer default 0 check (state >= 0);
+
+
+--////////Partie chambre\\\\\\\\\
+
+
+CREATE SEQUENCE roomType_seq START 1;
+create table roomType(
+    typeID VARCHAR(10) primary key,
+    companyID varchar(10) not null references company(companyID),
+    name varchar(100) not null,
+    description text,
+    status integer check (status >= 0)
+);

@@ -101,3 +101,20 @@ CREATE TRIGGER trigger_activityOrder_id
 BEFORE INSERT ON activityOrder
     FOR EACH ROW
         EXECUTE FUNCTION generate_activityOrder_id();
+        
+        
+        --///////PARTIE CHAMBRE\\\\\\
+----POUR LA TABLE activityOrder
+CREATE OR REPLACE FUNCTION generate_roomType_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.typeID := 'TYPR' || LPAD(nextval('roomType_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_roomType_id
+BEFORE INSERT ON roomType
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_roomType_id();

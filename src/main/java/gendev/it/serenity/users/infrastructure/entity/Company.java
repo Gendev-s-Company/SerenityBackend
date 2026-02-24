@@ -51,4 +51,10 @@ public class Company extends BaseEntity<CompanyDTO>{
         setName(dto.getName());
         setStatus(dto.getStatus());
     }
+
+
+    public Company(String companyID2) {
+        //TODO Auto-generated constructor stub
+        this.companyID = companyID2;
+    }
 }

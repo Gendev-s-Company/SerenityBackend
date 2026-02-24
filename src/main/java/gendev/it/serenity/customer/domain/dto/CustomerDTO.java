@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.utils.Utils;
 import gendev.it.serenity.customer.infrastructure.entity.Customer;
+import gendev.it.serenity.users.domain.dto.CompanyDTO;
+import gendev.it.serenity.users.infrastructure.entity.Company;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,10 +23,27 @@ public class CustomerDTO extends DTO<Customer>{
     
     private String mail;
 
+    private CompanyDTO company;
+    private String cin;
+    private String address;
 
     public CustomerDTO(String customerID) {
         this.customerID = customerID;
     }
+
+    
+    public CustomerDTO(String customerID, String name, String phone, String mail, CompanyDTO company, String cin,
+            String address, int status) {
+        this.customerID = customerID;
+        this.name = name;
+        this.phone = phone;
+        this.mail = mail;
+        this.company = company;
+        this.cin = cin;
+        this.address = address;
+        setStatus(status);
+    }
+
 
     public CustomerDTO(String customerID, String name, String phone, String mail, int status) {
         this.customerID = customerID;
@@ -56,7 +75,6 @@ public class CustomerDTO extends DTO<Customer>{
 
     public void setMail(String mail) {
         // eto asina verification hoe bon format ve ilay mail sinon  exception
-        System.out.println(isSkipValidation());
         if(!isValidEmail(mail) && !isSkipValidation()){
             throw new IllegalArgumentException("Format d'email invalide");
         }
@@ -72,7 +90,12 @@ public class CustomerDTO extends DTO<Customer>{
     @Override
     public Customer dtoToEntity() throws Exception {
         // TODO Auto-generated method stub
-        return new Customer(customerID, name, phone, mail, getStatus());
+        // return new Customer(customerID, name, phone, mail, getStatus());
+        Company comp = null;
+        if (company != null && company.getCompanyID()!=null) {
+            comp = new Company(company.getCompanyID());
+        }
+        return new Customer(customerID, name, phone, mail, comp, cin, address, getStatus());
     }
     
 }

@@ -54,7 +54,6 @@ public class CompanyDTO extends DTO<Company>{
 
     public void setMail(String mail) {
         // eto asina verification hoe bon format ve ilay mail sinon  exception
-        System.out.println(isSkipValidation());
         if(!isValidEmail(mail) && !isSkipValidation()){
             throw new IllegalArgumentException("Format d'email invalide");
         }

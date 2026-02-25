@@ -48,10 +48,15 @@ public class Room extends BaseEntity<RoomDTO> {
     @Column
     private Integer state;
 
+    /*
+     * Récupération uniquement de la liste des photos
+     */
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "roomid", insertable = false, updatable = false)
     private List<RoomPhoto> photos;
-
+    /*
+     * Récupération uniquement de la liste des prix
+     */
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "roomid", insertable = false, updatable = false)
     private List<RoomPrice> roomPrices;
@@ -111,10 +116,11 @@ public class Room extends BaseEntity<RoomDTO> {
             System.out.println("Cannot set photos on room " + roomID);
         }
         try {
+            // récuperer juste un seul prix par ordre datechanged desc
             dto.setRoomPrice(dto.findLastPrice(roomPrices));
         } catch (Exception e) {
             // TODO: handle exception
-            System.out.println("Cannot set photos on room " + roomID +", cause list of roomprice is null");
+            System.out.println("Cannot set photos on room " + roomID + ", cause list of roomprice is null");
         }
         return dto;
     }

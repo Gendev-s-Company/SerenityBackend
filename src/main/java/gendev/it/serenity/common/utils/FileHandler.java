@@ -14,7 +14,7 @@ import gendev.it.serenity.common.dto.FileDTO;
 public class FileHandler {
 
     public String base_path = "src/main/resources/directory";
-
+    // function misave list ana fichier
     public void saveFiles(String id, List<MultipartFile> files) throws IOException {
         String path = createDir(id);
         for (MultipartFile file : files) {
@@ -33,7 +33,7 @@ public class FileHandler {
         }
         return path;
     }
-
+    // function misave fichier ray
     public void saveFile(String fileDir, String fileName,
             MultipartFile multipartFile) throws IOException {
         Path uploadPath = Paths.get(fileDir);
@@ -47,7 +47,7 @@ public class FileHandler {
     }
 
     
-
+    // function apesaina irécuperena fichier ary mamadika azy ho lasa byte
     public FileDTO getFile(String path) throws IOException {
         File file = new File(path);
         FileDTO dto = new FileDTO();

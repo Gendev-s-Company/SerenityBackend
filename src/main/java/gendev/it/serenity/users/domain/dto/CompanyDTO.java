@@ -19,6 +19,10 @@ public class CompanyDTO extends DTO<Company>{
     
     private String mail;
     
+    public CompanyDTO(String companyID) {
+        this.companyID = companyID;
+    }
+
     public CompanyDTO(String companyID, String name, String phone, String mail) {
         this.companyID = companyID;
         this.name = name;

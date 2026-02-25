@@ -104,7 +104,7 @@ BEFORE INSERT ON activityOrder
         
         
         --///////PARTIE CHAMBRE\\\\\\
-----POUR LA TABLE activityOrder
+        
 CREATE OR REPLACE FUNCTION generate_roomType_id()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -118,3 +118,32 @@ CREATE TRIGGER trigger_roomType_id
 BEFORE INSERT ON roomType
     FOR EACH ROW
         EXECUTE FUNCTION generate_roomType_id();
+
+CREATE OR REPLACE FUNCTION generate_room_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.roomID := 'ROOM' || LPAD(nextval('room_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_room_id
+BEFORE INSERT ON room
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_room_id();
+
+
+CREATE OR REPLACE FUNCTION generate_roomPhoto_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.photoID := 'RPIC' || LPAD(nextval('roomPhoto_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_room_id
+BEFORE INSERT ON roomPhoto
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_roomPhoto_id();

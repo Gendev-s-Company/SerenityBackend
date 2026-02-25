@@ -104,12 +104,17 @@ public class Room extends BaseEntity<RoomDTO> {
         try {
             list = new RoomPhotoHandler().ListEntityToListDtof(photos);
             dto.setPhotos(list);
-        } catch (IOException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             System.out.println("Cannot set photos on room " + roomID);
         }
-        dto.setRoomPrice(dto.findLastPrice(roomPrices));
+        try {
+            dto.setRoomPrice(dto.findLastPrice(roomPrices));
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.out.println("Cannot set photos on room " + roomID +", cause list of roomprice is null");
+        }
         return dto;
     }
 }

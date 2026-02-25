@@ -63,22 +63,6 @@ public class RoomPhotoService extends CommonService<RoomPhoto, RoomPhotoDTO, Str
         return super.save(model);
     }
 
-    private List<RoomPhotoDTO> ListEntityToListDtof(List<RoomPhoto> list) throws IOException {
-        List<RoomPhotoDTO> result = new ArrayList<RoomPhotoDTO>();
-        for (RoomPhoto row : list) {
-            RoomPhotoDTO dto = addFileToDTO(row);
-            result.add(dto);
-        }
-        return result;
-    }
-    private RoomPhotoDTO addFileToDTO(RoomPhoto entity) throws IOException {
-        FileHandler handler = new FileHandler();
-        FileDTO file = handler.getFile(entity.getPath());
-        RoomPhotoDTO dto = (RoomPhotoDTO) entity.entityToDTO();
-        dto.setFiles(file);
-        return dto;
-    }
-
     public List<RoomPhotoDTO> findAllByRoom(String activityID, Integer state) throws Exception {
         int status = state != null ? state : 0;
         List<RoomPhoto> result = getJpa().findByRoomIDAndStatus(activityID, status);
@@ -93,7 +77,7 @@ public class RoomPhotoService extends CommonService<RoomPhoto, RoomPhotoDTO, Str
         return getJpa().findByRoomIDAndStatus(activityID, state, pageable)
                 .map(p -> {
                     try {
-                        return addFileToDTO(p);
+                        return new RoomPhotoHandler().addFileToDTO(p);
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();

@@ -18,7 +18,7 @@ public class RoomPhotoHandler {
         }
         return result;
     }
-    private RoomPhotoDTO addFileToDTO(RoomPhoto entity) throws IOException {
+    public RoomPhotoDTO addFileToDTO(RoomPhoto entity) throws IOException {
         FileHandler handler = new FileHandler();
         FileDTO file = handler.getFile(entity.getPath());
         RoomPhotoDTO dto = (RoomPhotoDTO) entity.entityToDTO();

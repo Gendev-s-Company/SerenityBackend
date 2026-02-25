@@ -156,3 +156,13 @@ create table roomPhoto(
     path varchar(500) not null,
     status integer check (status >= 0)
 );
+
+create table roomPrice(
+    priceID  serial primary key,
+    roomID varchar(10) not null references room(roomID),
+    nightPrice NUMERIC(15, 2) not null DEFAULT 0,
+    hourPrice NUMERIC(15, 2) not null DEFAULT 0,
+    datechanged date default current_date,
+    accountRate NUMERIC(15, 2) not null DEFAULT 0,
+    status integer check (status >= 0)
+);

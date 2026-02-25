@@ -4,37 +4,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import gendev.it.serenity.common.controller.CommonController;
-import gendev.it.serenity.hotel.application.room.RoomPhotoService;
-import gendev.it.serenity.hotel.domain.dto.ActivityPhotoCreateDTO;
-import gendev.it.serenity.hotel.domain.dto.room.RoomPhotoDTO;
+import gendev.it.serenity.hotel.application.room.RoomPriceService;
+import gendev.it.serenity.hotel.domain.dto.room.RoomPriceDTO;
 
 @RestController
-@RequestMapping("hotel/room/photo")
+@RequestMapping("hotel/room/price")
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
-public class RoomPhotoController extends CommonController<RoomPhotoDTO, RoomPhotoService> {
+public class RoomPriceController extends CommonController<RoomPriceDTO, RoomPriceService> {
 
-    public RoomPhotoController(RoomPhotoService service) {
+    public RoomPriceController(RoomPriceService service) {
         super(service);
-        //TODO Auto-generated constructor stub
-    }
-
-    @PostMapping("/save")
-    public ResponseEntity<?> saveRoomPhoto(@ModelAttribute ActivityPhotoCreateDTO model) {
-        try {
-            return new ResponseEntity<>(getService().saves(model), HttpStatus.CREATED);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(e.getMessage());
-        }
+        // TODO Auto-generated constructor stub
     }
 
     @GetMapping("/byroom")
@@ -53,8 +40,8 @@ public class RoomPhotoController extends CommonController<RoomPhotoDTO, RoomPhot
     @GetMapping("/byroom/{page}/{size}")
     public ResponseEntity<?> findAllpaginateModelByRoom(@PathVariable("page") int page,
             @PathVariable("size") int size,
-            @RequestParam(name = "field", defaultValue = "photoID", required = false) String field,
-            @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
+            @RequestParam(name = "field", defaultValue = "datechanged", required = false) String field,
+            @RequestParam(name = "sort", defaultValue = "desc", required = false) String sort,
             @RequestParam(name = "status", required = false) Integer status,
             @RequestParam String roomid) {
         try {
@@ -65,4 +52,5 @@ public class RoomPhotoController extends CommonController<RoomPhotoDTO, RoomPhot
 
         }
     }
+
 }

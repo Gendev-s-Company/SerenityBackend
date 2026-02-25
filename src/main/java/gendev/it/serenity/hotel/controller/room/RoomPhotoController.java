@@ -1,4 +1,4 @@
-package gendev.it.serenity.hotel.controller;
+package gendev.it.serenity.hotel.controller.room;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,22 +13,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import gendev.it.serenity.common.controller.CommonController;
-import gendev.it.serenity.hotel.application.ActivityPhotoService;
+import gendev.it.serenity.hotel.application.room.RoomPhotoService;
 import gendev.it.serenity.hotel.domain.dto.ActivityPhotoCreateDTO;
-import gendev.it.serenity.hotel.domain.dto.ActivityPhotoDTO;
+import gendev.it.serenity.hotel.domain.dto.room.RoomPhotoDTO;
 
 @RestController
-@RequestMapping("hotel/activityphoto")
+@RequestMapping("hotel/room/photo")
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
-public class ActivityPhotoController extends CommonController<ActivityPhotoDTO, ActivityPhotoService> {
+public class RoomPhotoController extends CommonController<RoomPhotoDTO, RoomPhotoService> {
 
-    public ActivityPhotoController(ActivityPhotoService service) {
+    public RoomPhotoController(RoomPhotoService service) {
         super(service);
         //TODO Auto-generated constructor stub
     }
-    
+
     @PostMapping("/save")
-    public ResponseEntity<?> saveActivityPhoto(@ModelAttribute ActivityPhotoCreateDTO model) {
+    public ResponseEntity<?> saveRoomPhoto(@ModelAttribute ActivityPhotoCreateDTO model) {
         try {
             return new ResponseEntity<>(getService().saves(model), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -37,11 +37,11 @@ public class ActivityPhotoController extends CommonController<ActivityPhotoDTO, 
         }
     }
 
-    @GetMapping("/byActivity")
-    public ResponseEntity<?> findAllByActivity(@RequestParam(name = "status", required = false) Integer status,
-            @RequestParam String activityid) {
+    @GetMapping("/byroom")
+    public ResponseEntity<?> findAllByRoom(@RequestParam(name = "status", required = false) Integer status,
+            @RequestParam String roomid) {
         try {
-            return ResponseEntity.ok(getService().findAllByActivity(activityid, status));
+            return ResponseEntity.ok(getService().findAllByRoom(roomid, status));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -50,20 +50,19 @@ public class ActivityPhotoController extends CommonController<ActivityPhotoDTO, 
     }
 
     // endpoint a utiliser pour l'affichage des prix d'activité
-    @GetMapping("/byActivity/{page}/{size}")
-    public ResponseEntity<?> findAllpaginateModelByActivity(@PathVariable("page") int page,
+    @GetMapping("/byroom/{page}/{size}")
+    public ResponseEntity<?> findAllpaginateModelByRoom(@PathVariable("page") int page,
             @PathVariable("size") int size,
             @RequestParam(name = "field", defaultValue = "photoID", required = false) String field,
             @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
             @RequestParam(name = "status", required = false) Integer status,
-            @RequestParam String activityid) {
+            @RequestParam String roomid) {
         try {
-            return ResponseEntity.ok(getService().paginateAllByACtivity(page, size, field, sort, status, activityid));
+            return ResponseEntity.ok(getService().paginateAllByRoom(page, size, field, sort, status, roomid));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
 
         }
     }
-
 }

@@ -149,3 +149,10 @@ create table room(
     state integer default 0 check (state >= 0)
 );
 
+CREATE SEQUENCE roomPhoto_seq START 1;
+create table roomPhoto(
+    photoID  varchar(10) primary key,
+    roomID varchar(10) not null references room(roomID),
+    path varchar(500) not null,
+    status integer check (status >= 0)
+);

@@ -1,5 +1,7 @@
 package gendev.it.serenity.hotel.domain.dto.room;
 
+import java.util.List;
+
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.hotel.infrastructure.entity.room.Room;
 import gendev.it.serenity.hotel.infrastructure.entity.room.RoomType;
@@ -18,7 +20,7 @@ public class RoomDTO extends DTO<Room> {
     private Integer peoples;
     private Integer bed;
     private Integer state;
-
+    List<RoomPhotoDTO> photos;
     
     public RoomDTO(String roomID) {
         this.roomID = roomID;
@@ -69,6 +71,9 @@ public class RoomDTO extends DTO<Room> {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+    public void setPhotos(List<RoomPhotoDTO> photos) {
+        this.photos = photos;
     }
 
     @Override

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.common.dto.FileDTO;
 import gendev.it.serenity.common.utils.FileHandler;
+import gendev.it.serenity.hotel.domain.ClasseUtils.RoomPhotoHandler;
 import gendev.it.serenity.hotel.domain.dto.ActivityPhotoCreateDTO;
 import gendev.it.serenity.hotel.domain.dto.room.RoomPhotoDTO;
 import gendev.it.serenity.hotel.infrastructure.entity.room.RoomPhoto;
@@ -81,7 +82,7 @@ public class RoomPhotoService extends CommonService<RoomPhoto, RoomPhotoDTO, Str
     public List<RoomPhotoDTO> findAllByRoom(String activityID, Integer state) throws Exception {
         int status = state != null ? state : 0;
         List<RoomPhoto> result = getJpa().findByRoomIDAndStatus(activityID, status);
-        return ListEntityToListDtof(result);
+        return new RoomPhotoHandler().ListEntityToListDtof(result);
     }
 
     public Page<RoomPhotoDTO> paginateAllByRoom(int pageNumber, int pageSize, String field, String sort,

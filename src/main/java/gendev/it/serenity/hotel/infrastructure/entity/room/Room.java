@@ -50,7 +50,11 @@ public class Room extends BaseEntity<RoomDTO> {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "roomid", insertable = false, updatable = false)
-    List<RoomPhoto> photos;
+    private List<RoomPhoto> photos;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "roomid", insertable = false, updatable = false)
+    private List<RoomPrice> roomPrices;
 
     public Room(String roomID) {
         this.roomID = roomID;
@@ -95,7 +99,7 @@ public class Room extends BaseEntity<RoomDTO> {
         if (type != null) {
             t = type.entityToDTO();
         }
-        RoomDTO dto  = new RoomDTO(roomID, name, description, t, peoples, bed, state, status);
+        RoomDTO dto = new RoomDTO(roomID, name, description, t, peoples, bed, state, status);
         List<RoomPhotoDTO> list;
         try {
             list = new RoomPhotoHandler().ListEntityToListDtof(photos);
@@ -103,8 +107,9 @@ public class Room extends BaseEntity<RoomDTO> {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            System.out.println("Cannot set photos on room "+roomID);
+            System.out.println("Cannot set photos on room " + roomID);
         }
+        dto.setRoomPrice(dto.findLastPrice(roomPrices));
         return dto;
     }
 }

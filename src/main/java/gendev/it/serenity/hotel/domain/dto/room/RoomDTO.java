@@ -1,9 +1,15 @@
 package gendev.it.serenity.hotel.domain.dto.room;
 
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.hotel.infrastructure.entity.room.Room;
+import gendev.it.serenity.hotel.infrastructure.entity.room.RoomPrice;
 import gendev.it.serenity.hotel.infrastructure.entity.room.RoomType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,8 +26,9 @@ public class RoomDTO extends DTO<Room> {
     private Integer peoples;
     private Integer bed;
     private Integer state;
-    List<RoomPhotoDTO> photos;
-    
+    private List<RoomPhotoDTO> photos;
+    private RoomPriceDTO roomPrice;
+
     public RoomDTO(String roomID) {
         this.roomID = roomID;
     }
@@ -54,7 +61,7 @@ public class RoomDTO extends DTO<Room> {
     }
 
     public void setType(RoomTypeDTO type) throws Exception {
-        if (type ==null && !isSkipValidation()) {
+        if (type == null && !isSkipValidation()) {
             throw new Exception("Veuillez choisir un type de chambre");
         }
         type.setSkipValidation(true);
@@ -72,8 +79,12 @@ public class RoomDTO extends DTO<Room> {
     public void setState(Integer state) {
         this.state = state;
     }
+
     public void setPhotos(List<RoomPhotoDTO> photos) {
         this.photos = photos;
+    }
+    public void setRoomPrice(RoomPriceDTO roomPrice) {
+        this.roomPrice = roomPrice;
     }
 
     @Override
@@ -85,6 +96,11 @@ public class RoomDTO extends DTO<Room> {
         }
         return new Room(roomID, name, description, t, peoples, bed, state, getStatus());
     }
-    
-    
+
+    public RoomPriceDTO findLastPrice(List<RoomPrice> list) {
+        Optional<RoomPrice> result = list.stream()
+                .max(Comparator.comparing(RoomPrice::getDatechanged));
+        return result.isPresent() ? result.get().entityToDTO() : new RoomPriceDTO(bed, roomID, BigDecimal.valueOf(0), BigDecimal.valueOf(0), LocalDate.now(), BigDecimal.valueOf(0), getStatus());
+    }
+
 }

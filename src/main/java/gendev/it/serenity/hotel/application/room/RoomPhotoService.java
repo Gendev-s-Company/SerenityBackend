@@ -1,7 +1,5 @@
 package gendev.it.serenity.hotel.application.room;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -12,9 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import gendev.it.serenity.common.application.CommonService;
-import gendev.it.serenity.common.dto.FileDTO;
+import gendev.it.serenity.common.application.PhotoHandler;
 import gendev.it.serenity.common.utils.FileHandler;
-import gendev.it.serenity.hotel.domain.ClasseUtils.RoomPhotoHandler;
 import gendev.it.serenity.hotel.domain.dto.ActivityPhotoCreateDTO;
 import gendev.it.serenity.hotel.domain.dto.room.RoomPhotoDTO;
 import gendev.it.serenity.hotel.infrastructure.entity.room.RoomPhoto;
@@ -24,15 +21,17 @@ import jakarta.transaction.Transactional;
 @Service
 public class RoomPhotoService extends CommonService<RoomPhoto, RoomPhotoDTO, String, RoomPhotoRepo> {
 
+    private PhotoHandler<RoomPhoto, RoomPhotoDTO> picHandler;
+
     public RoomPhotoService(RoomPhotoRepo jpa) {
         super(jpa);
+        this.picHandler = new PhotoHandler<RoomPhoto, RoomPhotoDTO>();
         // TODO Auto-generated constructor stub
     }
 
-
-      @Transactional
+    @Transactional
     public String saves(ActivityPhotoCreateDTO model) throws Exception {
-        if(model.getUploadFile() != null)
+        if (model.getUploadFile() != null)
             for (MultipartFile row : model.getUploadFile()) {
                 RoomPhotoDTO photo = new RoomPhotoDTO();
                 photo.setSkipValidation(true);
@@ -66,7 +65,7 @@ public class RoomPhotoService extends CommonService<RoomPhoto, RoomPhotoDTO, Str
     public List<RoomPhotoDTO> findAllByRoom(String activityID, Integer state) throws Exception {
         int status = state != null ? state : 0;
         List<RoomPhoto> result = getJpa().findByRoomIDAndStatus(activityID, status);
-        return new RoomPhotoHandler().ListEntityToListDtof(result);
+        return  picHandler.ListEntityToListDtof(result);
     }
 
     public Page<RoomPhotoDTO> paginateAllByRoom(int pageNumber, int pageSize, String field, String sort,
@@ -77,8 +76,8 @@ public class RoomPhotoService extends CommonService<RoomPhoto, RoomPhotoDTO, Str
         return getJpa().findByRoomIDAndStatus(activityID, state, pageable)
                 .map(p -> {
                     try {
-                        return new RoomPhotoHandler().addFileToDTO(p);
-                    } catch (IOException e) {
+                        return picHandler.addFileToDTO(p);
+                    } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                         return null;

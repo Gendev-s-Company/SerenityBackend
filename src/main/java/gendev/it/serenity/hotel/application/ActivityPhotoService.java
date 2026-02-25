@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import gendev.it.serenity.common.application.CommonService;
+import gendev.it.serenity.common.application.PhotoHandler;
 import gendev.it.serenity.common.dto.FileDTO;
 import gendev.it.serenity.common.utils.FileHandler;
 import gendev.it.serenity.hotel.domain.dto.ActivityDTO;
@@ -23,9 +24,10 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class ActivityPhotoService extends CommonService<ActivityPhoto, ActivityPhotoDTO, String, ActivityPhotoRepo> {
-
+    private PhotoHandler<ActivityPhoto, ActivityPhotoDTO> picHandler;
     public ActivityPhotoService(ActivityPhotoRepo jpa) {
         super(jpa);
+        this.picHandler = new PhotoHandler<ActivityPhoto, ActivityPhotoDTO>();
         // TODO Auto-generated constructor stub
     }
 
@@ -62,27 +64,27 @@ public class ActivityPhotoService extends CommonService<ActivityPhoto, ActivityP
         return super.save(model);
     }
 
-    private List<ActivityPhotoDTO> ListEntityToListDtof(List<ActivityPhoto> list) throws IOException {
-        List<ActivityPhotoDTO> result = new ArrayList<ActivityPhotoDTO>();
-        for (ActivityPhoto row : list) {
-            ActivityPhotoDTO dto = addFileToDTO(row);
-            result.add(dto);
-        }
-        return result;
-    }
+    // private List<ActivityPhotoDTO> ListEntityToListDtof(List<ActivityPhoto> list) throws IOException {
+    //     List<ActivityPhotoDTO> result = new ArrayList<ActivityPhotoDTO>();
+    //     for (ActivityPhoto row : list) {
+    //         ActivityPhotoDTO dto = addFileToDTO(row);
+    //         result.add(dto);
+    //     }
+    //     return result;
+    // }
 
-    private ActivityPhotoDTO addFileToDTO(ActivityPhoto entity) throws IOException {
-        FileHandler handler = new FileHandler();
-        FileDTO file = handler.getFile(entity.getPath());
-        ActivityPhotoDTO dto = (ActivityPhotoDTO) entity.entityToDTO();
-        dto.setFiles(file);
-        return dto;
-    }
+    // private ActivityPhotoDTO addFileToDTO(ActivityPhoto entity) throws IOException {
+    //     FileHandler handler = new FileHandler();
+    //     FileDTO file = handler.getFile(entity.getPath());
+    //     ActivityPhotoDTO dto = (ActivityPhotoDTO) entity.entityToDTO();
+    //     dto.setFiles(file);
+    //     return dto;
+    // }
 
     public List<ActivityPhotoDTO> findAllByActivity(String activityID, Integer state) throws Exception {
         int status = state != null ? state : 0;
         List<ActivityPhoto> result = getJpa().findAllBActivity(activityID, status);
-        return ListEntityToListDtof(result);
+        return picHandler.ListEntityToListDtof(result);
     }
 
     public Page<ActivityPhotoDTO> paginateAllByACtivity(int pageNumber, int pageSize, String field, String sort,
@@ -93,8 +95,8 @@ public class ActivityPhotoService extends CommonService<ActivityPhoto, ActivityP
         return getJpa().findAllBActivity(activityID, state, pageable)
                 .map(p -> {
                     try {
-                        return addFileToDTO(p);
-                    } catch (IOException e) {
+                        return picHandler.addFileToDTO(p);
+                    } catch (Exception e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                         return null;

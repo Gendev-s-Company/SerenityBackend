@@ -3,9 +3,9 @@ package gendev.it.serenity.hotel.infrastructure.entity.room;
 import java.io.IOException;
 import java.util.List;
 
+import gendev.it.serenity.common.application.PhotoHandler;
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
-import gendev.it.serenity.hotel.domain.ClasseUtils.RoomPhotoHandler;
 import gendev.it.serenity.hotel.domain.dto.room.RoomDTO;
 import gendev.it.serenity.hotel.domain.dto.room.RoomPhotoDTO;
 import gendev.it.serenity.hotel.domain.dto.room.RoomTypeDTO;
@@ -102,7 +102,8 @@ public class Room extends BaseEntity<RoomDTO> {
         RoomDTO dto = new RoomDTO(roomID, name, description, t, peoples, bed, state, status);
         List<RoomPhotoDTO> list;
         try {
-            list = new RoomPhotoHandler().ListEntityToListDtof(photos);
+            PhotoHandler<RoomPhoto, RoomPhotoDTO> picHandler = new PhotoHandler<>();
+            list = picHandler.ListEntityToListDtof(photos);
             dto.setPhotos(list);
         } catch (Exception e) {
             // TODO Auto-generated catch block

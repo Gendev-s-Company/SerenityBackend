@@ -166,3 +166,19 @@ create table roomPrice(
     accountRate NUMERIC(15, 2) not null DEFAULT 0,
     status integer check (status >= 0)
 );
+
+create sequence reservation_seq start with 1;
+create table reservation(
+    reservationID varchar(10) primary key,
+    roomID varchar(10) not null references room(roomID),
+    startTime timestamp not null,
+    endTime timestamp check (startTime < endTime),
+    customerID varchar(10) not null references customer(customerID),
+    price numeric(15,2) not null DEFAULT 0,
+    accountRated float not null DEFAULT 0,
+    accountPaid numeric(15,2) not null DEFAULT 0,
+    AccountPaimentDeadline timestamp,
+    userID varchar(10) not null references users(userID),
+    state integer default 0 check (state >= 0),
+    status integer check (status >= 0)
+);

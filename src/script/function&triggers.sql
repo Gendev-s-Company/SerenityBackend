@@ -147,3 +147,18 @@ CREATE TRIGGER trigger_room_id
 BEFORE INSERT ON roomPhoto
     FOR EACH ROW
         EXECUTE FUNCTION generate_roomPhoto_id();
+
+
+CREATE OR REPLACE FUNCTION generate_reservation_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.reservationID := 'RESA' || LPAD(nextval('reservation_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_reservation_id
+BEFORE INSERT ON reservation
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_reservation_id();

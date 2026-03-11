@@ -5,9 +5,12 @@ import java.time.LocalDateTime;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
+import gendev.it.serenity.customer.domain.dto.CustomerDTO;
 import gendev.it.serenity.customer.infrastructure.entity.Customer;
+import gendev.it.serenity.hotel.domain.dto.room.RoomDTO;
 import gendev.it.serenity.hotel.domain.dto.room.reservation.ReservationDTO;
 import gendev.it.serenity.hotel.infrastructure.entity.room.Room;
+import gendev.it.serenity.users.domain.dto.UserResponseDTO;
 import gendev.it.serenity.users.infrastructure.entity.Users;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,7 +48,7 @@ public class Reservation extends BaseEntity<ReservationDTO>{
     @Column(name = "accountpaid")
     private BigDecimal accountPaid;
     @Column(name = "accountpaimentdeadline")
-    private String AccountPaimentDeadline;
+    private LocalDateTime AccountPaimentDeadline;
     @Column
     private String userID;
     @Column
@@ -62,7 +65,7 @@ public class Reservation extends BaseEntity<ReservationDTO>{
     
     public Reservation(String reservationID, String roomID, LocalDateTime starttime, LocalDateTime endtime,
             String customerID, BigDecimal price, Float accountRated, BigDecimal accountPaid,
-            String accountPaimentDeadline, String userID, Integer state, Integer status) {
+            LocalDateTime accountPaimentDeadline, String userID, Integer state, Integer status) {
         this.reservationID = reservationID;
         this.roomID = roomID;
         this.starttime = starttime;
@@ -71,7 +74,7 @@ public class Reservation extends BaseEntity<ReservationDTO>{
         this.price = price;
         this.accountRated = accountRated;
         this.accountPaid = accountPaid;
-        AccountPaimentDeadline = accountPaimentDeadline;
+        this.AccountPaimentDeadline = accountPaimentDeadline;
         this.userID = userID;
         this.state = state;
         setStatus(status);
@@ -97,7 +100,11 @@ public class Reservation extends BaseEntity<ReservationDTO>{
     @Override
     public ReservationDTO entityToDTO() {
         // TODO Auto-generated method stub
+        RoomDTO rdto = room != null ?room.entityToDTO() : null;
+        UserResponseDTO ruser = user!=null ? user.entityToDTO() : null;
+        CustomerDTO rcust = customer != null ? customer.entityToDTO() : null;
+
         return new ReservationDTO(reservationID, roomID, starttime, endtime, customerID, price, accountRated, 
-            accountPaid, AccountPaimentDeadline, userID, state, room.entityToDTO(), user.entityToDTO(), customer.entityToDTO(), getStatus());
+            accountPaid, AccountPaimentDeadline, userID, state, rdto, ruser, rcust, getStatus());
     }
 }

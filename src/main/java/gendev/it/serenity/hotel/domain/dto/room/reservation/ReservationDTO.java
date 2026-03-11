@@ -29,7 +29,7 @@ public class ReservationDTO extends DTO<Reservation>{
     private BigDecimal price;
     private Float accountRated;
     private BigDecimal accountPaid;
-    private String AccountPaimentDeadline;
+    private LocalDateTime AccountPaimentDeadline;
     private String userID;
     private Integer state;
     private RoomDTO room;
@@ -38,7 +38,7 @@ public class ReservationDTO extends DTO<Reservation>{
     
     public ReservationDTO(String reservationID, String roomID, LocalDateTime starttime, LocalDateTime endtime,
             String customerID, BigDecimal price, Float accountRated, BigDecimal accountPaid,
-            String accountPaimentDeadline, String userID, Integer state, RoomDTO room, UserResponseDTO user,
+            LocalDateTime accountPaimentDeadline, String userID, Integer state, RoomDTO room, UserResponseDTO user,
             CustomerDTO customer, Integer status) {
         this.reservationID = reservationID;
         this.roomID = roomID;

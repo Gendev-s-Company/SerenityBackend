@@ -14,5 +14,17 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         super(jpa);
         //TODO Auto-generated constructor stub
     }
+    public void updateState(String id, Integer state) throws Exception{
+        if(state == null)
+            throw new Exception("veuillez indiquer le state");
+        ReservationDTO resa = findById(id, 0);
+        if (resa == null) {
+            throw new Exception("Reservation ID "+id+" introuvable");
+        }
+        Reservation toUpdate= resa.dtoToEntity();
+        toUpdate.setState(state);
+        getJpa().save(toUpdate);
+
+    }
     
 }

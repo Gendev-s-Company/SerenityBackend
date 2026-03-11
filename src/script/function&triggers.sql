@@ -181,7 +181,7 @@ BEGIN
     SELECT 
         r.roomID,
         r.name,
-        COALESCE(MAX(r.state), 1)::integer AS room_state,
+        COALESCE(MAX(r.state), 0)::integer AS room_state,
         COALESCE(MAX(res.state), 1)::integer AS reservation_state
     FROM room r
     LEFT JOIN reservation res 
@@ -244,10 +244,16 @@ SELECT * FROM get_rooms_disponibility(
     '2026-03-11 00:00:00', -- Début de l'affichage
     '2026-03-14 23:59:59', -- Fin de l'affichage
     ARRAY[2, 3]            -- On cherche les réservations et occupations
-) order by roomid asc;
+) d 
+where exists (select roomid from v_room where companyID='COMP000001' and v_room.status=0 and v_room.roomID = d.roomID)
+order by roomid asc;
+
+
 -- disponibilité détaillé
 SELECT * FROM get_room_calendar_with_hours(
     '2026-03-11 00:00:00', -- Début de l'affichage
     '2026-03-14 23:59:59', -- Fin de l'affichage
     ARRAY[2, 3]            -- On cherche les réservations et occupations
-) order by roomid asc;
+) d
+where exists (select roomid from v_room where companyID='COMP000001' and v_room.status=0 and v_room.roomID = d.roomID)
+ order by roomid asc;

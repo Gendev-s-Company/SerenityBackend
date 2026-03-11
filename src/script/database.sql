@@ -182,3 +182,14 @@ create table reservation(
     state integer default 0 check (state >= 0),
     status integer check (status >= 0)
 );
+
+-- voir la disponibilité des chambres
+-- select * from reservation where state in () and status=0 and starttime >= ? and endTime <= ?
+
+-- and a.room.type.company.id = ? 
+
+create table reservationHistory(
+    historyid serial primary key,
+    reservationID varchar(10) not null references reservation(reservationID),
+    dateHistory timestamp not null default current_timestamp
+);

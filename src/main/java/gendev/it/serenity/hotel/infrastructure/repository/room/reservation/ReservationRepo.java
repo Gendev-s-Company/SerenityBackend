@@ -25,4 +25,7 @@ public interface ReservationRepo extends CommonRepository<Reservation, String>{
     @Query("SELECT r FROM Reservation r WHERE (r.status = :status AND r.room.type.company.id = :company) AND (r.state IN :state) AND (r.starttime >= :start AND r.endtime <= :end)")
     List<Reservation> findDisponibility(int status, String company, List<Integer> state, 
         LocalDateTime start, LocalDateTime end);
+    @Query("SELECT r FROM Reservation r WHERE (r.status = :status AND r.room.type.company.id = :company) AND (r.state IN :state) AND (r.starttime >= :start AND r.endtime <= :end)")
+    Page<Reservation> findDisponibility(int status, String company, List<Integer> state, 
+        LocalDateTime start, LocalDateTime end, Pageable pageable);
 }

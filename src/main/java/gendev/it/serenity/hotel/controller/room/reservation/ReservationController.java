@@ -59,7 +59,7 @@ public class ReservationController extends CommonController<ReservationDTO, Rese
     public ResponseEntity<?> findAllpaginateReservationByCompany(@PathVariable("page") int page,
             @PathVariable("size") int size,
             @RequestParam List<Integer> state,
-            @RequestParam LocalDateTime start, @RequestParam LocalDateTime end,
+            @RequestParam(required = false, name = "start") LocalDateTime start, @RequestParam(required = false, name = "end") LocalDateTime end,
             @RequestParam(name = "field", defaultValue = "roomID", required = false) String field,
             @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
             @RequestParam(name = "status", required = false) Integer status,

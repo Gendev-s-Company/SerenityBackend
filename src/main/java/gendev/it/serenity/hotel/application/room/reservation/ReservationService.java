@@ -54,7 +54,14 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         int statut = status != null ? status : State.ACTIVE;
          state = state == null ? List.of(Utils.roomState) : state;
         // Page<T> list = jpa.findAllByStatus(state, pageable);
-        Page<Reservation> list = getJpa().findDisponibility(statut, company, state, start, end, pageable);
+        Page<Reservation> list = null;
+        if (end != null && start !=null) {
+            list = getJpa().findDisponibility(statut, company, state, start, end, pageable);
+        }else if (end == null) {
+            list = getJpa().findDisponibilityDateEndnull(statut, company, state, start, pageable);
+        }else if (start == null) {
+            list = getJpa().findDisponibilityDateStartnull(statut, company, state, end, pageable);
+        }
         Page<ReservationDTO> result = list.map(entity -> {
             return entity.entityToDTO();
         });

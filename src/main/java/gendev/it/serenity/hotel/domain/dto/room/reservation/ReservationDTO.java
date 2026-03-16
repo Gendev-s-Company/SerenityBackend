@@ -5,14 +5,9 @@ import java.time.LocalDateTime;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.customer.domain.dto.CustomerDTO;
-import gendev.it.serenity.customer.infrastructure.entity.Customer;
 import gendev.it.serenity.hotel.domain.dto.room.RoomDTO;
 import gendev.it.serenity.hotel.infrastructure.entity.room.reservation.Reservation;
 import gendev.it.serenity.users.domain.dto.UserResponseDTO;
-import gendev.it.serenity.users.infrastructure.entity.Users;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

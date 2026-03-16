@@ -21,6 +21,7 @@ import gendev.it.serenity.hotel.domain.dto.room.reservation.ReservationDTO;
 import gendev.it.serenity.hotel.infrastructure.entity.room.Room;
 import gendev.it.serenity.hotel.infrastructure.entity.room.reservation.Reservation;
 import gendev.it.serenity.hotel.infrastructure.repository.room.reservation.ReservationRepo;
+import java.math.RoundingMode;
 
 @Service
 public class ReservationService extends CommonService<Reservation, ReservationDTO, String, ReservationRepo> {
@@ -75,8 +76,11 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         });
         return result;
     }
-    // récupérer le prix total, prix d'accompte à payer et la deadline pour la réservation
-    public ResaPriceDTO validatePriceReservation(String roomid, LocalDateTime start, LocalDateTime end) throws Exception {
+
+    // récupérer le prix total, prix d'accompte à payer et la deadline pour la
+    // réservation
+    public ResaPriceDTO validatePriceReservation(String roomid, LocalDateTime start, LocalDateTime end)
+            throws Exception {
         RoomDTO room = service.findById(roomid, 0);
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime deadline = now;
@@ -84,7 +88,7 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         BigDecimal hourPrice = room.getRoomPrice().getHourPrice();
         BigDecimal result = null;
         if (now.toLocalDate().isBefore(start.toLocalDate())) {
-             deadline = start.minusDays(1);
+            deadline = start.minusDays(1);
         }
         Duration duration = Duration.between(start, end);
 
@@ -92,12 +96,13 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
 
         if (hours >= 24) {
             long nights = hours / 24;
-            result =  nightPrice.multiply(BigDecimal.valueOf(nights));
+            result = nightPrice.multiply(BigDecimal.valueOf(nights));
         } else {
             result = hourPrice.multiply(BigDecimal.valueOf(hours));
         }
 
-        BigDecimal accompte = (room.getRoomPrice().getAccountRate().multiply(BigDecimal.valueOf(100))).divide(result);
+        BigDecimal accompte = result.multiply(room.getRoomPrice().getAccountRate())
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
         ResaPriceDTO res = new ResaPriceDTO(result, accompte, deadline);
         return res;
     }

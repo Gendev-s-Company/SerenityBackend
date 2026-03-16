@@ -147,3 +147,114 @@ CREATE TRIGGER trigger_room_id
 BEFORE INSERT ON roomPhoto
     FOR EACH ROW
         EXECUTE FUNCTION generate_roomPhoto_id();
+
+
+CREATE OR REPLACE FUNCTION generate_reservation_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.reservationID := 'RESA' || LPAD(nextval('reservation_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_reservation_id
+BEFORE INSERT ON reservation
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_reservation_id();
+
+
+-- reservation disponibility
+CREATE OR REPLACE FUNCTION get_rooms_disponibility(
+    search_start timestamp, 
+    search_end timestamp, 
+    filter_status integer[] -- On accepte un tableau d'entiers ex: '{1,2,3}'
+)
+RETURNS TABLE (
+    roomID varchar,
+    name varchar,
+    room_state integer,
+    reservation_state integer
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        r.roomID,
+        r.name,
+        COALESCE(MAX(r.state), 0)::integer AS room_state,
+        COALESCE(MAX(res.state), 0)::integer AS reservation_state
+    FROM room r
+    LEFT JOIN reservation res 
+        ON r.roomID = res.roomID
+        -- AND res.state = ANY(filter_status)
+        AND res.startTime < search_end
+        AND res.endTime > search_start
+    -- where res.state = ANY(filter_status)
+    GROUP BY r.roomID, r.name
+    ORDER BY r.roomID;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- détail disponibilité pour une chambre
+CREATE OR REPLACE FUNCTION get_room_calendar_with_hours(
+    search_start timestamp, 
+    search_end timestamp, 
+    filter_status integer[]
+)
+RETURNS TABLE (
+    day timestamp,
+    roomID varchar,
+    room_name varchar,
+    room_state integer,
+    reservation_state integer,
+    actual_arrival timestamp,  -- Précision de l'heure d'arrivée
+    actual_departure timestamp -- Précision de l'heure de départ
+) AS $$
+BEGIN
+    RETURN QUERY
+    WITH date_range AS (
+        SELECT generate_series(
+            date_trunc('day', search_start), 
+            date_trunc('day', search_end), 
+            '1 day'::interval
+        )::timestamp AS day_date
+    )
+    SELECT 
+        d.day_date,
+        r.roomID,
+        r.name,
+        COALESCE(r.state, 0)::integer room_state,
+        COALESCE(res.state, 0)::integer reservation_state,
+        res.startTime, -- Heure réelle en base
+        res.endTime    -- Heure réelle en base
+    FROM date_range d
+    CROSS JOIN room r
+    LEFT JOIN reservation res 
+        ON r.roomID = res.roomID
+       -- AND res.state = ANY(filter_status)
+        -- Logique de chevauchement : la réservation touche ce jour
+        AND res.startTime < (d.day_date + interval '1 day')
+        AND res.endTime > d.day_date
+    ORDER BY d.day_date, r.roomID;
+END;
+$$ LANGUAGE plpgsql;
+
+-- disponibilité global
+SELECT * FROM get_rooms_disponibility(
+    '2026-03-11 00:00:00', -- Début de l'affichage
+    '2026-03-14 23:59:59', -- Fin de l'affichage
+    ARRAY[0, 3]            -- On cherche les réservations et occupations
+) d 
+where exists (select roomid from v_room where companyID='COMP000001' and v_room.status=0 and v_room.roomID = d.roomID)
+order by roomid asc;
+
+
+-- disponibilité détaillé
+SELECT * FROM get_room_calendar_with_hours(
+    '2026-03-11 00:00:00', -- Début de l'affichage
+    '2026-03-14 23:59:59', -- Fin de l'affichage
+    ARRAY[2, 3]            -- On cherche les réservations et occupations
+) d
+where exists (select roomid from v_room where companyID='COMP000001' and v_room.status=0 and v_room.roomID = d.roomID)
+ order by roomid asc;

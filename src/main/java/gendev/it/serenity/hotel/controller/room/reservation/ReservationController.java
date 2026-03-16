@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import gendev.it.serenity.common.controller.CommonController;
 import gendev.it.serenity.hotel.application.room.reservation.ReservationService;
+import gendev.it.serenity.hotel.domain.dto.room.reservation.RequestValidationResa;
 import gendev.it.serenity.hotel.domain.dto.room.reservation.ReservationDTO;
 
 @RestController
@@ -66,6 +68,17 @@ public class ReservationController extends CommonController<ReservationDTO, Rese
             @RequestParam String company) {
         try {
             return ResponseEntity.ok(getService().findDisponibility(company, state, start, end, page, size, field, sort, status));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        }
+    }
+
+    @PostMapping("/validateInitResa")
+    public ResponseEntity<?> validateInitResa(@RequestBody RequestValidationResa resa) {
+        try {
+            return ResponseEntity.ok(getService().validatePriceReservation(resa.getRoomid(), resa.getStart(), resa.getEnd()));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

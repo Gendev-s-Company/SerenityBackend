@@ -41,5 +41,23 @@ public class RoomController extends CommonController<RoomDTO,RoomService> {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 
         }
-    }    
+    }
+    // @GetMapping("/avalaible/{}")
+    // public ResponseEntity<?> findAvalaibleRoomByCompany(@RequestParam(name = "status", required = false) Integer status, @RequestParam String company,
+    //     @RequestParam(required = false, name = "state") Integer[] state, 
+    //     @RequestParam(required = false, name = "type") String type,
+    //     @RequestParam LocalDateTime start, @RequestParam LocalDateTime end
+    // ) {
+    //     try {
+
+    //         return ResponseEntity.ok(type == null || type.equals("global")
+    //             ? getService().findRoomAvalaibility(state, status, company, start, end)
+    //             : getService().findRoomDetailAvalaibility(state, status, company, start, end)
+    //     );
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+    //     }
+    // }
 }

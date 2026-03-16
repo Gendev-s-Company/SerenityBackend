@@ -182,13 +182,14 @@ BEGIN
         r.roomID,
         r.name,
         COALESCE(MAX(r.state), 0)::integer AS room_state,
-        COALESCE(MAX(res.state), 1)::integer AS reservation_state
+        COALESCE(MAX(res.state), 0)::integer AS reservation_state
     FROM room r
     LEFT JOIN reservation res 
         ON r.roomID = res.roomID
-        AND res.state = ANY(filter_status)
+        -- AND res.state = ANY(filter_status)
         AND res.startTime < search_end
         AND res.endTime > search_start
+    -- where res.state = ANY(filter_status)
     GROUP BY r.roomID, r.name
     ORDER BY r.roomID;
 END;
@@ -223,15 +224,15 @@ BEGIN
         d.day_date,
         r.roomID,
         r.name,
-        COALESCE(r.state, 1)::integer room_state,
-        COALESCE(res.state, 1)::integer reservation_state,
+        COALESCE(r.state, 0)::integer room_state,
+        COALESCE(res.state, 0)::integer reservation_state,
         res.startTime, -- Heure réelle en base
         res.endTime    -- Heure réelle en base
     FROM date_range d
     CROSS JOIN room r
     LEFT JOIN reservation res 
         ON r.roomID = res.roomID
-        AND res.state = ANY(filter_status)
+       -- AND res.state = ANY(filter_status)
         -- Logique de chevauchement : la réservation touche ce jour
         AND res.startTime < (d.day_date + interval '1 day')
         AND res.endTime > d.day_date
@@ -243,7 +244,7 @@ $$ LANGUAGE plpgsql;
 SELECT * FROM get_rooms_disponibility(
     '2026-03-11 00:00:00', -- Début de l'affichage
     '2026-03-14 23:59:59', -- Fin de l'affichage
-    ARRAY[2, 3]            -- On cherche les réservations et occupations
+    ARRAY[0, 3]            -- On cherche les réservations et occupations
 ) d 
 where exists (select roomid from v_room where companyID='COMP000001' and v_room.status=0 and v_room.roomID = d.roomID)
 order by roomid asc;

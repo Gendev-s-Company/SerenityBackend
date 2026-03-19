@@ -33,6 +33,18 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         // TODO Auto-generated constructor stub
     }
 
+    
+    @Override
+    public ReservationDTO save(ReservationDTO model) throws Exception {
+        // TODO Auto-generated method stub
+        BigDecimal accompte = calculAccompte(model.getPrice(), BigDecimal.valueOf(model.getAccountRated()));
+        if (accompte.compareTo(model.getAccountPaid()) == 0) {
+            model.setState(2);
+        }
+        return super.save(model);
+    }
+
+
     public void updateState(String id, Integer state) throws Exception {
         if (state == null)
             throw new Exception("veuillez indiquer le state");
@@ -101,9 +113,15 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
             result = hourPrice.multiply(BigDecimal.valueOf(hours));
         }
 
-        BigDecimal accompte = result.multiply(room.getRoomPrice().getAccountRate())
-                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        // BigDecimal accompte = result.multiply(room.getRoomPrice().getAccountRate())
+        //         .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        BigDecimal accompte = calculAccompte(result, room.getRoomPrice().getAccountRate());
+
         ResaPriceDTO res = new ResaPriceDTO(result, accompte, deadline);
         return res;
+    }
+    private BigDecimal calculAccompte(BigDecimal price, BigDecimal rate){
+        return price.multiply(rate)
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
     }
 }

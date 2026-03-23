@@ -59,4 +59,7 @@ public class ReservationDTO extends DTO<Reservation>{
             accountRated, accountPaid, AccountPaimentDeadline, userID, state, getStatus());
     }
     
+    public void setState(Integer state) {
+        this.state = state;
+    }
 }

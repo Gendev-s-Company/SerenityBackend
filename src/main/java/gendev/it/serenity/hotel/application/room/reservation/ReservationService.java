@@ -59,7 +59,9 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         Reservation toUpdate = resa.dtoToEntity();
         toUpdate.setState(state);
         toUpdate =  getJpa().save(toUpdate);
-        archivateReservation(toUpdate);
+        Reservation toArchive = toUpdate;
+        toArchive.setState(resa.getState());
+        archivateReservation(toArchive);
     }
 
     private void archivateReservation(Reservation resa) throws Exception{

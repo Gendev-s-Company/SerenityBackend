@@ -20,16 +20,20 @@ import gendev.it.serenity.hotel.domain.dto.room.reservation.ResaPriceDTO;
 import gendev.it.serenity.hotel.domain.dto.room.reservation.ReservationDTO;
 import gendev.it.serenity.hotel.infrastructure.entity.room.Room;
 import gendev.it.serenity.hotel.infrastructure.entity.room.reservation.Reservation;
+import gendev.it.serenity.hotel.infrastructure.entity.room.reservation.ReservationHistory;
 import gendev.it.serenity.hotel.infrastructure.repository.room.reservation.ReservationRepo;
+import jakarta.transaction.Transactional;
+
 import java.math.RoundingMode;
 
 @Service
 public class ReservationService extends CommonService<Reservation, ReservationDTO, String, ReservationRepo> {
     private final RoomService service;
-
-    public ReservationService(ReservationRepo jpa, RoomService service) {
+    private final ReservationHistoryService history;
+    public ReservationService(ReservationRepo jpa, RoomService service, ReservationHistoryService history) {
         super(jpa);
         this.service = service;
+        this.history = history;
         // TODO Auto-generated constructor stub
     }
 
@@ -44,7 +48,7 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         return super.save(model);
     }
 
-
+    @Transactional
     public void updateState(String id, Integer state) throws Exception {
         if (state == null)
             throw new Exception("veuillez indiquer le state");
@@ -54,8 +58,13 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         }
         Reservation toUpdate = resa.dtoToEntity();
         toUpdate.setState(state);
-        getJpa().save(toUpdate);
+        toUpdate =  getJpa().save(toUpdate);
+        archivateReservation(toUpdate);
+    }
 
+    private void archivateReservation(Reservation resa) throws Exception{
+        ReservationHistory archive = new ReservationHistory(resa.getReservationID(), LocalDateTime.now(), resa.getState(), 0);
+        history.getJpa().save(archive);
     }
 
     public List<ReservationDTO> findDisponibility(Integer status, String company, List<Integer> state,

@@ -191,5 +191,7 @@ create table reservation(
 create table reservationHistory(
     historyid serial primary key,
     reservationID varchar(10) not null references reservation(reservationID),
-    dateHistory timestamp not null default current_timestamp
+    dateHistory timestamp not null default current_timestamp    
 );
+alter table reservationHistory add column state integer default 0 check (state >= 0);
+alter table reservationHistory add column status integer default 0 check (status >= 0);

@@ -15,4 +15,5 @@ public interface RoomDetailDispoDTO {
     public Integer getReservation_state();
     public LocalDateTime getActual_arrival();
     public LocalDateTime getActual_departure();
+    public String getRoom_name();
 }

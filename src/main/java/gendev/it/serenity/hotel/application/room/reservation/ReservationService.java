@@ -58,8 +58,8 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         }
         Reservation toUpdate = resa.dtoToEntity();
         toUpdate.setState(state);
-        toUpdate =  getJpa().save(toUpdate);
-        Reservation toArchive = toUpdate;
+        Reservation toArchive =  getJpa().save(toUpdate);
+        toArchive = toArchive.entityToDTO().dtoToEntity();
         toArchive.setState(resa.getState());
         archivateReservation(toArchive);
     }

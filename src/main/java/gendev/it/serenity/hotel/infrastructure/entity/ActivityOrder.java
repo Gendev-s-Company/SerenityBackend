@@ -77,7 +77,7 @@ public class ActivityOrder extends BaseEntity<ActivityOrderDTO> {
         setPrice(dto.getPrice());
         setDuration(dto.getDuration());
         setDateOrder(dto.getDateOrder());
-        setState(state);
+        setState(dto.getState());
     }
 
     @Override

@@ -41,6 +41,24 @@ public class ActivityOrderController extends CommonController<ActivityOrderDTO, 
 
         }
     }
+    @GetMapping("/search/{page}/{size}")
+    public ResponseEntity<?> advancedSearch(@PathVariable("page") int page,@PathVariable("size") int size,
+            @RequestParam(required = false) String customer,
+            @RequestParam(required = false) String min_price,@RequestParam(required = false) String max_price,
+            @RequestParam(required = false) String start,@RequestParam(required = false) String end,
+            @RequestParam(defaultValue = "name", required = false) String field,
+            @RequestParam(defaultValue = "asc", required = false) String sort,
+            @RequestParam(required = false) Integer status,
+            @RequestParam Integer state,
+            @RequestParam String company) {
+        try {
+            return ResponseEntity.ok(getService().launchSearch(page, size, field, sort, status, company, state,customer, min_price, max_price, start, end));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        }
+    }
 
     @GetMapping("/byActivity")
     public ResponseEntity<?> findAllByActivity(@RequestParam(name = "status", required = false) Integer status,

@@ -49,7 +49,7 @@ public class UserService extends CommonService<Users, UserResponseDTO, String, U
         Users user =getJpa().findByPhone(loginDTO.getPhone());
 
         if (user == null) {
-            throw new Exception("Utilisateur non trouvé");
+            throw new Exception("Identifiants invalides");
         }
 
         boolean isMatch = verifyPassword(loginDTO.getPassword(), user.getPassword());
@@ -59,7 +59,7 @@ public class UserService extends CommonService<Users, UserResponseDTO, String, U
         if (isMatch) {
             return user.entityToDTO();
         } else {
-            throw new Exception("Mot de passe incorrect");
+            throw new Exception("Identifiants invalides");
         }
 
         // return user.entityToDTO();

@@ -258,3 +258,68 @@ SELECT * FROM get_room_calendar_with_hours(
 ) d
 where exists (select roomid from v_room where companyID='COMP000001' and v_room.status=0 and v_room.roomID = d.roomID)
  order by roomid asc;
+
+
+-- ////////////////////// RESTAURATION \\\\\\\\\\\\\\\\\\\\
+
+-- type de table trigger
+CREATE OR REPLACE FUNCTION generate_table_type_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.tabletypeid := 'TTYP' || LPAD(nextval('table_type_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER table_type_id
+BEFORE INSERT ON tabletype
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_table_type_id();
+
+
+-- table trigger
+CREATE OR REPLACE FUNCTION generate_table_seq_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.tableID := 'TTAB' || LPAD(nextval('table_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER table_seq_id
+BEFORE INSERT ON restaurant_table
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_table_seq_id();
+
+
+-- table photo
+CREATE OR REPLACE FUNCTION generate_table_photo_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.photoID := 'TPIC' || LPAD(nextval('tablePhoto_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tablePhoto
+BEFORE INSERT ON tablePhoto
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_table_photo_id();
+
+-- table occupation
+CREATE OR REPLACE FUNCTION generate_table_occupation_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.occupationID := 'TOCC' || LPAD(nextval('tableoccupation_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tableOccupation
+BEFORE INSERT ON table_occupation
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_table_occupation_id();

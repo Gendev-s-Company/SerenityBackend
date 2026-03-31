@@ -195,3 +195,45 @@ create table reservationHistory(
 );
 alter table reservationHistory add column state integer default 0 check (state >= 0);
 alter table reservationHistory add column status integer default 0 check (status >= 0);
+
+
+-- ////////////////////// RESTAURATION \\\\\\\\\\\\\\\\\\\\
+
+create sequence table_type_seq start with 1;
+create table tabletype(
+    tabletypeid varchar(10) not null primary key,
+    name varchar(100) not null,
+    description text,
+    companyID  varchar(10) not null references company(companyID),
+    status integer check (status >= 0)
+);
+
+create sequence table_seq start with 1;
+create table restaurant_table(
+    tableID varchar(10) not null primary key,
+    name varchar(100) not null,
+    description text,
+    tabletypeid  varchar(10) not null references tabletype(tabletypeid),
+    capacity integer check (capacity >= 0),
+    status integer check (status >= 0)
+);
+
+CREATE SEQUENCE tablePhoto_seq START 1;
+create table tablePhoto(
+    photoID  varchar(10) primary key,
+    tableID varchar(10) not null references restaurant_table(tableID),
+    path varchar(500) not null,
+    status integer check (status >= 0)
+);
+
+create sequence tableoccupation_seq start with 1;
+create table table_occupation(
+    occupationID varchar(10) not null primary key,
+    tableID varchar(10) not null references restaurant_table(tableID),
+    customerID  varchar(10) not null references customer(customerID),
+    userID varchar(10) not null references users(userID),
+    startTime timestamp not null,
+    endTime timestamp check (startTime < endTime),
+    state integer check (state >= 0),
+    status integer check (status >= 0)
+);

@@ -323,3 +323,81 @@ CREATE TRIGGER tableOccupation
 BEFORE INSERT ON table_occupation
     FOR EACH ROW
         EXECUTE FUNCTION generate_table_occupation_id();
+
+-- //////////table function\\\\\\\\\
+
+
+CREATE OR REPLACE FUNCTION get_table_disponibility(
+    search_start timestamp, 
+    search_end timestamp, 
+    filter_status integer[] -- On accepte un tableau d'entiers ex: '{1,2,3}'
+)
+RETURNS TABLE (
+    tableid varchar,
+    name varchar,
+    table_state integer,
+    reservation_state integer
+) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT 
+        r.tableID,
+        r.name,
+        COALESCE(MAX(r.state), 0)::integer AS table_state,
+        COALESCE(MAX(res.state), 0)::integer AS reservation_state
+    FROM restaurant_table r
+    LEFT JOIN table_occupation res 
+        ON r.tableID = res.tableID
+        -- AND res.state = ANY(filter_status)
+        AND res.startTime < search_end
+        AND res.endTime > search_start
+    -- where res.state = ANY(filter_status)
+    GROUP BY r.tableID, r.name
+    ORDER BY r.tableID;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- détail disponibilité pour une table
+CREATE OR REPLACE FUNCTION get_table_calendar_with_hours(
+    search_start timestamp, 
+    search_end timestamp, 
+    filter_status integer[]
+)
+RETURNS TABLE (
+    day timestamp,
+    tableID varchar,
+    table_name varchar,
+    table_state integer,
+    reservation_state integer,
+    actual_arrival timestamp,  -- Précision de l'heure d'arrivée
+    actual_departure timestamp -- Précision de l'heure de départ
+) AS $$
+BEGIN
+    RETURN QUERY
+    WITH date_range AS (
+        SELECT generate_series(
+            date_trunc('day', search_start), 
+            date_trunc('day', search_end), 
+            '1 day'::interval
+        )::timestamp AS day_date
+    )
+    SELECT 
+        d.day_date,
+        r.tableID,
+        r.name,
+        COALESCE(r.state, 0)::integer table_state,
+        COALESCE(res.state, 0)::integer reservation_state,
+        res.startTime, -- Heure réelle en base
+        res.endTime    -- Heure réelle en base
+    FROM date_range d
+    CROSS JOIN restaurant_table r
+    LEFT JOIN table_occupation res 
+        ON r.tableID = res.tableID
+       -- AND res.state = ANY(filter_status)
+        -- Logique de chevauchement : la réservation touche ce jour
+        AND res.startTime < (d.day_date + interval '1 day')
+        AND res.endTime > d.day_date
+    ORDER BY d.day_date, r.tableID;
+END;
+$$ LANGUAGE plpgsql;

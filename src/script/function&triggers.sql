@@ -343,7 +343,7 @@ BEGIN
     SELECT 
         r.tableID,
         r.name,
-        COALESCE(MAX(r.state), 0)::integer AS table_state,
+        COALESCE(MAX(r.status), 0)::integer AS table_state,
         COALESCE(MAX(res.state), 0)::integer AS reservation_state
     FROM restaurant_table r
     LEFT JOIN table_occupation res 
@@ -386,7 +386,7 @@ BEGIN
         d.day_date,
         r.tableID,
         r.name,
-        COALESCE(r.state, 0)::integer table_state,
+        COALESCE(r.status, 0)::integer table_state,
         COALESCE(res.state, 0)::integer reservation_state,
         res.startTime, -- Heure réelle en base
         res.endTime    -- Heure réelle en base
@@ -401,3 +401,22 @@ BEGIN
     ORDER BY d.day_date, r.tableID;
 END;
 $$ LANGUAGE plpgsql;
+
+-- disponibilité global
+SELECT * FROM get_table_disponibility(
+    '2026-03-11 00:00:00', -- Début de l'affichage
+    '2026-03-14 23:59:59', -- Fin de l'affichage
+    ARRAY[0, 3]            -- On cherche les réservations et occupations
+) d 
+where exists (select tableid from v_table where companyID='COMP000001' and v_table.status=0 and v_table.tableID = d.tableID)
+order by tableid asc;
+
+
+-- disponibilité détaillé
+SELECT * FROM get_table_calendar_with_hours(
+    '2026-03-11 00:00:00', -- Début de l'affichage
+    '2026-03-14 23:59:59', -- Fin de l'affichage
+    ARRAY[2, 3]            -- On cherche les réservations et occupations
+) d
+where exists (select tableid from v_table where companyID='COMP000001' and v_table.status=0 and v_table.tableID = d.tableID)
+ order by tableid asc;

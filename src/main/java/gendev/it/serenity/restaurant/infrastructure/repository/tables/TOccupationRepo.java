@@ -29,10 +29,10 @@ public interface TOccupationRepo extends CommonRepository<TableOccupation, Strin
     Page<TableOccupation> findDisponibility(int status, String company, List<Integer> state, 
         LocalDateTime start, LocalDateTime end, Pageable pageable);
     
-    @Query("SELECT r FROM TableOccupation r WHERE (r.status = :status AND r.table.tabletype.id = :company) AND (r.state IN :state) AND (r.starttime >= :start)")
+    @Query("SELECT r FROM TableOccupation r WHERE (r.status = :status AND r.table.tabletype.company.id = :company) AND (r.state IN :state) AND (r.starttime >= :start)")
     Page<TableOccupation> findDisponibilityDateEndnull(int status, String company, List<Integer> state, 
         LocalDateTime start, Pageable pageable);
 
-    @Query("SELECT r FROM TableOccupation r WHERE (r.status = :status AND r.table.tabletype.id = :company) AND (r.state IN :state) AND (r.endtime <= :end)")
+    @Query("SELECT r FROM TableOccupation r WHERE (r.status = :status AND r.table.tabletype.company.id = :company) AND (r.state IN :state) AND (r.endtime <= :end)")
     Page<TableOccupation> findDisponibilityDateStartnull(int status, String company, List<Integer> state, LocalDateTime end, Pageable pageable);
 }

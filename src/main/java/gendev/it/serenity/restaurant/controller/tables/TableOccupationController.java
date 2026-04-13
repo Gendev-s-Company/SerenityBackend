@@ -60,7 +60,7 @@ public class TableOccupationController extends CommonController<TOccupationDTO, 
             @PathVariable("size") int size,
             @RequestParam List<Integer> state,
             @RequestParam(required = false, name = "start") LocalDateTime start, @RequestParam(required = false, name = "end") LocalDateTime end,
-            @RequestParam(name = "field", defaultValue = "roomID", required = false) String field,
+            @RequestParam(name = "field", defaultValue = "occupationID", required = false) String field,
             @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
             @RequestParam(name = "status", required = false) Integer status,
             @RequestParam String company) {

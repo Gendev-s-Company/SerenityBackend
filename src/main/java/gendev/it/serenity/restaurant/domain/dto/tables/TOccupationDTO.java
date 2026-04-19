@@ -39,7 +39,7 @@ public class TOccupationDTO extends DTO<TableOccupation>{
     @Override
     public TableOccupation dtoToEntity() throws Exception {
         // TODO Auto-generated method stub
-        return new TableOccupation(occupationID, tableID, customerID, userID, starttime, endtime, getStatus(), getStatus());
+        return new TableOccupation(occupationID, tableID, customerID, userID, starttime, endtime, state, getStatus());
     }
 
     

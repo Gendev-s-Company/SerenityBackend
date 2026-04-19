@@ -31,11 +31,13 @@ public class RoomController extends CommonController<RoomDTO,RoomService> {
         @RequestParam LocalDateTime start, @RequestParam LocalDateTime end
     ) {
         try {
-
-            return ResponseEntity.ok(type == null || type.equals("global")
-                ? getService().findRoomAvalaibility(state, status, company, start, end)
-                : getService().findRoomDetailAvalaibility(state, status, company, start, end)
-        );
+            if(type == null || type.equals("global")){
+                System.out.println("etoo ehhhh");
+                return ResponseEntity.ok(getService().findRoomAvalaibility(state, status, company, start, end));
+            }
+             System.out.println("etoo nefa   ehhhh");
+            return ResponseEntity.ok( getService().findRoomDetailAvalaibility(state, status, company, start, end));
+        
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

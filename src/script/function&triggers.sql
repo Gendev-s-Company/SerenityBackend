@@ -407,6 +407,7 @@ CREATE OR REPLACE FUNCTION get_table_day_with_hours(
     filter_status integer[]
 )
 RETURNS TABLE (
+    day timestamp,
     tableID varchar,
     table_name varchar,
     table_state integer,
@@ -418,6 +419,7 @@ BEGIN
     RETURN QUERY
     WITH processed_reservations AS (
         SELECT 
+            date_trunc('day', search_start)::timestamp AS day_date, 
             r.tableID,
             r.name,
             COALESCE(r.status, 0)::integer AS t_state,
@@ -436,9 +438,11 @@ BEGIN
         
         UNION ALL
         SELECT 
-            sub.tableID, sub.name, sub.t_state, 0, sub.gap_start, sub.gap_end
+            date_trunc('day', search_start)::timestamp AS day_date, sub.tableID, sub.name, sub.t_state, 0, sub.gap_start, sub.gap_end
         FROM (
             SELECT 
+
+            date_trunc('day', search_start)::timestamp AS day_date, 
                 t.tableID,
                 t.name,
                 COALESCE(t.status, 0)::integer AS t_state,
@@ -451,7 +455,8 @@ BEGIN
         WHERE sub.gap_start < sub.gap_end
         
         UNION ALL
-        SELECT 
+        SELECT
+        date_trunc('day', search_start)::timestamp AS day_date,  
             t.tableID, t.name, COALESCE(t.status, 0)::integer, 0, MAX(p.end_t), search_end
         FROM restaurant_table t
         JOIN processed_reservations p ON t.tableID = p.tableID

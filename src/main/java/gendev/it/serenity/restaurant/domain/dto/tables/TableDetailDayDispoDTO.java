@@ -3,6 +3,8 @@ package gendev.it.serenity.restaurant.domain.dto.tables;
 import java.time.LocalDateTime;
 
 public interface TableDetailDayDispoDTO {
+    public LocalDateTime getDay();
+
     public String getTableID();
 
     public String getName();

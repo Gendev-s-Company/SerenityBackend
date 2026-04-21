@@ -491,4 +491,4 @@ where exists (select tableid from v_table where companyID='COMP000001' and v_tab
     ARRAY[0, 3]            -- On cherche les réservations et occupations
 ) d 
 where exists (select tableid from v_table where companyID='COMP000001' and v_table.status=0 and v_table.tableID = d.tableID)
-order by tableid,actual_arrival asc;
+and d.reservation_state in (0,1,4,5) order by tableid,actual_arrival asc;

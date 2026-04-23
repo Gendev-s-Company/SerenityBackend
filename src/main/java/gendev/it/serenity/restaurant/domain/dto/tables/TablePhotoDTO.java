@@ -34,7 +34,7 @@ public class TablePhotoDTO extends DTO<TablePhoto> {
     }
      public void setTableID(String tableid) throws Exception {
           if (tableid == null && !isSkipValidation()) {
-            throw new Exception("Veuillez remplir le champ chambre");
+            throw new Exception("Veuillez remplir le champ table");
         }
         this.tableID = tableid;
     }

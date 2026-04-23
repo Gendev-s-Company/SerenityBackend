@@ -497,3 +497,69 @@ where exists (select tableid from v_table where companyID='COMP000001' and v_tab
 ) d 
 where exists (select tableid from v_table where companyID='COMP000001' and v_table.status=0 and v_table.tableID = d.tableID)
 and d.reservation_state in (0,1,4,5) order by tableid,actual_arrival asc;
+
+
+--trigger table dish et company
+
+
+-- Dish type
+CREATE OR REPLACE FUNCTION generate_dishType_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.typeID := 'DTYP' || LPAD(nextval('dishType_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER dishType_trigger
+BEFORE INSERT ON dishType
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_dishType_id();
+
+-- Dish 
+CREATE OR REPLACE FUNCTION generate_dish_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.dishID := 'DISH' || LPAD(nextval('dish_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER dish_trigger
+BEFORE INSERT ON dish
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_dish_id();
+
+-- DishOrder 
+CREATE OR REPLACE FUNCTION generate_dishorder_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.orderID := 'DORD' || LPAD(nextval('dishOrder_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER dishorder_trigger
+BEFORE INSERT ON dishOrder
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_dishorder_id();
+
+
+
+-- DishOrder Details
+CREATE OR REPLACE FUNCTION generate_dishorderdetails_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.orderDetailsID := 'DETO' || LPAD(nextval('dishOrderDetails_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER dishorderdetails_trigger
+BEFORE INSERT ON dishOrderDetails
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_dishorderdetails_id();

@@ -237,3 +237,63 @@ create table table_occupation(
     state integer check (state >= 0),
     status integer check (status >= 0)
 );
+
+-- //////PLAT RESTO\\\\\
+create sequence dishType_seq start with 1;
+create table dishType(
+    typeID varchar(10) not null primary key,
+    name varchar(100) not null,
+    description text,
+    companyID varchar(10) not null references company(companyID),
+    status integer check (status >= 0)
+);
+
+create sequence dish_seq start with 1;
+create table dish(
+    dishID varchar(10) not null primary key,
+    name varchar(100) not null,
+    description text,
+    typeID varchar(10) not null references dishType(typeID),
+    state integer check (state >= 0),
+    status integer check (status >= 0)
+);
+
+
+create table dishPhoto(
+    photoID  serial primary key,
+    dishID varchar(10) not null references dish(dishID),
+    path varchar(500) not null,
+    status integer check (status >= 0)
+);
+
+create table dishPrice(
+    priceID  serial primary key,
+    dishID varchar(10) not null references dish(dishID),
+    price NUMERIC(15, 2) not null DEFAULT 0,
+    dateChanged date default current_date,
+    status integer check (status >= 0)
+);
+
+create sequence dishOrder_seq start with 1;
+create table dishOrder(
+    orderID varchar(10) not null primary key,
+    tableOccupationID varchar(10) not null references table_occupation(occupationID),
+    totalPrice NUMERIC(15, 2) not null DEFAULT 0,
+    dateOrder timestamp not null default current_timestamp,
+    state integer check (state >= 0),
+    status integer check (status >= 0)
+);
+
+
+create sequence dishOrderDetails_seq start with 1;
+create table dishOrderDetails(
+    orderDetailsID varchar(10) not null primary key,
+    dishID varchar(10) not null references dish(dishID),
+    orderID varchar(10) not null references dishOrder(orderID),
+    unitPrice NUMERIC(15, 2) not null DEFAULT 0,
+    quantity integer,
+    userID varchar(10) not null references users(userID), --employe nandray commande
+    dateOrder timestamp not null default current_timestamp,
+    state integer check (state >= 0),
+    status integer check (status >= 0)
+);

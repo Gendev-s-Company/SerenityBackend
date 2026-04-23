@@ -359,7 +359,49 @@ $$ LANGUAGE plpgsql;
 
 
 -- détail disponibilité pour une table
-CREATE OR REPLACE FUNCTION get_table_calendar_with_hours(
+-- CREATE OR REPLACE FUNCTION get_table_calendar_with_hours(
+--     search_start timestamp, 
+--     search_end timestamp, 
+--     filter_status integer[]
+-- )
+-- RETURNS TABLE (
+--     day timestamp,
+--     tableID varchar,
+--     table_name varchar,
+--     table_state integer,
+--     reservation_state integer,
+--     actual_arrival timestamp,  -- Précision de l'heure d'arrivée
+--     actual_departure timestamp -- Précision de l'heure de départ
+-- ) AS $$
+-- BEGIN
+--     RETURN QUERY
+--     WITH date_range AS (
+--         SELECT generate_series(
+--             date_trunc('day', search_start), 
+--             date_trunc('day', search_end), 
+--             '1 day'::interval
+--         )::timestamp AS day_date
+--     )
+--     SELECT 
+--         d.day_date,
+--         r.tableID,
+--         r.name,
+--         COALESCE(r.status, 0)::integer table_state,
+--         COALESCE(res.state, 0)::integer reservation_state,
+--         res.startTime, -- Heure réelle en base
+--         res.endTime    -- Heure réelle en base
+--     FROM date_range d
+--     CROSS JOIN restaurant_table r
+--     LEFT JOIN table_occupation res 
+--         ON r.tableID = res.tableID
+--        -- AND res.state = ANY(filter_status)
+--         -- Logique de chevauchement : la réservation touche ce jour
+--         AND res.startTime < (d.day_date + interval '1 day')
+--         AND res.endTime > d.day_date
+--     ORDER BY d.day_date, r.tableID;
+-- END;
+-- $$ LANGUAGE plpgsql;
+CREATE OR REPLACE FUNCTION get_table_day_with_hours(
     search_start timestamp, 
     search_end timestamp, 
     filter_status integer[]
@@ -370,37 +412,62 @@ RETURNS TABLE (
     table_name varchar,
     table_state integer,
     reservation_state integer,
-    actual_arrival timestamp,  -- Précision de l'heure d'arrivée
-    actual_departure timestamp -- Précision de l'heure de départ
+    actual_arrival timestamp,
+    actual_departure timestamp
 ) AS $$
 BEGIN
     RETURN QUERY
-    WITH date_range AS (
-        SELECT generate_series(
-            date_trunc('day', search_start), 
-            date_trunc('day', search_end), 
-            '1 day'::interval
-        )::timestamp AS day_date
+    WITH processed_reservations AS (
+        SELECT 
+            date_trunc('day', search_start)::timestamp AS day_date, 
+            r.tableID,
+            r.name,
+            COALESCE(r.status, 0)::integer AS t_state,
+            COALESCE(res.state, 0)::integer AS r_state,
+            GREATEST(res.startTime, search_start) AS start_t,
+            LEAST(res.endTime, search_end) AS end_t
+        FROM restaurant_table r
+        LEFT JOIN table_occupation res 
+            ON r.tableID = res.tableID
+            AND res.startTime < search_end
+            AND res.endTime > search_start
+        WHERE (filter_status IS NULL OR r.status = ANY(filter_status))
+    ),
+    timeline AS (
+        SELECT * FROM processed_reservations WHERE start_t IS NOT NULL
+        
+        UNION ALL
+        SELECT 
+            date_trunc('day', search_start)::timestamp AS day_date, sub.tableID, sub.name, sub.t_state, 0, sub.gap_start, sub.gap_end
+        FROM (
+            SELECT 
+
+            date_trunc('day', search_start)::timestamp AS day_date, 
+                t.tableID,
+                t.name,
+                COALESCE(t.status, 0)::integer AS t_state,
+                COALESCE(LAG(p.end_t) OVER (PARTITION BY t.tableID ORDER BY p.start_t), search_start) AS gap_start,
+                COALESCE(p.start_t, search_end) AS gap_end
+            FROM restaurant_table t
+            LEFT JOIN processed_reservations p ON t.tableID = p.tableID
+            WHERE (filter_status IS NULL OR t.status = ANY(filter_status))
+        ) sub
+        WHERE sub.gap_start < sub.gap_end
+        
+        UNION ALL
+        SELECT
+        date_trunc('day', search_start)::timestamp AS day_date,  
+            t.tableID, t.name, COALESCE(t.status, 0)::integer, 0, MAX(p.end_t), search_end
+        FROM restaurant_table t
+        JOIN processed_reservations p ON t.tableID = p.tableID
+        GROUP BY t.tableID, t.name, t.status
+        HAVING MAX(p.end_t) < search_end
     )
-    SELECT 
-        d.day_date,
-        r.tableID,
-        r.name,
-        COALESCE(r.status, 0)::integer table_state,
-        COALESCE(res.state, 0)::integer reservation_state,
-        res.startTime, -- Heure réelle en base
-        res.endTime    -- Heure réelle en base
-    FROM date_range d
-    CROSS JOIN restaurant_table r
-    LEFT JOIN table_occupation res 
-        ON r.tableID = res.tableID
-       -- AND res.state = ANY(filter_status)
-        -- Logique de chevauchement : la réservation touche ce jour
-        AND res.startTime < (d.day_date + interval '1 day')
-        AND res.endTime > d.day_date
-    ORDER BY d.day_date, r.tableID;
+    SELECT * FROM timeline
+    ORDER BY tableID, actual_arrival;
 END;
 $$ LANGUAGE plpgsql;
+
 
 -- disponibilité global
 SELECT * FROM get_table_disponibility(
@@ -412,7 +479,7 @@ where exists (select tableid from v_table where companyID='COMP000001' and v_tab
 order by tableid asc;
 
 
--- disponibilité détaillé
+-- disponibilité détaillé par jour
 SELECT * FROM get_table_calendar_with_hours(
     '2026-03-11 00:00:00', -- Début de l'affichage
     '2026-03-14 23:59:59', -- Fin de l'affichage
@@ -420,3 +487,79 @@ SELECT * FROM get_table_calendar_with_hours(
 ) d
 where exists (select tableid from v_table where companyID='COMP000001' and v_table.status=0 and v_table.tableID = d.tableID)
  order by tableid asc;
+
+
+ --disponibilité détaillé pour un jour donnée
+ SELECT * FROM get_table_day_with_hours(
+    '2026-04-20 00:00:00', -- Début de l'affichage
+    '2026-04-20 23:59:59', -- Fin de l'affichage
+    ARRAY[0, 3]            -- On cherche les réservations et occupations
+) d 
+where exists (select tableid from v_table where companyID='COMP000001' and v_table.status=0 and v_table.tableID = d.tableID)
+and d.reservation_state in (0,1,4,5) order by tableid,actual_arrival asc;
+
+
+--trigger table dish et company
+
+
+-- Dish type
+CREATE OR REPLACE FUNCTION generate_dishType_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.typeID := 'DTYP' || LPAD(nextval('dishType_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER dishType_trigger
+BEFORE INSERT ON dishType
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_dishType_id();
+
+-- Dish 
+CREATE OR REPLACE FUNCTION generate_dish_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.dishID := 'DISH' || LPAD(nextval('dish_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER dish_trigger
+BEFORE INSERT ON dish
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_dish_id();
+
+-- DishOrder 
+CREATE OR REPLACE FUNCTION generate_dishorder_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.orderID := 'DORD' || LPAD(nextval('dishOrder_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER dishorder_trigger
+BEFORE INSERT ON dishOrder
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_dishorder_id();
+
+
+
+-- DishOrder Details
+CREATE OR REPLACE FUNCTION generate_dishorderdetails_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.orderDetailsID := 'DETO' || LPAD(nextval('dishOrderDetails_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER dishorderdetails_trigger
+BEFORE INSERT ON dishOrderDetails
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_dishorderdetails_id();

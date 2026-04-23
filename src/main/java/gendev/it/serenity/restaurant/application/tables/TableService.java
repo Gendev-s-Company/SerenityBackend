@@ -16,31 +16,36 @@ import gendev.it.serenity.restaurant.infrastructure.entity.tables.RestaurantTabl
 import gendev.it.serenity.restaurant.infrastructure.repository.tables.TableRepo;
 
 @Service
-public class TableService extends CommonService<RestaurantTable, TableDTO, String, TableRepo>{
+public class TableService extends CommonService<RestaurantTable, TableDTO, String, TableRepo> {
 
     public TableService(TableRepo jpa) {
         super(jpa);
-        //TODO Auto-generated constructor stub
+        // TODO Auto-generated constructor stub
     }
 
     /**
      * 
-     * @param state -state chambre pour définir la liste des statuts à récupérer libre, occupé, reserver...
+     * @param state   -state chambre pour définir la liste des statuts à récupérer
+     *                libre, occupé, reserver...
      * @param status
      * @param company
      * @param start
      * @param end
      * @return
      */
-    public List<TableDsiponibilityDTO> findTableAvalaibility(Integer[] state, Integer status, String company, LocalDateTime start, LocalDateTime end){
+    public List<TableDsiponibilityDTO> findTableAvalaibility(Integer[] state, Integer status, String company,
+            LocalDateTime start, LocalDateTime end) {
         status = status == null ? 0 : status;
         state = state == null ? Utils.roomState : state;
         return getJpa().findDisponibility(state, start, end, status, company);
     }
 
-    public List<TableDetailDispoDTO> findTableDetailAvalaibility(Integer[] state, Integer status, String company, LocalDateTime start, LocalDateTime end){
+    public List<?> findTableDetailAvalaibility(Integer[] state, Integer status, String company,
+            LocalDateTime start, LocalDateTime end) {
         status = status == null ? 0 : status;
         state = state == null ? Utils.roomState : state;
-        return getJpa().findDetailDisponibility(state, start, end, status, company);
+        boolean isSameDate = start.toLocalDate().equals(end.toLocalDate());
+        return isSameDate ? getJpa().findDetailDayDisponibility(state, start, end, status, company)
+                : getJpa().findDetailDisponibility(state, start, end, status, company);
     }
 }

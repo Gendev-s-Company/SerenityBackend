@@ -30,7 +30,7 @@ public class Dish extends BaseEntity<DishDTO> {
     @Column
     private String description;
     @ManyToOne
-    @JoinColumn(name = "typeid", nullable = false)
+    @JoinColumn(name = "typeid")
     private DishType type;
     private int state;
 

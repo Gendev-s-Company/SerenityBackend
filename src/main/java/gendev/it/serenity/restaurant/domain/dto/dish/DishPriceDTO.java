@@ -28,7 +28,7 @@ public class DishPriceDTO extends DTO<DishPrice> {
 
     public void setDishID(String dishID) throws Exception {
         if (!isSkipValidation() && ( dishID == null || dishID.isBlank())) {
-            throw new Exception("veuillez attribuer un identifiant au plat");
+            throw new Exception("veuillez remplir le dishID");
         }
         this.dishID = dishID;
     }

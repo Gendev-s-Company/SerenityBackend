@@ -41,6 +41,10 @@ public class CommonService<T extends BaseEntity, D extends DTO, ID, JPA extends 
                 .orElseThrow(() -> new Exception("ID introuvable ou inactif : " + id));
     }
 
+    public T findOneByIdAndStatus(ID id, Integer status) throws Exception {
+        return findByIdAndStatus(id, status);
+    }
+
     @Transactional
     public D update(D model, ID id, Integer status) throws Exception {
         T init = findByIdAndStatus(id, status);

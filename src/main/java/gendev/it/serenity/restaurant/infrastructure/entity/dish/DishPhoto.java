@@ -37,7 +37,7 @@ public class DishPhoto extends BaseEntity<DishPhotoDTO>{
         setStatus(status);
     }
     @Override
-    public Object getId() {
+    public Integer getId() {
         // TODO Auto-generated method stub
         return photoID;
     }

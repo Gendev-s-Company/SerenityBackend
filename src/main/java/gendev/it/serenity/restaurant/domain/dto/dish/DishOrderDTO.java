@@ -46,12 +46,17 @@ public class DishOrderDTO extends DTO<DishOrder> {
         }
         DishOrder order = new DishOrder(totalPrice, dateOrder, state, table, getStatus());
         if (details != null && details.size() > 0) {
+            // attachement des details de commande à la commande mère
             attachOrder(order, details);
+            // calcul du prix total
             order.calculateTotalPrice();
         }
         return order;
     }
 
+    // on boucle la liste des details commande dto en les convertissant en entity
+    // on le rattache chacun a la commande mere
+    // on attache la liste obtenu dans la commande mere
     private void attachOrder(DishOrder order, List<DishOrderDetailsDTO> details) {
         List<DishOrderDetails> list = details.stream()
                 .map(row -> {

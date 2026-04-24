@@ -98,6 +98,7 @@ public class DishOrder extends BaseEntity<DishOrderDTO> {
         this.details.add(detail);
     }
 
+    // calcul du prix total d'une commande
     public void calculateTotalPrice() {
         BigDecimal total = new BigDecimal(0);
         for (int i = 0; i < details.size(); i++) {

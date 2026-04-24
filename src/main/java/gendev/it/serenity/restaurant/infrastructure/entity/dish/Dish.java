@@ -1,16 +1,25 @@
 package gendev.it.serenity.restaurant.infrastructure.entity.dish;
 
+import java.util.List;
+
+import gendev.it.serenity.common.application.PhotoHandler;
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
+import gendev.it.serenity.hotel.domain.dto.room.RoomPhotoDTO;
+import gendev.it.serenity.hotel.infrastructure.entity.room.RoomPhoto;
+import gendev.it.serenity.hotel.infrastructure.entity.room.RoomPrice;
 import gendev.it.serenity.restaurant.domain.dto.dish.DishDTO;
+import gendev.it.serenity.restaurant.domain.dto.dish.DishPhotoDTO;
 import gendev.it.serenity.restaurant.domain.dto.dish.DishTypeDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,9 +39,19 @@ public class Dish extends BaseEntity<DishDTO> {
     @Column
     private String description;
     @ManyToOne
-    @JoinColumn(name = "typeid", nullable = false)
+    @JoinColumn(name = "typeid")
     private DishType type;
     private int state;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dishid", insertable = false, updatable = false)
+    private List<DishPhoto> photos;
+    /*
+     * Récupération uniquement de la liste des prix
+     */
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dishid", insertable = false, updatable = false)
+    private List<DishPrice> dishPrices;
 
     public Dish(String dishID, String name, String description, DishType type, int state, int status) {
         this.dishID = dishID;
@@ -65,7 +84,19 @@ public class Dish extends BaseEntity<DishDTO> {
         // TODO Auto-generated method stub
 
         DishTypeDTO t = type != null && type.getTypeID() != null ? type.entityToDTO() : null;
-        return new DishDTO(dishID, name, description, t, state, getStatus());
+        DishDTO dto = new DishDTO(dishID, name, description, t, state, getStatus());
+        List<DishPhotoDTO> list;
+        try {
+            PhotoHandler<DishPhoto, DishPhotoDTO> picHandler = new PhotoHandler<DishPhoto, DishPhotoDTO>();
+            list = picHandler.ListEntityToListDtof(photos);
+            dto.setPhotos(list);
+            dto.setPrice(dto.findLastPrice(dishPrices));
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.out.println(e.getMessage());
+            // e.printStackTrace();
+        }
+        return dto;
     }
 
 }

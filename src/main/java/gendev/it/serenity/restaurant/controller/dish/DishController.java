@@ -3,6 +3,7 @@ package gendev.it.serenity.restaurant.controller.dish;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,8 @@ public class DishController extends CommonController<DishDTO, DishService> {
     }
 
     @PutMapping("/update/state/{id}")
-    public ResponseEntity<?> updateState(@PathVariable String id, @RequestParam(name = "state", required = false) Integer state) {
+    public ResponseEntity<?> updateState(@PathVariable String id,
+            @RequestParam(name = "state", required = false) Integer state) {
         try {
             getService().updateState(id, state);
             return ResponseEntity.ok("Modification réussi");
@@ -35,5 +37,7 @@ public class DishController extends CommonController<DishDTO, DishService> {
 
         }
     }
+
+   
 
 }

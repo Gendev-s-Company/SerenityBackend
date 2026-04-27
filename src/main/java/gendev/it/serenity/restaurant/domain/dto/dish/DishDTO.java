@@ -50,6 +50,10 @@ public class DishDTO extends DTO<Dish> {
         type.setSkipValidation(true);
         this.type = type;
     }
+    public void removeType() {
+        this.type = null;
+    }
+    
 
     public void setState(int state) {
         this.state = state;

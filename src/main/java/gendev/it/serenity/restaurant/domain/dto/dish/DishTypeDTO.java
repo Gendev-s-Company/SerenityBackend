@@ -1,5 +1,7 @@
 package gendev.it.serenity.restaurant.domain.dto.dish;
 
+import java.util.List;
+
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.restaurant.infrastructure.entity.dish.DishType;
 import gendev.it.serenity.users.domain.dto.CompanyDTO;
@@ -17,6 +19,7 @@ public class DishTypeDTO extends DTO<DishType> {
     private String name;
     private String description;
     private CompanyDTO company;
+    private List<DishDTO> dishes;
 
     public DishTypeDTO(String typeID, String name, String description, CompanyDTO company, int status) {
         this.typeID = typeID;
@@ -24,6 +27,14 @@ public class DishTypeDTO extends DTO<DishType> {
         this.description = description;
         this.company = company;
         setStatus(status);
+    }
+    public DishTypeDTO(String typeID, String name, String description, CompanyDTO company, int status, List<DishDTO> list) {
+        this.typeID = typeID;
+        this.name = name;
+        this.description = description;
+        this.company = company;
+        setStatus(status);
+        this.dishes = list;
     }
 
     public void setName(String name) throws Exception {
@@ -41,6 +52,9 @@ public class DishTypeDTO extends DTO<DishType> {
         this.company = company;
     }
 
+    public void setDishes(List<DishDTO> dishes) {
+        this.dishes = dishes;
+    }
     @Override
     public DishType dtoToEntity() throws Exception {
         // TODO Auto-generated method stub

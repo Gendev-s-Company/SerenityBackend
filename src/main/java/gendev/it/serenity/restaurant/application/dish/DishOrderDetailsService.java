@@ -10,6 +10,7 @@ import gendev.it.serenity.common.utils.State;
 import gendev.it.serenity.restaurant.domain.dto.dish.DishOrderDetailsDTO;
 import gendev.it.serenity.restaurant.infrastructure.entity.dish.DishOrderDetails;
 import gendev.it.serenity.restaurant.infrastructure.repository.dish.DishOrderDetailsRepo;
+import jakarta.transaction.Transactional;
 
 @Service
 public class DishOrderDetailsService
@@ -22,6 +23,7 @@ public class DishOrderDetailsService
         // TODO Auto-generated constructor stub
     }
 
+    @Transactional
     public void updateState(String id, Integer state) throws Exception {
         DishOrderDetails dishToUpdate = findOneByIdAndStatus(id, State.ACTIVE);
         if (state == null)

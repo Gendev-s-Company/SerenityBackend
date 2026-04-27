@@ -41,8 +41,10 @@ public class DishOrderDTO extends DTO<DishOrder> {
         TableOccupation table = null;
         if (tableOccupation != null) {
             table = new TableOccupation();
-            table.setOccupationID(tableOccupation.getOccupationID());
+            table.setOccupationID(tableOccupation.getOccupationID() != null ? tableOccupation.getOccupationID() : null );
             table.setTableID(tableOccupation.getTableID());
+            table.setStarttime(tableOccupation.getStarttime() != null ? tableOccupation.getStarttime() : null);
+            table.setCustomerID(tableOccupation.getCustomerID() != null ? tableOccupation.getCustomerID() : null);            
         }
         DishOrder order = new DishOrder(totalPrice, dateOrder, state, table, getStatus());
         if (details != null && details.size() > 0) {

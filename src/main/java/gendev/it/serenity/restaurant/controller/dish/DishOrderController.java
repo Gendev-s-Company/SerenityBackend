@@ -1,5 +1,7 @@
 package gendev.it.serenity.restaurant.controller.dish;
 
+import java.time.LocalDateTime;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -18,15 +20,17 @@ import gendev.it.serenity.restaurant.domain.dto.dish.DishOrderDTO;
 @RestController
 @RequestMapping("restaurant/order")
 @CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
-public class DishOrderController extends CommonController<DishOrderDTO, DishOrderService>{
+public class DishOrderController extends CommonController<DishOrderDTO, DishOrderService> {
 
     public DishOrderController(DishOrderService service) {
         super(service);
-        //TODO Auto-generated constructor stub
+        // TODO Auto-generated constructor stub
     }
+
     // endpoint pour modifier le statut d'une commande
     @PutMapping("/update/state/{id}")
-    public ResponseEntity<?> updateState(@PathVariable String id, @RequestParam(name = "state", required = false) Integer state) {
+    public ResponseEntity<?> updateState(@PathVariable String id,
+            @RequestParam(name = "state", required = false) Integer state) {
         try {
             getService().updateState(id, state);
             return ResponseEntity.ok("Modification réussi");
@@ -36,12 +40,26 @@ public class DishOrderController extends CommonController<DishOrderDTO, DishOrde
 
         }
     }
+
     @Override
     public ResponseEntity<?> findEntityByID(String id, Integer status) {
         // TODO Auto-generated method stub
         
         try {
             return ResponseEntity.ok(getService().findOneById(id, status));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/table/{tableid}")
+    public ResponseEntity<?> findOrderByTable(@PathVariable String tableid,
+         @RequestParam LocalDateTime start,@RequestParam LocalDateTime end,
+         @RequestParam Integer state ) {
+        // TODO Auto-generated method stub    
+        try {
+            return ResponseEntity.ok(getService().findOneByTableAndDate(tableid, start, end, state));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

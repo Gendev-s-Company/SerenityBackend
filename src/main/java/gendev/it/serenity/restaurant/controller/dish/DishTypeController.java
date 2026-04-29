@@ -24,6 +24,17 @@ public class DishTypeController extends CommonController<DishTypeDTO, DishTypeSe
         // TODO Auto-generated constructor stub
     }
 
+    @GetMapping("/group/type")
+    public ResponseEntity<?> findAllDishesByCompany(@RequestParam(name = "status", required = false) Integer status, @RequestParam String company) {
+        try {
+            return ResponseEntity.ok(getService().findAllDishesByCompanyGroupByType(company,status));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+        }
+    }
+
     @GetMapping("/group/type/{page}/{size}")
     public ResponseEntity<?> findAllpaginateModelByCompanyGroupByType(@PathVariable("page") int page,
             @PathVariable("size") int size,

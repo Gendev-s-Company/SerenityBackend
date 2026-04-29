@@ -1,5 +1,7 @@
 package gendev.it.serenity.restaurant.application.dish;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,14 @@ public class DishTypeService extends CommonService<DishType, DishTypeDTO, String
     public DishTypeService(DishTypeRepo jpa) {
         super(jpa);
         // TODO Auto-generated constructor stub
+    }
+
+    public List<DishTypeDTO> findAllDishesByCompanyGroupByType(String company, Integer status) {
+        int state = status != null ? status : 0;
+        return getJpa().findAllByStatusAndCompany(state, company)
+                .stream()
+                .map(p -> (DishTypeDTO) p.entityToDTOWithDishes())
+                .toList();
     }
 
     public Page<DishTypeDTO> paginateAllByCompanyGroupByType(int pageNumber, int pageSize, String field, String sort,

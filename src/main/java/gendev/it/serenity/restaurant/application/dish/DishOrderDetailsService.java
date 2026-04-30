@@ -8,6 +8,7 @@ import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.common.utils.OrderState;
 import gendev.it.serenity.common.utils.State;
 import gendev.it.serenity.restaurant.domain.dto.dish.DishOrderDetailsDTO;
+import gendev.it.serenity.restaurant.infrastructure.entity.dish.DishOrder;
 import gendev.it.serenity.restaurant.infrastructure.entity.dish.DishOrderDetails;
 import gendev.it.serenity.restaurant.infrastructure.repository.dish.DishOrderDetailsRepo;
 import jakarta.transaction.Transactional;
@@ -39,6 +40,9 @@ public class DishOrderDetailsService
     public DishOrderDetailsDTO save(DishOrderDetailsDTO model) throws Exception {
         // TODO Auto-generated method stub
         DishOrderDetailsDTO dto = super.save(model);
+        DishOrder order = service.findOneByIdAndStatus(dto.getOrderID(), 0);
+        // mila asina comparaison entre prix avant et vaovao
+        order.calculateTotalPrice();
         checkChildsState(dto.getOrderID());
         return dto;
     }

@@ -34,19 +34,17 @@ public class DishOrderDetailsService
         checkChildsState(dishToUpdate.getOrderID());
     }
 
-    
-
     @Override
     public DishOrderDetailsDTO save(DishOrderDetailsDTO model) throws Exception {
         // TODO Auto-generated method stub
-        DishOrderDetailsDTO dto = super.save(model);
-        DishOrder order = service.findOneByIdAndStatus(dto.getOrderID(), 0);
-        // mila asina comparaison entre prix avant et vaovao
+        // DishOrderDetailsDTO dto = super.save(model);
+        DishOrderDetails result = getJpa().save(model.dtoToEntity());
+        DishOrder order = service.findOneByIdAndStatus(result.getOrderID(), State.ACTIVE);
         order.calculateTotalPrice();
-        checkChildsState(dto.getOrderID());
-        return dto;
+        service.getJpa().save(order);
+        checkChildsState(order.getOrderID());
+        return result.entityToDTO();
     }
-    
 
     @Override
     public void deleteById(String id, Integer status) throws Exception {
@@ -54,6 +52,9 @@ public class DishOrderDetailsService
         DishOrderDetails dishToUpdate = findOneByIdAndStatus(id, State.ACTIVE);
         dishToUpdate.setStatus(State.DELETED);
         getJpa().save(dishToUpdate);
+        DishOrder order = service.findOneByIdAndStatus(dishToUpdate.getOrderID(), State.ACTIVE);
+        order.calculateTotalPrice();
+        service.getJpa().save(order);
         checkChildsState(dishToUpdate.getOrderID());
 
     }
@@ -69,8 +70,8 @@ public class DishOrderDetailsService
         service.updateState(orderId, isFinish ? OrderState.FINISH : OrderState.INPROGRESS);
     }
 
-    public List<DishOrderDetails> findAllByOrderID(String order, Integer status){
+    public List<DishOrderDetails> findAllByOrderID(String order, Integer status) {
         int statut = status != null ? status : State.ACTIVE;
-        return  getJpa().findAllByOrderIDAndStatusOrderByDateOrderAsc(order, statut);
+        return getJpa().findAllByOrderIDAndStatusOrderByDateOrderAsc(order, statut);
     }
 }

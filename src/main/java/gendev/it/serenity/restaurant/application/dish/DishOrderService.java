@@ -1,9 +1,14 @@
 package gendev.it.serenity.restaurant.application.dish;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
@@ -90,5 +95,32 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
         return getJpa().findAllByTableOccupation(occupationID, 0)
                 .orElseThrow(() -> new Exception("Commande introuvable"))
                 .entityToDTO();
+    }
+
+
+
+     public List<DishOrderDTO> findAllByCompanyAndState(String company, Integer state, List<Integer> states) throws Exception {
+        // throw new Exception("Veuillez implémenter la function findAllByCompany");
+        int status = state != null ? state : 0;
+        if (states == null || states.size() == 0) {
+            states = new ArrayList<>();
+            states = List.of(State.ACTIVE, State.DELETED);
+        }
+        List<DishOrder> result = getJpa().findAllByStatusAndCompanyAndState(status, company, states);
+        return super.conversion(result);
+    }
+
+    public Page<DishOrderDTO> findAllByCompanyAndState(int pageNumber, int pageSize, String field, String sort,
+            Integer status, String company, List<Integer> states) throws Exception {
+        // throw new Exception("Veuillez implémenter la function paginateAllByCompany");
+        Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, field));
+        int state = status != null ? status : 0;
+        if (states == null || states.size() == 0) {
+            states = new ArrayList<>();
+            states = List.of(State.ACTIVE, State.DELETED);
+        }
+        return getJpa().findAllByStatusAndCompanyAndState(state, company, states, pageable)
+                .map(p -> (DishOrderDTO) p.entityToDTO());
     }
 }

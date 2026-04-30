@@ -28,4 +28,12 @@ public interface DishOrderRepo extends CommonRepository<DishOrder, String>{
     @Override
     @Query("SELECT a FROM DishOrder a WHERE a.status = :status AND a.tableOccupation.table.tabletype.company.id = :company")
     Page<DishOrder> findPaginateByStatusAndCompany(int status, String company, Pageable pageable);
+
+   
+    @Query("SELECT a FROM DishOrder a WHERE a.status = :status AND a.tableOccupation.table.tabletype.company.id = :company and a.state IN :state")
+    List<DishOrder> findAllByStatusAndCompanyAndState(int status, String company, List<Integer> state);
+
+  
+    @Query("SELECT a FROM DishOrder a WHERE a.status = :status AND a.tableOccupation.table.tabletype.company.id = :company and a.state IN :state")
+    Page<DishOrder> findAllByStatusAndCompanyAndState(int status, String company, List<Integer> state, Pageable pageable);
 }

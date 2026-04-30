@@ -6,6 +6,7 @@ import java.util.List;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
+import gendev.it.serenity.common.utils.State;
 import gendev.it.serenity.restaurant.domain.dto.dish.DishDTO;
 import gendev.it.serenity.restaurant.domain.dto.dish.DishOrderDetailsDTO;
 import gendev.it.serenity.users.domain.dto.UserResponseDTO;
@@ -92,6 +93,7 @@ public class DishOrderDetails extends BaseEntity<DishOrderDetailsDTO> {
 
     public List<DishOrderDetailsDTO> convertListToDTO(List<DishOrderDetails> list) {
         return list.stream()
+                .filter(row -> row.getStatus() != State.DELETED)
                 .map(row -> {
                     try {
                         DishOrderDetailsDTO detail = row.entityToDTO();

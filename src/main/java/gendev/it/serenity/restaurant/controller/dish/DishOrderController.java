@@ -1,6 +1,7 @@
 package gendev.it.serenity.restaurant.controller.dish;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +57,7 @@ public class DishOrderController extends CommonController<DishOrderDTO, DishOrde
     @GetMapping("/table/{tableid}")
     public ResponseEntity<?> findOrderByTable(@PathVariable String tableid,
          @RequestParam LocalDateTime start,@RequestParam LocalDateTime end,
-         @RequestParam Integer state ) {
+         @RequestParam(required = false) Integer state ) {
         // TODO Auto-generated method stub    
         try {
             return ResponseEntity.ok(getService().findOneByTableAndDate(tableid, start, end, state));
@@ -67,6 +68,33 @@ public class DishOrderController extends CommonController<DishOrderDTO, DishOrde
     }
 
 
+    
+    @GetMapping("/bystate")
+    public ResponseEntity<?> findAllByCompanyAndState(@RequestParam(name = "status", required = false) Integer status,
+     @RequestParam String company, @RequestParam( required = false) List<Integer> states) {
+        try {
+            return ResponseEntity.ok(getService().findAllByCompanyAndState(company, status, states));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+
+        }
+    }
+    @GetMapping("/bystate/{page}/{size}")
+    public ResponseEntity<?> findAllpaginateModelByCompanyAndState(@PathVariable("page") int page, @PathVariable("size") int size,
+            @RequestParam(name = "field", defaultValue = "name", required = false) String field,
+            @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
+            @RequestParam(name = "status", required = false) Integer status,
+            @RequestParam String company, @RequestParam List<Integer> states
+        ) {
+        try {
+            return ResponseEntity.ok(getService().findAllByCompanyAndState(page, size, field, sort, status, company, states));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        }
+    }
     
 
 

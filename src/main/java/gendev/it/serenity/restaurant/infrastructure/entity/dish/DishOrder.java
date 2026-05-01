@@ -7,6 +7,7 @@ import java.util.List;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
+import gendev.it.serenity.common.utils.State;
 import gendev.it.serenity.restaurant.domain.dto.dish.DishOrderDTO;
 import gendev.it.serenity.restaurant.domain.dto.tables.TOccupationDTO;
 import gendev.it.serenity.restaurant.infrastructure.entity.tables.TableOccupation;
@@ -103,6 +104,8 @@ public class DishOrder extends BaseEntity<DishOrderDTO> {
         BigDecimal total = new BigDecimal(0);
         for (int i = 0; i < details.size(); i++) {
             DishOrderDetails one = details.get(i);
+            if (one.getStatus() == State.DELETED)
+                continue;
             BigDecimal value = one.getUnitPrice().multiply(new BigDecimal(one.getQuantity()));
             total = total.add(value);
         }

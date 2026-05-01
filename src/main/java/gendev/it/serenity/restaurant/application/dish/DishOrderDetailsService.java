@@ -8,6 +8,7 @@ import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.common.utils.OrderState;
 import gendev.it.serenity.common.utils.State;
 import gendev.it.serenity.restaurant.domain.dto.dish.DishOrderDetailsDTO;
+import gendev.it.serenity.restaurant.infrastructure.entity.dish.DishOrder;
 import gendev.it.serenity.restaurant.infrastructure.entity.dish.DishOrderDetails;
 import gendev.it.serenity.restaurant.infrastructure.repository.dish.DishOrderDetailsRepo;
 import jakarta.transaction.Transactional;
@@ -33,16 +34,17 @@ public class DishOrderDetailsService
         checkChildsState(dishToUpdate.getOrderID());
     }
 
-    
-
     @Override
     public DishOrderDetailsDTO save(DishOrderDetailsDTO model) throws Exception {
         // TODO Auto-generated method stub
-        DishOrderDetailsDTO dto = super.save(model);
-        checkChildsState(dto.getOrderID());
-        return dto;
+        // DishOrderDetailsDTO dto = super.save(model);
+        DishOrderDetails result = getJpa().save(model.dtoToEntity());
+        DishOrder order = service.findOneByIdAndStatus(result.getOrderID(), State.ACTIVE);
+        order.calculateTotalPrice();
+        service.getJpa().save(order);
+        checkChildsState(order.getOrderID());
+        return result.entityToDTO();
     }
-    
 
     @Override
     public void deleteById(String id, Integer status) throws Exception {
@@ -50,6 +52,9 @@ public class DishOrderDetailsService
         DishOrderDetails dishToUpdate = findOneByIdAndStatus(id, State.ACTIVE);
         dishToUpdate.setStatus(State.DELETED);
         getJpa().save(dishToUpdate);
+        DishOrder order = service.findOneByIdAndStatus(dishToUpdate.getOrderID(), State.ACTIVE);
+        order.calculateTotalPrice();
+        service.getJpa().save(order);
         checkChildsState(dishToUpdate.getOrderID());
 
     }
@@ -65,8 +70,8 @@ public class DishOrderDetailsService
         service.updateState(orderId, isFinish ? OrderState.FINISH : OrderState.INPROGRESS);
     }
 
-    public List<DishOrderDetails> findAllByOrderID(String order, Integer status){
+    public List<DishOrderDetails> findAllByOrderID(String order, Integer status) {
         int statut = status != null ? status : State.ACTIVE;
-        return  getJpa().findAllByOrderIDAndStatusOrderByDateOrderAsc(order, statut);
+        return getJpa().findAllByOrderIDAndStatusOrderByDateOrderAsc(order, statut);
     }
 }

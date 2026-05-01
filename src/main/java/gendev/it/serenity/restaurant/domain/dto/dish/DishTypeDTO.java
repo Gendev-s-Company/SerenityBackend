@@ -55,6 +55,7 @@ public class DishTypeDTO extends DTO<DishType> {
     public void setDishes(List<DishDTO> dishes) {
         this.dishes = dishes;
     }
+    
     @Override
     public DishType dtoToEntity() throws Exception {
         // TODO Auto-generated method stub

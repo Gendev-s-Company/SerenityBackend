@@ -82,7 +82,7 @@ public class DishOrderController extends CommonController<DishOrderDTO, DishOrde
     }
     @GetMapping("/bystate/{page}/{size}")
     public ResponseEntity<?> findAllpaginateModelByCompanyAndState(@PathVariable("page") int page, @PathVariable("size") int size,
-            @RequestParam(name = "field", defaultValue = "name", required = false) String field,
+            @RequestParam(name = "field", defaultValue = "dateOrder", required = false) String field,
             @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
             @RequestParam(name = "status", required = false) Integer status,
             @RequestParam String company, @RequestParam List<Integer> states

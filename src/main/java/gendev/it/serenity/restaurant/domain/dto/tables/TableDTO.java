@@ -3,6 +3,7 @@ package gendev.it.serenity.restaurant.domain.dto.tables;
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.restaurant.infrastructure.entity.tables.RestaurantTable;
 import gendev.it.serenity.restaurant.infrastructure.entity.tables.TableType;
+import gendev.it.serenity.users.domain.dto.CompanyDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,6 +25,11 @@ public class TableDTO extends DTO<RestaurantTable>{
         this.capacity = capacity;
         setStatus(status);
     }
+
+    public void removeType() {
+        this.tabletype = null;
+    }
+
     @Override
     public RestaurantTable dtoToEntity() throws Exception {
         // TODO Auto-generated method stub

@@ -67,6 +67,18 @@ public class DishOrderController extends CommonController<DishOrderDTO, DishOrde
         }
     }
 
+    // récupération par table occupation id
+    @GetMapping("/table_occupation/{occupationid}")
+    public ResponseEntity<?> findOrderByTableOccupation(@PathVariable String occupationid ) {
+        // TODO Auto-generated method stub    
+        try {
+            return ResponseEntity.ok(getService().findByTableOccupation(occupationid));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 
     
     @GetMapping("/bystate")

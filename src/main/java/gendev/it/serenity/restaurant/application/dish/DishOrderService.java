@@ -94,7 +94,7 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
     public DishOrderDTO findByTableOccupation(String occupationID) throws Exception {
         return getJpa().findAllByTableOccupation(occupationID, 0)
                 .orElseThrow(() -> new Exception("Commande introuvable"))
-                .entityToDTO();
+                .oneEntityToDTO();
     }
 
 

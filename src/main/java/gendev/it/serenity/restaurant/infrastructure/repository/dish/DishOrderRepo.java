@@ -36,4 +36,8 @@ public interface DishOrderRepo extends CommonRepository<DishOrder, String>{
   
     @Query("SELECT a FROM DishOrder a WHERE a.status = :status AND a.tableOccupation.table.tabletype.company.id = :company and a.state IN :state")
     Page<DishOrder> findAllByStatusAndCompanyAndState(int status, String company, List<Integer> state, Pageable pageable);
+
+    
+    @Query("SELECT a FROM DishOrder a WHERE a.status = :status AND a.tableOccupation.occupationID = :idtableoccupation and a.state IN :state")
+    Page<DishOrder> findAllByOccupation(int status, String idtableoccupation, int state, Pageable pageable);
 }

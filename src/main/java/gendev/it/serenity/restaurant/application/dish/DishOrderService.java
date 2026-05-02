@@ -123,4 +123,12 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
         return getJpa().findAllByStatusAndCompanyAndState(state, company, states, pageable)
                 .map(p -> (DishOrderDTO) p.entityToDTO());
     }
+
+    public Page<DishOrderDTO> findAllOccupationAndState(int pageNumber, int pageSize, String field, String sort,
+            Integer status, String idOccupation, int state) throws Exception {
+        Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, field));
+        return getJpa().findAllByOccupation(status, idOccupation, state, pageable)
+            .map(p -> (DishOrderDTO) p.entityToDTO());
+    }
 }

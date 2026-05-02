@@ -7,8 +7,6 @@ public interface TableDetailDayDispoDTO {
 
     public String getTableID();
 
-    public String getName();
-
     public Integer getTable_state();
 
     public Integer getReservation_state();

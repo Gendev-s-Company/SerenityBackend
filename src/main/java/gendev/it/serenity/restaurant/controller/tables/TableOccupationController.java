@@ -73,4 +73,22 @@ public class TableOccupationController extends CommonController<TOccupationDTO, 
         }
     }
 
+    @GetMapping("/avalaible/table/{page}/{size}")
+    public ResponseEntity<?> findAllpaginateOccupationTableByTable(@PathVariable("page") int page,
+            @PathVariable("size") int size,
+            @RequestParam(name = "idtable") String idtable,
+            @RequestParam(required = false, name = "start") LocalDateTime start, @RequestParam(required = false, name = "end") LocalDateTime end,
+            @RequestParam(name = "field", defaultValue = "occupationID", required = false) String field,
+            @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
+            @RequestParam(name = "status", required = false) Integer status
+        ) {
+        try {
+            return ResponseEntity.ok(getService().findDisponibilityBytable(status, idtable, start, end, page, size, field, sort));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        }
+    }
+
 }

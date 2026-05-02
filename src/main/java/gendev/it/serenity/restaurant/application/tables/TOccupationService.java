@@ -72,5 +72,27 @@ public class TOccupationService extends CommonService<TableOccupation, TOccupati
             return entity.entityToDTO();
         });
         return result;
+
+    }
+
+    public Page<TOccupationDTO> findDisponibilityBytable(
+        Integer status, String idtable, LocalDateTime start, LocalDateTime end, 
+        int pageNumber, int pageSize, String field, String sort)  {
+    Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+    Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, field));
+    int statut = status != null ? status : State.ACTIVE;
+    Page<TableOccupation> list = null;
+    if (end != null && start != null) {
+        list = getJpa().findDisponibilityByIDtableAndDate(statut, idtable, start, end, pageable);
+    } else if (end == null) {
+        list = getJpa().findDisponibilityByIDtableAndDateEndnull(statut, idtable, start, pageable);
+    } else if (start == null) {
+        list = getJpa().findDisponibilityByIDtableAndDateStartnull(statut, idtable, end, pageable);
+    }
+    Page<TOccupationDTO> result = list.map(entity -> {
+        return entity.entityToDTO();
+    });
+    return result;
+
     }
 }

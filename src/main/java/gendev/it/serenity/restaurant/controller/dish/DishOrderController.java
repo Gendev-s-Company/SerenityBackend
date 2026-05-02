@@ -95,6 +95,22 @@ public class DishOrderController extends CommonController<DishOrderDTO, DishOrde
 
         }
     }
+
+    @GetMapping("/occupation/{page}/{size}")
+    public ResponseEntity<?> findAllpaginateModelByOccupationAndState(@PathVariable("page") int page, @PathVariable("size") int size,
+           @RequestParam(name = "field", defaultValue = "dateOrder", required = false) String field,
+           @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
+           @RequestParam(name = "status", required = false) Integer status,
+           @RequestParam(name = "idOccupation", required = true) String idOccupation,int state
+       ) {
+       try {
+           return ResponseEntity.ok(getService().findAllOccupationAndState(page, size, field, sort, status, idOccupation, state));
+       } catch (Exception e) {
+           e.printStackTrace();
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+       }
+    }
     
 
 

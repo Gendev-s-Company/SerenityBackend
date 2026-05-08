@@ -88,13 +88,13 @@ public class DishType extends BaseEntity<DishTypeDTO> {
     public DishTypeDTO entityToDTOWithDishes() {
         // TODO Auto-generated method stub
         DishTypeDTO result = entityToDTO();
-        try {
-            result.setCompany(new CompanyDTO(company.getCompanyID()));
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        // try {
+        //     result.setCompany(company.entityToDTO());
+        // } catch (Exception e) {
+        //     // TODO Auto-generated catch block
+        //     e.printStackTrace();
 
-        }
+        // }
         List<DishDTO> list = constructChildDTO();
 
         result.setDishes(list);

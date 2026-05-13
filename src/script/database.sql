@@ -119,6 +119,7 @@ create table activityOrder(
     status integer check (status >= 0)
 );
 
+
 -- code à effectuer
 alter table activityOrder drop column dateOrder;
 alter table activityOrder add COLUMN dateOrder timestamp default current_timestamp;
@@ -297,3 +298,7 @@ create table dishOrderDetails(
     state integer check (state >= 0),
     status integer check (status >= 0)
 );
+
+
+alter table activity add column isindividual boolean default true;
+alter table activityOrder add column totalPerson integer default 1;

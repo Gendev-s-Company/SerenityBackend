@@ -46,6 +46,8 @@ public class ActivityOrder extends BaseEntity<ActivityOrderDTO> {
     private Integer duration;
     @Column
     private Integer state;
+    @Column
+    private Integer totalPerson;
 
     @Column(name = "dateorder")
     private LocalDateTime dateOrder;
@@ -92,6 +94,7 @@ public class ActivityOrder extends BaseEntity<ActivityOrderDTO> {
         }
         ActivityOrderDTO res = new ActivityOrderDTO(acOrderID, act, u, price, duration, dateOrder, state, status);
         res.setTotalPrice(price.multiply(BigDecimal.valueOf(res.getDuration())));
+        res.setTotalPerson(totalPerson);
         return res;
     }
 }

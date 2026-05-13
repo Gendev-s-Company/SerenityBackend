@@ -25,6 +25,7 @@ public class ActivityOrderDTO extends DTO<ActivityOrder> {
     private LocalDateTime dateOrder = LocalDateTime.now();
     private Integer state = 0;
     private BigDecimal totalPrice;
+    private Integer totalPerson;
     
     public ActivityOrderDTO(String acOrderID, ActivityDTO activity, CustomerDTO user, BigDecimal price,
             Integer duration, LocalDateTime dateOrder, Integer state, int status) {
@@ -54,14 +55,18 @@ public class ActivityOrderDTO extends DTO<ActivityOrder> {
         if (dateOrder == null) {
             dateOrder = LocalDateTime.now();
         }
-        return new ActivityOrder(acOrderID, act, u, price, duration, dateOrder, state,getStatus());
+        ActivityOrder ord = new ActivityOrder(acOrderID, act, u, price, duration, dateOrder, state,getStatus());
+        ord.setTotalPerson(totalPerson);
+        return ord;
     }
 
 
     public void setAcOrderID(String acOrderID) {
         this.acOrderID = acOrderID;
     }
-
+    public void setTotalPerson(Integer totalPerson) {
+        this.totalPerson = totalPerson;
+    }
 
     public void setActivity(ActivityDTO activity) throws Exception {
         if (activity == null && !isSkipValidation()) {

@@ -67,6 +67,7 @@ public class Activity extends BaseEntity<ActivityDTO> {
         setCompany(dto.getCompany().dtoToEntity());
         setName(dto.getName());
         setDescription(dto.getDescription());
+        setIsindividual(dto.getIsIndividual());
     }
 
     @Override

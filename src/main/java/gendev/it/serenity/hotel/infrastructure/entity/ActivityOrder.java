@@ -46,7 +46,7 @@ public class ActivityOrder extends BaseEntity<ActivityOrderDTO> {
     private Integer duration;
     @Column
     private Integer state;
-    @Column
+    @Column(name = "totalperson")
     private Integer totalPerson;
 
     @Column(name = "dateorder")
@@ -80,6 +80,7 @@ public class ActivityOrder extends BaseEntity<ActivityOrderDTO> {
         setDuration(dto.getDuration());
         setDateOrder(dto.getDateOrder());
         setState(dto.getState());
+        setTotalPerson(dto.getTotalPerson());
     }
 
     @Override

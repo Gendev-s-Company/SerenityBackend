@@ -10,6 +10,7 @@ import gendev.it.serenity.common.controller.CommonController;
 import gendev.it.serenity.users.application.ProfilService;
 import gendev.it.serenity.users.domain.dto.ProfilDTO;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -34,8 +35,10 @@ public class ProfilController extends CommonController<ProfilDTO, ProfilService>
         }
     }
 
-    @GetMapping("/paginate")
-    public ResponseEntity<?> getPaginate(@RequestParam String companyId,@RequestParam int page,@RequestParam int size,@RequestParam String field,@RequestParam String sort) {
+    @GetMapping("/paginate/{page}/{size}")
+    public ResponseEntity<?> getPaginate(@RequestParam String companyId, @PathVariable int page, @PathVariable int size,
+        @RequestParam (name = "field", defaultValue = "profilID", required = false) String field,
+        @RequestParam (name = "sort", defaultValue = "asc",required = false) String sort) {
         return ResponseEntity.ok(
                 getService().getPaginateByCompany(companyId, page, size, field, sort, 0)
         );

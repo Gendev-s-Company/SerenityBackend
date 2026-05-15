@@ -1,5 +1,6 @@
 package gendev.it.serenity.hotel.application;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -104,10 +105,23 @@ public class ActivityOrderService extends CommonService<ActivityOrder, ActivityO
         long totalRows = ((Number) countQuery.getSingleResult()).longValue();
 
         return new PageImpl<>(resultList, pageable, totalRows)
-            .map(p -> (ActivityOrderDTO) p.entityToDTO());
+                .map(p -> withTotalPrice(p));
         // return getJpa().findPaginateByStatusAndCompanyAndState(states, company,
         // state, pageable)
         // .map(p -> (ActivityOrderDTO) p.entityToDTO());
+    }
+
+    private ActivityOrderDTO withTotalPrice(ActivityOrder p) {
+        ActivityOrderDTO res = p.entityToDTO();
+        try {
+            ActivityPriceDTO lastPrice = priceService.findLastPrice(res.getActivity().getActivityID(), null);
+            res.setTotalPrice(res.getTotalPrice().divide(new BigDecimal(lastPrice.getHourPrice())));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return res;
+
     }
 
     @Override

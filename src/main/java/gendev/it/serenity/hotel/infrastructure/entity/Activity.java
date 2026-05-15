@@ -34,7 +34,8 @@ public class Activity extends BaseEntity<ActivityDTO> {
     private String name;
     @Column
     private String description;
-
+    @Column
+    private Boolean isindividual;
 
     
     public Activity(String activityID) {
@@ -55,6 +56,10 @@ public class Activity extends BaseEntity<ActivityDTO> {
         return activityID;
     }
 
+    public Boolean getIsIndividual(){
+        return isindividual;
+    }
+
     @Override
     public void updateFromDTO(DTO cdto) {
         // TODO Auto-generated method stub
@@ -62,6 +67,7 @@ public class Activity extends BaseEntity<ActivityDTO> {
         setCompany(dto.getCompany().dtoToEntity());
         setName(dto.getName());
         setDescription(dto.getDescription());
+        setIsindividual(dto.getIsIndividual());
     }
 
     @Override
@@ -71,6 +77,8 @@ public class Activity extends BaseEntity<ActivityDTO> {
         if (company!=null) {
             comp = company.entityToDTO();
         }
-        return new ActivityDTO(activityID, comp, name, description, getStatus());
+        ActivityDTO act = new ActivityDTO(activityID, comp, name, description, getStatus());
+        act.setIsindividual(isindividual);
+        return act;
     }
 }

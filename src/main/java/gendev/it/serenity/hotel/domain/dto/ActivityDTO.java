@@ -16,6 +16,7 @@ public class ActivityDTO extends DTO<Activity> {
     private CompanyDTO company;
     private String name;
     private String description;
+    private Boolean isindividual;
     
     public ActivityDTO(String activityID) {
         this.activityID = activityID;
@@ -29,6 +30,9 @@ public class ActivityDTO extends DTO<Activity> {
         setStatus(status);
     }
 
+    public Boolean getIsIndividual(){
+        return isindividual;
+    }
     public void setActivityID(String activityID) {
         this.activityID = activityID;
     }
@@ -51,7 +55,9 @@ public class ActivityDTO extends DTO<Activity> {
     public void setDescription(String description) {
         this.description = description;
     }
-
+    public void setIsindividual(Boolean isindividual) {
+        this.isindividual = isindividual;
+    }
     @Override
     public Activity dtoToEntity() {
         // TODO Auto-generated method stub
@@ -59,7 +65,9 @@ public class ActivityDTO extends DTO<Activity> {
         if (company!=null) {
             comp = company.dtoToEntity();
         }
-        return new Activity(activityID, comp, name, description, getStatus());
+        Activity act = new Activity(activityID, comp, name, description, getStatus());
+        act.setIsindividual(isindividual);
+        return act;
     }
 
 }

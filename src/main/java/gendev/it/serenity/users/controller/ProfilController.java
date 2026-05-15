@@ -13,19 +13,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 @RestController
 @RequestMapping("profil")
-@CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.OPTIONS })
+@CrossOrigin(methods = { RequestMethod.DELETE, RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT,
+        RequestMethod.OPTIONS })
 public class ProfilController extends CommonController<ProfilDTO, ProfilService> {
-
 
     public ProfilController(ProfilService service) {
         super(service);
     }
 
     @GetMapping("/profil")
-    public ResponseEntity<?> findAll(@RequestParam(name ="companyId" ) String companyId) {
+    public ResponseEntity<?> findAll(@RequestParam(name = "companyId") String companyId) {
         try {
             return ResponseEntity.ok(getService().findProfilByCurrentCompanyId(companyId));
         } catch (Exception e) {
@@ -36,12 +35,12 @@ public class ProfilController extends CommonController<ProfilDTO, ProfilService>
     }
 
     @GetMapping("/paginate/{page}/{size}")
-    public ResponseEntity<?> getPaginate(@RequestParam String companyId, @PathVariable int page, @PathVariable int size,
-        @RequestParam (name = "field", defaultValue = "profilID", required = false) String field,
-        @RequestParam (name = "sort", defaultValue = "asc",required = false) String sort) {
+    public ResponseEntity<?> getPaginate(@RequestParam String companyId, @PathVariable("page") int page,
+            @PathVariable("size") int size,
+            @RequestParam(name = "field", defaultValue = "name", required = false) String field,
+            @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort) {
         return ResponseEntity.ok(
-                getService().getPaginateByCompany(companyId, page, size, field, sort, 0)
-        );
+                getService().getPaginateByCompany(companyId, page, size, field, sort, 0));
     }
 
 }

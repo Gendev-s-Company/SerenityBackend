@@ -49,7 +49,7 @@ public class WorkscheduleService extends CommonService<Workschedule, Workschedul
             return super.conversion(list);
         } else {
 
-          return getJpa().findByUserIDAndStatus(userid, 0)
+          return getJpa().findByUserIDAndStatusAndCompany(userid, 0, company)
                     .stream()
                     .map(entity -> (WorkscheduleDTO) entity.entityToDTO())
                     .collect(Collectors.toList());

@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
@@ -37,6 +40,33 @@ public class WorkscheduleService extends CommonService<Workschedule, Workschedul
     @Autowired
     public UserService userService;
 
+    public Page<WorkscheduleDTO> paginatedgetByAuthority(
+            String userid,
+            int pageNumber,
+            int pageSize,
+            String field,
+            String sort,
+            Integer status) throws Exception {
+            
+        Users user = userService.getJpa().findById(String.valueOf(userid))
+                .orElseThrow(() -> new Exception("Utilisateur non trouvé"));
+            
+        int authority_user = user.getProfil().getAuthority();
+        String company = user.getProfil().getCompany().getCompanyID();
+            
+        Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        PageRequest pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, field));
+        int state = status != null ? status : 0;
+            
+        if (authority_user >= 4) {
+            return getJpa().findPaginateByStatusAndCompany(state, company, pageable)
+                    .map(p -> (WorkscheduleDTO) p.entityToDTO());
+        } else {
+            return getJpa().paginatedfindByUserIDAndStatusAndCompany(userid, state, company, pageable)
+                    .map(p -> (WorkscheduleDTO) p.entityToDTO());
+        }
+    }
+        
     public List<WorkscheduleDTO> getByAuthority(String userid) throws Exception {
         Users user = userService.getJpa().findById(String.valueOf(userid))
                 .orElseThrow(() -> new Exception("Utilisateur non trouvé"));
@@ -57,8 +87,8 @@ public class WorkscheduleService extends CommonService<Workschedule, Workschedul
     
     }
 
-    public List<WorkscheduleDTO> choiceSearch(List<String> userids) throws Exception {
-        return getJpa().findByUserIDInAndStatus(userids, 0)
+    public List<WorkscheduleDTO> choiceSearch(List<String> userids,String company) throws Exception {
+        return getJpa().findByUserIDInAndStatus(userids, 0,company)
                 .stream()
                 .map(entity -> (WorkscheduleDTO) entity.entityToDTO())
                 .toList();

@@ -19,6 +19,9 @@ public interface WorkscheduleRepo extends CommonRepository<Workschedule,Integer>
     
     @Query(value = "select * from Workschedule where status= :status and userid in (select userid from v_users v where v.companyid= :company)  ", nativeQuery = true)
     List<Workschedule> findStatusAndCompany(int status, String company);
+
+    @Query(value = "select * from Workschedule where status= :status and userid in (select userid from v_users v where v.companyid= :company)  ", nativeQuery = true)
+    Page<Workschedule> findPaginateByStatusAndCompany(int status, String company, Pageable pageable);
     
     @Query(value = "select * from Workschedule where status= :status and userid= :userid and userid in (select userid from v_users v where v.companyid= :company)  ", nativeQuery = true)
     Page<Workschedule> paginatedfindByUserIDAndStatusAndCompany(String userid, int status, String company,Pageable pageable);

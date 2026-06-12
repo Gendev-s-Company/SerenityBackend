@@ -37,4 +37,17 @@ public class DishService extends CommonService<Dish, DishDTO, String, DishRepo> 
                 .map(p -> (DishDTO) p.entityToDTO());
     }
 
+    public Page<DishDTO> paginateAllByType(int pageNumber, int pageSize, String field, String sort, String typeid)throws Exception {
+        Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, field));
+        return getJpa().findPaginatedByType(typeid, pageable)
+                .map(p -> (DishDTO) p.entityToDTO());
+    }
+
+    public Page<DishDTO> paginateAllByCompany(int pageNumber, int pageSize, String field, String sort, String company)throws Exception {
+        Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, field));
+        return getJpa().findPaginatedByCompany(company, pageable)
+                .map(p -> (DishDTO) p.entityToDTO());
+    }
 }

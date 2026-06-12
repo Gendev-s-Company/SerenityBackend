@@ -38,6 +38,24 @@ public class DishController extends CommonController<DishDTO, DishService> {
         }
     }
 
-   
+    @GetMapping("byType/{page}/{size}")
+    public ResponseEntity<?> get(@PathVariable("page") int page,
+            @PathVariable("size") int size,
+            @RequestParam(name = "field", defaultValue = "name", required = false) String field,
+            @RequestParam(name = "sort", defaultValue = "asc", required = false) String sort,
+            @RequestParam(name = "status", required = false) Integer status,
+            @RequestParam(name = "company") String company,
+            @RequestParam(name = "typeid") String typeid)
+            {
+        try {
+            return ResponseEntity.ok(typeid== null || typeid.equals("Tous")
+            ? getService().paginateAllByCompany(page,size,field,sort,company)
+            : getService().paginateAllByType(page,size,field,sort,typeid));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+
+        }
+    }   
 
 }

@@ -302,3 +302,41 @@ create table dishOrderDetails(
 
 alter table activity add column isindividual boolean default true;
 alter table activityOrder add column totalPerson integer default 1;
+
+
+create sequence pack_seq start with 1;
+create table pack(
+    packID varchar(10) not null primary key,
+    companyID varchar(10) not null references company(companyID),
+    title varchar(50) not null,
+    discount numeric(15,2) not null default 0,
+    startDate timestamp default current_timestamp,
+    endDate timestamp default null,
+    status integer check (status >= 0)
+);
+
+
+
+create table packRestoDetails(
+    id serial primary key,
+    packID varchar(10) not null references pack(packID),
+    dishID varchar(10) not null references dish(dishID),
+    quantity integer default 0,
+    status integer check (status >= 0)
+);
+
+create table packHotelDetails(
+    id serial primary key,
+    packID varchar(10) not null references pack(packID),
+    roomID varchar(10) not null references room(roomID),
+    duration integer default 0,
+    status integer check (status >= 0)
+);
+
+create table packActivity(
+    id serial primary key,
+    packID varchar(10) not null references pack(packID),
+    activityID varchar(10) not null references activity(activityID),
+    duration integer default 0,
+    status integer check (status >= 0)
+);

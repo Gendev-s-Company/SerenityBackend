@@ -563,3 +563,19 @@ CREATE TRIGGER dishorderdetails_trigger
 BEFORE INSERT ON dishOrderDetails
     FOR EACH ROW
         EXECUTE FUNCTION generate_dishorderdetails_id();
+
+
+
+CREATE OR REPLACE FUNCTION generate_pack_id()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- LPAD complète avec des '0' jusqu'à 6 caractères (10 total - 4 de "COMP")
+    NEW.packID := 'PACK' || LPAD(nextval('pack_seq')::text, 6, '0');
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER pack_trigger
+BEFORE INSERT ON pack
+    FOR EACH ROW
+        EXECUTE FUNCTION generate_pack_id();

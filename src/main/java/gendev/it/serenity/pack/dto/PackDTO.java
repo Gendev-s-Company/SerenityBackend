@@ -48,6 +48,9 @@ public class PackDTO extends DTO<Pack> {
         return pack;
     }
 
+    public void publicMapping(Pack pack){
+        startMapping(pack);
+    }
     private void startMapping(Pack pack) {
         if (getActivityPack() != null)
             getActivityPack().forEach(p -> {

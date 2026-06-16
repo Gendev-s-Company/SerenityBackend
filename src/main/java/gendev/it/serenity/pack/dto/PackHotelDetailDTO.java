@@ -30,4 +30,8 @@ public class PackHotelDetailDTO extends DTO<PackHotelDetails> {
         return new PackHotelDetails(roomID, duration);
     }
 
+    public PackHotelDetails dtoToEntityAvoidException(){
+        return new PackHotelDetails(roomID, duration);
+    }
+
 }

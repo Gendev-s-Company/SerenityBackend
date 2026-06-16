@@ -32,5 +32,9 @@ public class PackActivityDTO extends DTO<PackActivity> {
         // TODO Auto-generated method stub
         return new PackActivity(activityID, duration);
     }
+    public PackActivity dtoToEntityAvoidException() {
+        // TODO Auto-generated method stub
+        return new PackActivity(activityID, duration);
+    }
 
 }

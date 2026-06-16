@@ -24,5 +24,9 @@ public class PackRestoDTO extends DTO<PackRestoDetails> {
         // TODO Auto-generated method stub
         return new PackRestoDetails(dishID, quantity);
     }
+
+    public PackRestoDetails dtoToEntityAvoidException(){
+        return new PackRestoDetails(dishID, quantity);
+    }
     
 }

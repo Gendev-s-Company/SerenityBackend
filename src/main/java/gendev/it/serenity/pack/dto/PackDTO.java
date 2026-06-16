@@ -48,39 +48,17 @@ public class PackDTO extends DTO<Pack> {
         return pack;
     }
 
-    public void publicMapping(Pack pack){
+    public void publicMapping(Pack pack) {
         startMapping(pack);
     }
+
     private void startMapping(Pack pack) {
         if (getActivityPack() != null)
-            getActivityPack().forEach(p -> {
-                try {
-                    pack.attachActivity(p.dtoToEntity());
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            });
+            getActivityPack().forEach(p -> pack.attachActivity(p.dtoToEntityAvoidException()));
         if (getHotelsPack() != null)
-            getHotelsPack().forEach(h -> {
-                try {
-                    pack.attachHotel(h.dtoToEntity());
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            });
-        if (getRestoPack() != null) {
-            getRestoPack().forEach(r -> {
-                try {
-                    pack.attachResto(r.dtoToEntity());
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            });
-
-        }
+            getHotelsPack().forEach(h -> pack.attachHotel(h.dtoToEntityAvoidException()));
+        if (getRestoPack() != null)
+            getRestoPack().forEach(r -> pack.attachResto(r.dtoToEntityAvoidException()));
     }
 
 }

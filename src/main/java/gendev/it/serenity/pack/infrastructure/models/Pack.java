@@ -89,20 +89,16 @@ public class Pack extends BaseEntity<PackDTO> {
     }
 
     private void filterInformation(PackDTO dto) {
-        List<PackActivityDTO> activities = getActivityPack()
-                .stream().map(PackActivity::entityToDTO).toList();
-        List<PackRestoDTO> resto = getRestoPack().stream()
-                .map(PackRestoDetails::entityToDTO).toList();
-        List<PackHotelDetailDTO> hotels = getHotelsPack().stream()
-                .map(PackHotelDetails::entityToDTO).toList();
-        dto.setActivityPack(activities);
-        dto.setHotelsPack(hotels);
-        dto.setRestoPack(resto);
+        dto.setActivityPack(getActivityPack()
+                .stream().map(PackActivity::entityToDTO).toList());
+        dto.setHotelsPack(getHotelsPack().stream()
+                .map(PackHotelDetails::entityToDTO).toList());
+        dto.setRestoPack(getRestoPack().stream()
+                .map(PackRestoDetails::entityToDTO).toList());
     }
 
     public void attachActivity(PackActivity activity) {
         activity.setPack(this);
-        activity.showPack();
         this.activityPack.add(activity);
     }
 

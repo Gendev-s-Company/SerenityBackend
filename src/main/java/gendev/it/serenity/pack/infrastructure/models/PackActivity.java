@@ -67,10 +67,4 @@ public class PackActivity extends BaseEntity<PackActivityDTO> {
         // TODO Auto-generated method stub
         return new PackActivityDTO(id,activityID, duration);
     }
-    public void showPack(){
-        if (pack == null) {
-            System.out.println("pack null");
-        }else
-            System.out.println("pack not null "+pack.getTitle());
-    }
 }

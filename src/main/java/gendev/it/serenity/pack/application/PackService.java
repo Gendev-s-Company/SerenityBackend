@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.common.utils.State;
+import gendev.it.serenity.core.exception.BusinessException;
 import gendev.it.serenity.pack.dto.PackDTO;
 import gendev.it.serenity.pack.infrastructure.models.Pack;
 import gendev.it.serenity.pack.infrastructure.repository.PackRepo;
@@ -18,7 +19,7 @@ public class PackService extends CommonService<Pack, PackDTO, String, PackRepo> 
     }
 
     @Transactional
-    public PackDTO deletePack(PackDTO toDelete, String packID, Boolean isDetail) throws Exception {
+    public PackDTO updatePack(PackDTO toDelete, String packID, Boolean isDetail) throws BusinessException {
         Pack pack = findOneByIdAndStatus(packID, State.ACTIVE);
         pack.getActivityPack().clear();
         pack.getHotelsPack().clear();

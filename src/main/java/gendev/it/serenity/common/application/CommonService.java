@@ -9,11 +9,13 @@ import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
 import gendev.it.serenity.common.repo.CommonRepository;
 import gendev.it.serenity.common.utils.State;
+import gendev.it.serenity.core.exception.BusinessException;
 import jakarta.transaction.Transactional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 
 public class CommonService<T extends BaseEntity, D extends DTO, ID, JPA extends CommonRepository<T, ID>> {
     private final JPA jpa;
@@ -33,15 +35,15 @@ public class CommonService<T extends BaseEntity, D extends DTO, ID, JPA extends 
     }
 
     // mitady anle entity par statut par id
-    private T findByIdAndStatus(ID id, Integer status) throws Exception {
+    private T findByIdAndStatus(ID id, Integer status) throws BusinessException  {
         int state = status != null ? status : State.ACTIVE;
         return jpa.findAllByStatus(state).stream()
                 .filter(entity -> String.valueOf(entity.getId()).equals(String.valueOf(id)))
                 .findFirst()
-                .orElseThrow(() -> new Exception("ID introuvable ou inactif : " + id));
+                .orElseThrow(() -> new BusinessException("ID introuvable ou inactif : " + id, HttpStatus.NOT_FOUND));
     }
 
-    public T findOneByIdAndStatus(ID id, Integer status) throws Exception {
+    public T findOneByIdAndStatus(ID id, Integer status) throws BusinessException  {
         return findByIdAndStatus(id, status);
     }
 

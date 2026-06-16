@@ -2,14 +2,17 @@ package gendev.it.serenity.pack.infrastructure.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
+import gendev.it.serenity.pack.dto.PackActivityDTO;
 import gendev.it.serenity.pack.dto.PackDTO;
+import gendev.it.serenity.pack.dto.PackHotelDetailDTO;
+import gendev.it.serenity.pack.dto.PackRestoDTO;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,14 +46,14 @@ public class Pack extends BaseEntity<PackDTO> {
     private LocalDateTime endDate;
 
     @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
-    private List<PackActivity> activityPack;
+    @JsonBackReference("activityPack")
+    private List<PackActivity> activityPack = new ArrayList<>();
     @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
-    private List<PackHotelDetails> hotelsPack;
+    @JsonBackReference("hotelsPack")
+    private List<PackHotelDetails> hotelsPack = new ArrayList<>();
     @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
-    private List<PackRestoDetails> restoPack;
+    @JsonBackReference("restoPack")
+    private List<PackRestoDetails> restoPack = new ArrayList<>();
 
     public Pack(String packID) {
         this.packID = packID;
@@ -69,7 +72,7 @@ public class Pack extends BaseEntity<PackDTO> {
     @Override
     public Object getId() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getId'");
+        return packID;
     }
 
     @Override
@@ -87,16 +90,12 @@ public class Pack extends BaseEntity<PackDTO> {
     }
 
     private void filterInformation(PackDTO dto) {
-        List<PackActivity> activities = getActivityPack()
-                .stream()
-                .peek(a -> a.setPack(null))
-                .collect(Collectors.toList());
-        List<PackRestoDetails> resto = getRestoPack().stream()
-                .peek(r -> r.setPack(null))
-                .collect(Collectors.toList());
-        List<PackHotelDetails> hotels = getHotelsPack().stream()
-                .peek(r -> r.setPack(null))
-                .collect(Collectors.toList());
+        List<PackActivityDTO> activities = getActivityPack()
+                .stream().map(PackActivity::entityToDTO).toList();
+        List<PackRestoDTO> resto = getRestoPack().stream()
+                .map(PackRestoDetails::entityToDTO).toList();
+        List<PackHotelDetailDTO> hotels = getHotelsPack().stream()
+                .map(PackHotelDetails::entityToDTO).toList();
         dto.setActivityPack(activities);
         dto.setHotelsPack(hotels);
         dto.setRestoPack(resto);
@@ -104,6 +103,7 @@ public class Pack extends BaseEntity<PackDTO> {
 
     public void attachActivity(PackActivity activity) {
         activity.setPack(this);
+        activity.showPack();
         this.activityPack.add(activity);
     }
 

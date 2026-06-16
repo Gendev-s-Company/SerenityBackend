@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
+import gendev.it.serenity.pack.dto.PackRestoDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,7 +25,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "packrestodetails")
-public class PackRestoDetails extends BaseEntity {
+public class PackRestoDetails extends BaseEntity<PackRestoDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -37,7 +38,13 @@ public class PackRestoDetails extends BaseEntity {
     @Column(name = "dishid")
     private String dishID;
     @Column
-    private String quantity;
+    private Integer quantity;
+
+    
+    public PackRestoDetails(String dishID, Integer quantity) {
+        this.dishID = dishID;
+        this.quantity = quantity;
+    }
 
     @Override
     public void updateFromDTO(DTO dto) {
@@ -46,8 +53,8 @@ public class PackRestoDetails extends BaseEntity {
     }
 
     @Override
-    public DTO entityToDTO() {
+    public PackRestoDTO entityToDTO() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'entityToDTO'");
+        return new PackRestoDTO(id, dishID, quantity);
     }
 }

@@ -6,9 +6,6 @@ import java.util.List;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.pack.infrastructure.models.Pack;
-import gendev.it.serenity.pack.infrastructure.models.PackActivity;
-import gendev.it.serenity.pack.infrastructure.models.PackHotelDetails;
-import gendev.it.serenity.pack.infrastructure.models.PackRestoDetails;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,15 +23,14 @@ public class PackDTO extends DTO<Pack> {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
-    private List<PackActivity> activityPack;
-    private List<PackHotelDetails> hotelsPack;
-    private List<PackRestoDetails> restoPack;
+    private List<PackActivityDTO> activityPack;
+    private List<PackHotelDetailDTO> hotelsPack;
+    private List<PackRestoDTO> restoPack;
 
     public PackDTO(String packID) {
         this.packID = packID;
     }
 
-    
     public PackDTO(String packID, String companyID, String title, BigDecimal discount, LocalDateTime startDate,
             LocalDateTime endDate) {
         this.packID = packID;
@@ -45,7 +41,6 @@ public class PackDTO extends DTO<Pack> {
         this.endDate = endDate;
     }
 
-
     @Override
     public Pack dtoToEntity() throws Exception {
         Pack pack = new Pack(packID, companyID, title, discount, startDate, endDate);
@@ -54,10 +49,35 @@ public class PackDTO extends DTO<Pack> {
     }
 
     private void startMapping(Pack pack) {
-        getActivityPack().forEach(p -> pack.attachActivity(p));
-        getHotelsPack().forEach(h -> pack.attachHotel(h));
-        getRestoPack().forEach(r -> pack.attachResto(r));
+        if (getActivityPack() != null)
+            getActivityPack().forEach(p -> {
+                try {
+                    pack.attachActivity(p.dtoToEntity());
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            });
+        if (getHotelsPack() != null)
+            getHotelsPack().forEach(h -> {
+                try {
+                    pack.attachHotel(h.dtoToEntity());
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            });
+        if (getRestoPack() != null) {
+            getRestoPack().forEach(r -> {
+                try {
+                    pack.attachResto(r.dtoToEntity());
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            });
+
+        }
     }
-    
 
 }

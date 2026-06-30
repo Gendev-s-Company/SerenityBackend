@@ -9,12 +9,10 @@ import gendev.it.serenity.pack.infrastructure.models.Pack;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 public class PackDTO extends DTO<Pack> {
     private String packID;
     private String companyID;
@@ -59,6 +57,50 @@ public class PackDTO extends DTO<Pack> {
             getHotelsPack().forEach(h -> pack.attachHotel(h.dtoToEntityAvoidException()));
         if (getRestoPack() != null)
             getRestoPack().forEach(r -> pack.attachResto(r.dtoToEntityAvoidException()));
+    }
+
+    public void setPackID(String packID) {
+        this.packID = packID;
+    }
+
+    public void setCompanyID(String companyID) throws Exception {
+        if (companyID == null || companyID.isBlank())
+            throw new Exception("Company est obligatoire");
+        this.companyID = companyID;
+    }
+
+    public void setTitle(String title) throws Exception {
+        if (title == null || title.isBlank())
+            throw new Exception("Company est obligatoire");
+        this.title = title;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) throws Exception {
+        if (startDate == null)
+            throw new Exception("Date début obligatoire");
+        if (endDate != null && startDate.isAfter(endDate))
+            throw new Exception("La date de fin ne doit pas etre anterieur à la date de debut");
+        this.endDate = endDate;
+    }
+
+    public void setActivityPack(List<PackActivityDTO> activityPack) {
+        this.activityPack = activityPack;
+    }
+
+    public void setHotelsPack(List<PackHotelDetailDTO> hotelsPack) {
+        this.hotelsPack = hotelsPack;
+    }
+
+    public void setRestoPack(List<PackRestoDTO> restoPack) {
+        this.restoPack = restoPack;
     }
 
 }

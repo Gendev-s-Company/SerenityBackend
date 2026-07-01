@@ -22,6 +22,7 @@ public class PackRestoDTO extends DTO<PackRestoDetails> {
         this.id = id;
         this.quantity = quantity;
         this.dish = dish;
+        this.dishID = dish.getDishID();
     }
     public PackRestoDTO(String dishID, Integer quantity) {
         this.dishID = dishID;

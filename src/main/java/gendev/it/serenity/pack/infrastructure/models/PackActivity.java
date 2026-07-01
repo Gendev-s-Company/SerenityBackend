@@ -71,6 +71,8 @@ public class PackActivity extends BaseEntity<PackActivityDTO> {
     @Override
     public PackActivityDTO entityToDTO() {
         ActivityDTO dto = activity != null ? activity.entityToDTO() : null;
+        if(dto!=null)
+            dto.resetCompany();
         // TODO Auto-generated method stub
         return new PackActivityDTO(id, duration, dto);
     }

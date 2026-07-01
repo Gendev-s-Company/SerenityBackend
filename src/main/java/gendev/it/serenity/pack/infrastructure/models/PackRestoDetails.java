@@ -47,7 +47,6 @@ public class PackRestoDetails extends BaseEntity<PackRestoDTO> {
     @Column
     private Integer quantity;
 
-    
     public PackRestoDetails(String dishID, Integer quantity) {
         this.dishID = dishID;
         this.quantity = quantity;
@@ -63,6 +62,9 @@ public class PackRestoDetails extends BaseEntity<PackRestoDTO> {
     public PackRestoDTO entityToDTO() {
         // TODO Auto-generated method stub
         DishDTO dto = dish != null ? dish.entityToDTO() : null;
+        if (dto != null)
+            dto.getType().resetCompany();
+            dto.setPhotos(null);
         return new PackRestoDTO(id, quantity, dto);
     }
 }

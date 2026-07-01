@@ -51,7 +51,9 @@ public class DishTypeDTO extends DTO<DishType> {
         company.setSkipValidation(true);
         this.company = company;
     }
-
+    public void resetCompany(){
+        this.company = null;
+    }
     public void setDishes(List<DishDTO> dishes) {
         this.dishes = dishes;
     }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
+import gendev.it.serenity.hotel.domain.dto.room.RoomDTO;
+import gendev.it.serenity.hotel.infrastructure.entity.room.Room;
 import gendev.it.serenity.pack.dto.PackHotelDetailDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,8 +36,14 @@ public class PackHotelDetails extends BaseEntity<PackHotelDetailDTO> {
     @JoinColumn(name = "packid", nullable = false)
     @JsonManagedReference
     private Pack pack;
+
     @Column(name = "roomid")
     private String roomID;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "roomid", insertable = false, updatable = false)
+    private Room room;
+
     @Column
     private Integer duration;
 
@@ -53,6 +61,7 @@ public class PackHotelDetails extends BaseEntity<PackHotelDetailDTO> {
     @Override
     public PackHotelDetailDTO entityToDTO() {
         // TODO Auto-generated method stub
-        return new PackHotelDetailDTO(id,roomID, duration);
+        RoomDTO dto = room != null ? room.entityToDTO() : null;
+        return new PackHotelDetailDTO(id, duration, dto);
     }
 }

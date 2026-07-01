@@ -1,6 +1,7 @@
 package gendev.it.serenity.pack.dto;
 
 import gendev.it.serenity.common.dto.DTO;
+import gendev.it.serenity.hotel.domain.dto.ActivityDTO;
 import gendev.it.serenity.pack.infrastructure.models.PackActivity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,15 +14,25 @@ import lombok.Setter;
 @Setter
 public class PackActivityDTO extends DTO<PackActivity> {
     private Integer id;
-    private String activityID;
+    private String activityID; //utilisation pour create or update
     private Integer duration;
 
-    
+    private ActivityDTO activity; // utilisation pour read only
     
     public PackActivityDTO(String activityID, Integer duration) {
         this.activityID = activityID;
         this.duration = duration;
     }
+    
+   
+
+    public PackActivityDTO(Integer id, Integer duration, ActivityDTO activity) {
+        this.id = id;
+        this.duration = duration;
+        this.activity = activity;
+    }
+
+
 
     public PackActivityDTO(Integer id) {
         this.id = id;

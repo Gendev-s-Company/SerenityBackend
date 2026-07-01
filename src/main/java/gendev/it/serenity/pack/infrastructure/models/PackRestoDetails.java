@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
 import gendev.it.serenity.pack.dto.PackRestoDTO;
+import gendev.it.serenity.restaurant.domain.dto.dish.DishDTO;
+import gendev.it.serenity.restaurant.infrastructure.entity.dish.Dish;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,6 +39,11 @@ public class PackRestoDetails extends BaseEntity<PackRestoDTO> {
 
     @Column(name = "dishid")
     private String dishID;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dishid", insertable = false, updatable = false)
+    private Dish dish;
+
     @Column
     private Integer quantity;
 
@@ -55,6 +62,7 @@ public class PackRestoDetails extends BaseEntity<PackRestoDTO> {
     @Override
     public PackRestoDTO entityToDTO() {
         // TODO Auto-generated method stub
-        return new PackRestoDTO(id, dishID, quantity);
+        DishDTO dto = dish != null ? dish.entityToDTO() : null;
+        return new PackRestoDTO(id, quantity, dto);
     }
 }

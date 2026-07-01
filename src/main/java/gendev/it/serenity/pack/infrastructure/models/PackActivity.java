@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
+import gendev.it.serenity.hotel.domain.dto.ActivityDTO;
+import gendev.it.serenity.hotel.infrastructure.entity.Activity;
 import gendev.it.serenity.pack.dto.PackActivityDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,8 +31,14 @@ public class PackActivity extends BaseEntity<PackActivityDTO> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(name = "activityid")
     private String activityID;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "activityid", insertable = false, updatable = false)
+    private Activity activity;
+
     @Column
     private Integer duration;
 
@@ -39,8 +47,6 @@ public class PackActivity extends BaseEntity<PackActivityDTO> {
     @JsonManagedReference
     private Pack pack;
 
-
-    
     public PackActivity(Integer id, String activityID, Integer duration) {
         this.id = id;
         this.activityID = activityID;
@@ -64,7 +70,8 @@ public class PackActivity extends BaseEntity<PackActivityDTO> {
 
     @Override
     public PackActivityDTO entityToDTO() {
+        ActivityDTO dto = activity != null ? activity.entityToDTO() : null;
         // TODO Auto-generated method stub
-        return new PackActivityDTO(id,activityID, duration);
+        return new PackActivityDTO(id, duration, dto);
     }
 }

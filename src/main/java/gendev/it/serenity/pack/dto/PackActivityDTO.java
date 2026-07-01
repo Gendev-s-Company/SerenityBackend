@@ -30,6 +30,7 @@ public class PackActivityDTO extends DTO<PackActivity> {
         this.id = id;
         this.duration = duration;
         this.activity = activity;
+        this.activityID = activity !=null ? activity.getActivityID() : null;
     }
 
 

@@ -62,9 +62,10 @@ public class PackHotelDetails extends BaseEntity<PackHotelDetailDTO> {
     public PackHotelDetailDTO entityToDTO() {
         // TODO Auto-generated method stub
         RoomDTO dto = room != null ? room.entityToDTO() : null;
-        if(dto!=null)
+        if (dto != null) {
             dto.getType().resetCompany();
             dto.setPhotos(null);
+        }
         return new PackHotelDetailDTO(id, duration, dto);
     }
 }

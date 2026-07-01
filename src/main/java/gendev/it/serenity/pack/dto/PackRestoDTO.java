@@ -17,25 +17,27 @@ public class PackRestoDTO extends DTO<PackRestoDetails> {
     private String dishID; // utilisation pour create or update
     private Integer quantity;
     private DishDTO dish; // utilisation pour read only
-    
+
     public PackRestoDTO(Integer id, Integer quantity, DishDTO dish) {
         this.id = id;
         this.quantity = quantity;
         this.dish = dish;
-        this.dishID = dish.getDishID();
+        this.dishID = dish != null ? dish.getDishID() : null;
     }
+
     public PackRestoDTO(String dishID, Integer quantity) {
         this.dishID = dishID;
         this.quantity = quantity;
     }
+
     @Override
     public PackRestoDetails dtoToEntity() throws Exception {
         // TODO Auto-generated method stub
         return new PackRestoDetails(dishID, quantity);
     }
 
-    public PackRestoDetails dtoToEntityAvoidException(){
+    public PackRestoDetails dtoToEntityAvoidException() {
         return new PackRestoDetails(dishID, quantity);
     }
-    
+
 }

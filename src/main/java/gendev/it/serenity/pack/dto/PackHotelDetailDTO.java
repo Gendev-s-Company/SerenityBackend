@@ -29,6 +29,7 @@ public class PackHotelDetailDTO extends DTO<PackHotelDetails> {
         this.id = id;
         this.duration = duration;
         this.room = room;
+        this.roomID = room !=null ? room.getRoomID() : null;
     }
 
 

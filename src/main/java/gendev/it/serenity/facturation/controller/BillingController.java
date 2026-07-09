@@ -34,16 +34,20 @@ public class BillingController extends CommonController<BillingDTO, BillingServi
         return ResponseEntity.ok(getService().updateBilling(toUpdate, id, isDetail));
     }
 
-    @GetMapping("/customers")
-    public ResponseEntity<?> findAllCustomerBilled() {
-        return null;
+    // récupérer la liste des clients qui ont été facturé
+    @GetMapping("/customers/{page}/{size}")
+    public ResponseEntity<?> findAllCustomerBilled(@PathVariable("page") int page, @PathVariable("size") int size,
+            @RequestParam String company) {
+        return ResponseEntity.ok(getService().findCustomersInvoice("desc", company, "name", page, size));
     }
 
-    @GetMapping("/customers/{customerid}")
+    // Récupérer la liste de facture d'un client
+    @GetMapping("/customers/get/{customerid}/{page}/{size}")
     public ResponseEntity<?> findCustomersBilled(@PathVariable String customerid,
+            @PathVariable("page") int page, @PathVariable("size") int size,
             @RequestParam(required = false, name = "start") LocalDate start,
             @RequestParam(required = false, name = "end") LocalDate end) {
-        return null;
+        return ResponseEntity.ok(getService().findByCustomer("desc", customerid, "billingDate", page, size));
     }
 
 }

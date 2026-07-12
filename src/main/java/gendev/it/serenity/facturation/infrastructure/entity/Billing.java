@@ -57,11 +57,11 @@ public class Billing extends BaseEntity<BillingDTO> {
     @JoinColumn(name = "packID", insertable = false, updatable = false)
     private Pack pack;
 
-    @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference("activityPack")
     private List<QuantityBillingDetails> quantityDetails = new ArrayList<>();
 
-    @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonBackReference("activityPack")
     private List<DurationBillingDetails> durationDetails = new ArrayList<>();
 

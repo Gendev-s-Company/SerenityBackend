@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +25,20 @@ public class BillingService extends CommonService<Billing, BillingDTO, String, B
         // TODO Auto-generated constructor stub
     }
 
+    @Transactional
+    public void updateState(String billID, Integer state) throws BusinessException{
+        if (state == null)
+            throw new BusinessException("veuillez indiquer le state", HttpStatus.BAD_REQUEST);
+        if(state != 1 && state != 0)
+            throw new BusinessException("La valeur de state doit etre 1 ou 0", HttpStatus.BAD_REQUEST);
+        Billing invoice = findOneByIdAndStatus(billID, 0);
+        invoice.setState(state);
+        return;
+    }
+
     // Récupérer les clients qui sont facturer
     public Page<CustomerDTO> findCustomersInvoice(String sort, String company, String field, int pageNumber,
             int pageSize) {
-        Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Customer> list = getJpa().findCustomerInvoiced(0, company, pageable);
         return list.map(m -> m.entityToDTO());

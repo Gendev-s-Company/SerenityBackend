@@ -2,6 +2,7 @@ package gendev.it.serenity.facturation.controller;
 
 import java.time.LocalDate;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,6 +49,14 @@ public class BillingController extends CommonController<BillingDTO, BillingServi
             @RequestParam(required = false, name = "start") LocalDate start,
             @RequestParam(required = false, name = "end") LocalDate end) {
         return ResponseEntity.ok(getService().findByCustomer("desc", customerid, "billingDate", page, size));
+    }
+
+    @PutMapping("/state/{billid}")
+    public ResponseEntity<String> putMethodName(@PathVariable String billid, @RequestParam(required = false) Integer state) throws BusinessException {
+        //TODO: process PUT request
+        
+        getService().updateState(billid, state);
+        return ResponseEntity.ok("Modification réussi");
     }
 
 }

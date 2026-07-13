@@ -361,6 +361,7 @@ create table billing(
     packID varchar(10) not null references pack(packID),
     status integer check (status >= 0)
 );
+alter table billing add column state integer default 0 check (state >= 0);
 create table quantityBillingDetails(
     id serial primary key,
     billID varchar(10) not null references billing(billID),

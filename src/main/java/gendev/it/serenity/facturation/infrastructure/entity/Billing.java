@@ -49,6 +49,9 @@ public class Billing extends BaseEntity<BillingDTO> {
     @Column
     private String packID;
 
+    @Column
+    private int state  = 0;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerID", insertable = false, updatable = false)
     private Customer customer;
@@ -101,7 +104,7 @@ public class Billing extends BaseEntity<BillingDTO> {
     @Override
     public Object getId() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getId'");
+        return billID;
     }
 
     @Override
@@ -113,7 +116,7 @@ public class Billing extends BaseEntity<BillingDTO> {
     @Override
     public BillingDTO entityToDTO() {
         // TODO Auto-generated method stub
-        return new BillingDTO(billID, customerID, billingDate, taxe, packID, convertToListEntity(),
+        return new BillingDTO(billID, customerID, billingDate, taxe, packID, this.state, convertToListEntity(),
                 convertToListEntity(quantityDetails));
     }
 

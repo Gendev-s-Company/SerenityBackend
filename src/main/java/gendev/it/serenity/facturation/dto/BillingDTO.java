@@ -21,6 +21,7 @@ public class BillingDTO extends DTO<Billing> {
     private LocalDateTime billingDate;
     private BigDecimal taxe;
     private String packID;
+    private Integer state;
     private List<BillingDDetailsDTO> durationsDetails;
     private List<BillingQDetailsDTO> quantityDetails;
 
@@ -42,6 +43,7 @@ public class BillingDTO extends DTO<Billing> {
             getQuantityDetails().forEach(m -> bill.attachQuantityDetail(m.dtoToEntityAvoidException()));
         }
     }
+    
     
 
 }

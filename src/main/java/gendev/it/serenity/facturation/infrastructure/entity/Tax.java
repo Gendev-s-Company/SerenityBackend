@@ -34,7 +34,7 @@ public class Tax extends BaseEntity {
     @Override
     public Object getId() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getId'");
+        return taxID;
     }
 
     @Override

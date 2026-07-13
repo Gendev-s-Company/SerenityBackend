@@ -340,3 +340,48 @@ create table packActivity(
     duration integer default 0,
     status integer check (status >= 0)
 );
+
+
+---///// facturation
+
+create table tax(
+    taxID serial primary key,
+    companyID varchar(10) not null references company(companyID),
+    taxRate NUMERIC(15, 2) default 0,
+    dateTax date default current_date,
+    status integer check (status >= 0)
+);
+
+create sequence bill_seq start with 1;
+create table billing(
+    billID varchar(10) not null primary key,
+    customerID varchar(10) not null references customer(customerID),
+    billingDate timestamp default current_timestamp,
+    taxe NUMERIC(15, 2) default 0,
+    packID varchar(10) not null references pack(packID),
+    status integer check (status >= 0)
+);
+alter table billing add column state integer default 0 check (state >= 0);
+create table quantityBillingDetails(
+    id serial primary key,
+    billID varchar(10) not null references billing(billID),
+    serviceName varchar(100),
+    serviceCode varchar(10) not null,
+    quantity integer check (quantity >= 0),
+    unitPrice numeric(15,2) check (unitPrice >= 0),
+    status integer check (status >= 0)
+);
+
+create table durationBillingDetails(
+    id serial primary key,
+    billID varchar(10) not null references billing(billID),
+    serviceName varchar(100),
+    serviceCode varchar(10) not null,
+    unitPrice numeric(15,2) check (unitPrice >= 0),
+    typeDuration varchar(1), -- H/J,
+    startTime timestamp not null,
+    endTime timestamp check (startTime < endTime),
+    status integer check (status >= 0)
+);
+
+

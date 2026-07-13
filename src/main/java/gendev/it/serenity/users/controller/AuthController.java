@@ -44,15 +44,17 @@ public class AuthController {
 
     @PutMapping("/password/{id}")
     public ResponseEntity<?> changePassword(
-            @PathVariable String id, 
+            @PathVariable String id,     
             @RequestParam String oldPassword, 
-            @RequestParam String newPassword) {
+            @RequestParam String newPassword,
+            @RequestParam String confirmedPassword) {
         try {
-            String result = service.updatePassword(id, oldPassword, newPassword);
+            String result = service.updatePassword(id, oldPassword, newPassword,confirmedPassword);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
 
 }

@@ -66,12 +66,15 @@ public class UserService extends CommonService<Users, UserResponseDTO, String, U
     }
 
     @Transactional
-    public String updatePassword(String userId, String oldPassword, String newPassword) throws Exception {
+    public String updatePassword(String userId, String oldPassword, String newPassword,String confimredPassword) throws Exception {
         Users user = getJpa().findById(userId)
                 .orElseThrow(() -> new Exception("Utilisateur non trouvé"));
 
         if (!verifyPassword(oldPassword, user.getPassword())) {
             throw new Exception("Ancien mot de passe incorrect");
+        }
+        if (!confimredPassword.equals(newPassword)){
+            throw new Exception("Erreur sur le nouveau mot de passe. Veuillez bien confimer les nouveaux mots de passe!");
         }
 
         String hashedNewPassword = hashPassword(newPassword);

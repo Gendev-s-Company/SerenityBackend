@@ -28,7 +28,7 @@ public class BillingService extends CommonService<Billing, BillingDTO, String, B
     public Page<CustomerDTO> findCustomersInvoice(String sort, String company, String field, int pageNumber,
             int pageSize) {
         Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, field));
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<Customer> list = getJpa().findCustomerInvoiced(0, company, pageable);
         return list.map(m -> m.entityToDTO());
     }
@@ -49,7 +49,7 @@ public class BillingService extends CommonService<Billing, BillingDTO, String, B
         if (isDetail) {
             bill.setStatus(State.DELETED);
         } else {
-            bill.attach(toUpdate.convertToListEntity(toUpdate.getQuantityDetails()), toUpdate.convertToListEntity());
+            toUpdate.publicMapping(bill);
         }
         return bill.entityToDTO();
     }

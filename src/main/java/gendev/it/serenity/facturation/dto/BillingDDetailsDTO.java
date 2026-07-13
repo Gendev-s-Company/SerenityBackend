@@ -32,4 +32,9 @@ public class BillingDDetailsDTO extends DTO<DurationBillingDetails> {
         return new DurationBillingDetails(serviceName, serviceCode, typeDuration, unitPrice, startTime, endTime, bill);
     }
 
+    public DurationBillingDetails dtoToEntityAvoidException() {
+        Billing bill = billID != null ? new Billing(billID) : null;
+        return new DurationBillingDetails(serviceName, serviceCode, typeDuration, unitPrice, startTime, endTime, bill);
+    }
+
 }

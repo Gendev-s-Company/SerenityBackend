@@ -3,12 +3,9 @@ package gendev.it.serenity.facturation.dto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.facturation.infrastructure.entity.Billing;
-import gendev.it.serenity.facturation.infrastructure.entity.DurationBillingDetails;
-import gendev.it.serenity.facturation.infrastructure.entity.QuantityBillingDetails;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,41 +27,21 @@ public class BillingDTO extends DTO<Billing> {
     @Override
     public Billing dtoToEntity() throws Exception {
         // TODO Auto-generated method stub
-        return new Billing(customerID, billingDate, taxe, packID, convertToListEntity(quantityDetails), convertToListEntity());
+        Billing bill = new Billing(customerID, billingDate, taxe, packID);
+        startMapping(bill);
+        return bill;
     }
-
-    public List<DurationBillingDetails> convertToListEntity() {
-        if (durationsDetails == null) {
-            return null;
+    public void publicMapping(Billing bill){
+        startMapping(bill);
+    }
+    private void startMapping(Billing bill){
+        if (getDurationsDetails()!=null) {
+            getDurationsDetails().forEach(m -> bill.attachDurationDetail(m.dtoToEntityAvoidException()));
         }
-        return durationsDetails.stream()
-                .map(m -> {
-                    try {
-                        return m.dtoToEntity();
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
-                .collect(Collectors.toList());
-    }
-
-    public List<QuantityBillingDetails> convertToListEntity(List<BillingQDetailsDTO> list) {
-        if (list == null) {
-            return null;
+        if (getQuantityDetails()!=null) {
+            getQuantityDetails().forEach(m -> bill.attachQuantityDetail(m.dtoToEntityAvoidException()));
         }
-        return list.stream()
-                .map(m -> {
-                    try {
-                        return m.dtoToEntity();
-                    } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
-                .collect(Collectors.toList());
     }
+    
 
 }

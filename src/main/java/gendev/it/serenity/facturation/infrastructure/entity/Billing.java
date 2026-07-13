@@ -58,12 +58,19 @@ public class Billing extends BaseEntity<BillingDTO> {
     private Pack pack;
 
     @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference("activityPack")
+    @JsonBackReference("quantityDetails")
     private List<QuantityBillingDetails> quantityDetails = new ArrayList<>();
 
     @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference("activityPack")
+    @JsonBackReference("durationDetails")
     private List<DurationBillingDetails> durationDetails = new ArrayList<>();
+
+    public Billing(String customerID, LocalDateTime billingDate, BigDecimal taxe, String packID) {
+        this.customerID = customerID;
+        this.billingDate = billingDate;
+        this.taxe = taxe;
+        this.packID = packID;
+    }
 
     public Billing(String customerID, LocalDateTime billingDate, BigDecimal taxe, String packID,
             List<QuantityBillingDetails> quantityDetails, List<DurationBillingDetails> durationDetails) {
@@ -72,6 +79,8 @@ public class Billing extends BaseEntity<BillingDTO> {
         this.taxe = taxe;
         this.packID = packID;
         attach(quantityDetails, durationDetails);
+
+        System.out.println(quantityDetails.size());
     }
 
     public Billing(String billID) {
@@ -148,13 +157,11 @@ public class Billing extends BaseEntity<BillingDTO> {
     }
 
     private void attachListQuantityDetail(List<QuantityBillingDetails> quantitys) {
-        quantitys.forEach(m -> m.setBill(this));
-        this.quantityDetails = quantitys;
+        quantitys.forEach(m -> attachQuantityDetail(m));
     }
 
     private void attachListDurationDetails(List<DurationBillingDetails> durations) {
-        durations.forEach(m -> m.setBill(this));
-        this.durationDetails = durations;
+        durations.forEach(m -> attachDurationDetail(m));
     }
 
     public void attachQuantityDetail(QuantityBillingDetails quantity) {

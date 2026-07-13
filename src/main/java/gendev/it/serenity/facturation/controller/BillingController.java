@@ -38,7 +38,7 @@ public class BillingController extends CommonController<BillingDTO, BillingServi
     @GetMapping("/customers/{page}/{size}")
     public ResponseEntity<?> findAllCustomerBilled(@PathVariable("page") int page, @PathVariable("size") int size,
             @RequestParam String company) {
-        return ResponseEntity.ok(getService().findCustomersInvoice("desc", company, "name", page, size));
+        return ResponseEntity.ok(getService().findCustomersInvoice("desc", company, "billingDate", page, size));
     }
 
     // Récupérer la liste de facture d'un client

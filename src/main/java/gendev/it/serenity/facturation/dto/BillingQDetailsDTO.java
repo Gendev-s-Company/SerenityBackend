@@ -29,4 +29,9 @@ public class BillingQDetailsDTO extends DTO<QuantityBillingDetails> {
         return new QuantityBillingDetails(serviceName, serviceCode, quantity, unitPrice, bill);
     }
 
+    public QuantityBillingDetails dtoToEntityAvoidException (){
+        Billing bill = billID != null ? new Billing(billID) : null;
+        return new QuantityBillingDetails(serviceName, serviceCode, quantity, unitPrice, bill);
+    }
+
 }

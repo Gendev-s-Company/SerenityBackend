@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.common.utils.State;
+import gendev.it.serenity.core.models.QInvoiceModel;
 import gendev.it.serenity.restaurant.application.tables.TOccupationService;
 import gendev.it.serenity.restaurant.domain.dto.dish.DishOrderDTO;
 import gendev.it.serenity.restaurant.infrastructure.entity.dish.DishOrder;
@@ -25,16 +28,20 @@ import jakarta.transaction.Transactional;
 public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, String, DishOrderRepo> {
 
     private final TOccupationService tableService;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public DishOrderService(DishOrderRepo jpa, TOccupationService tableService) {
+    public DishOrderService(DishOrderRepo jpa, TOccupationService tableService,
+            ApplicationEventPublisher eventPublisher) {
         super(jpa);
         this.tableService = tableService;
         // TODO Auto-generated constructor stub
+        this.eventPublisher = eventPublisher;
     }
 
     public DishOrderDTO findOneByTableAndDate(String tableid, LocalDateTime start,
             LocalDateTime end, Integer state) throws Exception {
-        DishOrder order = getJpa().findOneByTableAndDate(tableid, start, end, state).orElseThrow(() -> new Exception("Cette table n'a pas encore de réservation"));
+        DishOrder order = getJpa().findOneByTableAndDate(tableid, start, end, state)
+                .orElseThrow(() -> new Exception("Cette table n'a pas encore de réservation"));
         return order.oneEntityToDTO();
     }
 
@@ -62,8 +69,16 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
                 throw new Exception("Cette table possède déjà une commande, modifier plutot la commande");
             }
         }
+        DishOrderDTO result = getJpa().save(order).entityToDTO();
+        List<QInvoiceModel> invoices = result.getDetails()
+                .stream()
+                .map(m -> new QInvoiceModel(result.getTableOccupation().getCustomerID(), m.getDish().getName(),
+                        m.getDish().getDishID(), m.getQuantity(), m.getUnitPrice()))
+                .collect(Collectors.toList());
+                //  order.getTableOccupation().getCustomer().getCompany().getCompanyID() 
+        eventPublisher.publishEvent(invoices);
 
-        return getJpa().save(order).entityToDTO();
+        return result;
     }
 
     private String getUserIdFromOrderDetail(List<DishOrderDetails> list) {
@@ -97,9 +112,8 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
                 .oneEntityToDTO();
     }
 
-
-
-     public List<DishOrderDTO> findAllByCompanyAndState(String company, Integer state, List<Integer> states) throws Exception {
+    public List<DishOrderDTO> findAllByCompanyAndState(String company, Integer state, List<Integer> states)
+            throws Exception {
         // throw new Exception("Veuillez implémenter la function findAllByCompany");
         int status = state != null ? state : 0;
         if (states == null || states.size() == 0) {
@@ -129,6 +143,6 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
         Sort.Direction direction = sort.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, field));
         return getJpa().findAllByOccupation(status, idOccupation, state, pageable)
-            .map(p -> (DishOrderDTO) p.entityToDTO());
+                .map(p -> (DishOrderDTO) p.entityToDTO());
     }
 }

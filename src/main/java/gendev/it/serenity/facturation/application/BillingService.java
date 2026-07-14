@@ -65,4 +65,9 @@ public class BillingService extends CommonService<Billing, BillingDTO, String, B
         return bill.entityToDTO();
     }
 
+    public Billing findCustomerInvoiceNotPaid(String customerid){
+        Billing invoice = getJpa().findTopBycustomerIDAndState(customerid, 0);//zay mbola tsy payé
+        return invoice;
+    }
+
 }

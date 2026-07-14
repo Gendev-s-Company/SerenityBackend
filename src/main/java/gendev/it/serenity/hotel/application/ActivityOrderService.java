@@ -12,7 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
-import gendev.it.serenity.core.models.InvoiceModel;
+import gendev.it.serenity.core.models.QInvoiceModel;
 import gendev.it.serenity.hotel.domain.dto.ActivityOrderDTO;
 import gendev.it.serenity.hotel.domain.dto.ActivityPriceDTO;
 import gendev.it.serenity.hotel.infrastructure.entity.ActivityOrder;
@@ -135,9 +135,9 @@ public class ActivityOrderService extends CommonService<ActivityOrder, ActivityO
         model.setPrice(price.getPrice());
         ActivityOrderDTO res = super.save(model);
 
-        InvoiceModel invoice = new InvoiceModel(res.getActivity().getName(), res.getActivity().getActivityID(), 2,
-                res.getPrice());
-        eventPublisher.publishEvent(invoice);
+        // QInvoiceModel invoice = new QInvoiceModel(res.getActivity().getName(), res.getActivity().getActivityID(), 2,
+        //         res.getPrice());
+        // eventPublisher.publishEvent(invoice);
         return res;
     }
 

@@ -24,4 +24,6 @@ public interface BillingRepo extends CommonRepository<Billing, String>{
 
     @Query("SELECT a FROM Billing a WHERE a.status = :status AND a.customerID = :customerid order by a.billingDate desc")
     Page<Billing> findByCustomer(int status, String customerid, Pageable page);
+
+    Billing findTopBycustomerIDAndState(String customerid, int state);
 }

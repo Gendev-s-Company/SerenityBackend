@@ -12,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
-import gendev.it.serenity.core.models.QInvoiceModel;
 import gendev.it.serenity.hotel.domain.dto.ActivityOrderDTO;
 import gendev.it.serenity.hotel.domain.dto.ActivityPriceDTO;
 import gendev.it.serenity.hotel.infrastructure.entity.ActivityOrder;

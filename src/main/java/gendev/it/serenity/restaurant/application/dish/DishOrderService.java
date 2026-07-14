@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.common.utils.State;
+import gendev.it.serenity.core.models.InvoiceModel;
 import gendev.it.serenity.core.models.QInvoiceModel;
 import gendev.it.serenity.restaurant.application.tables.TOccupationService;
 import gendev.it.serenity.restaurant.domain.dto.dish.DishOrderDTO;
@@ -70,13 +71,15 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
             }
         }
         DishOrderDTO result = getJpa().save(order).entityToDTO();
+
         List<QInvoiceModel> invoices = result.getDetails()
                 .stream()
                 .map(m -> new QInvoiceModel(result.getTableOccupation().getCustomerID(), m.getDish().getName(),
                         m.getDish().getDishID(), m.getQuantity(), m.getUnitPrice()))
                 .collect(Collectors.toList());
                 //  order.getTableOccupation().getCustomer().getCompany().getCompanyID() 
-        eventPublisher.publishEvent(invoices);
+        InvoiceModel invoiceModel = new InvoiceModel(result.getTableOccupation().getCustomer().getCompany().getCompanyID(), invoices);
+        eventPublisher.publishEvent(invoiceModel);
 
         return result;
     }

@@ -8,6 +8,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import gendev.it.serenity.core.models.InvoiceModel;
 import gendev.it.serenity.core.models.QInvoiceModel;
 import gendev.it.serenity.facturation.application.BillingService;
 import gendev.it.serenity.facturation.dto.BillingDTO;
@@ -27,9 +28,11 @@ public class InvoiceListener {
 
     @EventListener
     @Transactional
-    public void onInvoiceCreated(List<QInvoiceModel> invoices, String company) throws Exception {
+    public void onInvoiceCreated(InvoiceModel invoiceModel) throws Exception {
         // Call the billing service to process the invoice
         // vérifier si le client a déjà une facture non payé
+        List<QInvoiceModel> invoices = invoiceModel.getInvoices();
+        String company = invoiceModel.getCompany();
         if (invoices == null || invoices.size() <= 0) {
             return;
         }

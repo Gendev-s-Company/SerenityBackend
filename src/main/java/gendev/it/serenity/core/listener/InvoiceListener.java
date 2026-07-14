@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import gendev.it.serenity.core.models.QInvoiceModel;
 import gendev.it.serenity.facturation.application.BillingService;
-import gendev.it.serenity.facturation.dto.BillingDDetailsDTO;
 import gendev.it.serenity.facturation.dto.BillingDTO;
 import gendev.it.serenity.facturation.dto.BillingQDetailsDTO;
 import gendev.it.serenity.facturation.infrastructure.entity.Billing;

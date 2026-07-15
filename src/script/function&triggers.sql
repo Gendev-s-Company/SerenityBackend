@@ -334,7 +334,7 @@ CREATE OR REPLACE FUNCTION get_table_disponibility(
 )
 RETURNS TABLE (
     tableid varchar,
-    name varchar,
+    table_name varchar,
     table_state integer,
     reservation_state integer
 ) AS $$

@@ -70,18 +70,19 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
                 throw new Exception("Cette table possède déjà une commande, modifier plutot la commande");
             }
         }
-        DishOrderDTO result = getJpa().save(order).entityToDTO();
 
-        List<QInvoiceModel> invoices = result.getDetails()
+        DishOrder saved = getJpa().save(order);
+        String company = getJpa().findCompany(saved.getOrderID());
+        List<QInvoiceModel> invoices = saved.getDetails()
                 .stream()
-                .map(m -> new QInvoiceModel(result.getTableOccupation().getCustomerID(), m.getDish().getName(),
+                .map(m -> new QInvoiceModel(saved.getTableOccupation().getCustomerID(), m.getDish().getName(),
                         m.getDish().getDishID(), m.getQuantity(), m.getUnitPrice()))
                 .collect(Collectors.toList());
                 //  order.getTableOccupation().getCustomer().getCompany().getCompanyID() 
-        InvoiceModel invoiceModel = new InvoiceModel(result.getTableOccupation().getCustomer().getCompany().getCompanyID(), invoices);
+        InvoiceModel invoiceModel = new InvoiceModel(company, invoices);
         eventPublisher.publishEvent(invoiceModel);
 
-        return result;
+        return saved.entityToDTO();
     }
 
     private String getUserIdFromOrderDetail(List<DishOrderDetails> list) {

@@ -69,7 +69,7 @@ public class InvoiceListener {
 
     // pour la création de billing sur la quantity
     private void buildBilling(List<QInvoiceModel> invoices, String company,
-            BillingDTO dto, Billing bill, Tax taxe) {
+            BillingDTO dto, Billing bill, Tax taxe) throws Exception {
         dto.setCustomerID(invoices.get(0).getCustomerID());
         dto.setBillingDate(LocalDateTime.now());
         dto.setState(0);
@@ -81,5 +81,6 @@ public class InvoiceListener {
         dto.setQuantityDetails(quantity);
         dto.setTaxe(taxe.getTaxRate());
         dto.setPackID(null);
+        billingService.save(dto);
     }
 }

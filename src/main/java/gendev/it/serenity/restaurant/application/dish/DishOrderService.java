@@ -79,7 +79,7 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
                         m.getDish().getDishID(), m.getQuantity(), m.getUnitPrice()))
                 .collect(Collectors.toList());
                 //  order.getTableOccupation().getCustomer().getCompany().getCompanyID() 
-        InvoiceModel invoiceModel = new InvoiceModel(company, invoices);
+        InvoiceModel invoiceModel = new InvoiceModel(company, invoices, null);
         eventPublisher.publishEvent(invoiceModel);
 
         return saved.entityToDTO();

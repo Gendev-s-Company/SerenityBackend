@@ -33,4 +33,7 @@ public interface ActivityOrderRepo extends CommonRepository<ActivityOrder, Strin
     Page<ActivityOrder> findPaginateByStatusAndCompany(int status, String company, Pageable pageable);
     @Query("SELECT a FROM ActivityOrder a WHERE a.status = :status AND a.activity.company.id = :company and a.state=:state")
     Page<ActivityOrder> findPaginateByStatusAndCompanyAndState(int status, String company, int state, Pageable pageable);
+
+    @Query("SELECT a.activity.company.id FROM ActivityOrder a WHERE a.status = 0 AND a.acOrderID = :orderid")
+    String findCompany(String orderid);
 }

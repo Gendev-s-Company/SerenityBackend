@@ -14,7 +14,9 @@ import lombok.NoArgsConstructor;
 public class InvoiceModel {
     private String company;
     private List<QInvoiceModel> invoices;
+    private List<DInvoiceModel> dInvoices;//duration invoices
 
+    
     public String getCompany() {
         return company;
     }
@@ -29,6 +31,14 @@ public class InvoiceModel {
 
     public void setInvoices(List<QInvoiceModel> invoices) {
         this.invoices = invoices;
+    }
+
+    public List<DInvoiceModel> getdInvoices() {
+        return dInvoices;
+    }
+
+    public void setdInvoices(List<DInvoiceModel> dInvoices) {
+        this.dInvoices = dInvoices;
     }
 
 }

@@ -36,13 +36,16 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
     private final RoomService service;
     private final ReservationHistoryService history;
     private final ApplicationEventPublisher eventPublisher;
+    private final RoomService roomService;
 
-    public ReservationService(ReservationRepo jpa, RoomService service, ReservationHistoryService history, ApplicationEventPublisher eventPublisher) {
+    public ReservationService(ReservationRepo jpa, RoomService service, ReservationHistoryService history,
+            ApplicationEventPublisher eventPublisher, RoomService roomService) {
         super(jpa);
         this.service = service;
         this.history = history;
         // TODO Auto-generated constructor stub
         this.eventPublisher = eventPublisher;
+        this.roomService = roomService;
     }
 
     @Override
@@ -54,14 +57,16 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         }
 
         ReservationDTO res = super.save(model);
+        Room room = roomService.findOneByIdAndStatus(res.getRoomID(), 0);
         // String company = getJpa().findCompany(res.get());
         List<DInvoiceModel> invoices = new ArrayList<>();
-        DInvoiceModel invoiceModel = new DInvoiceModel("roomName",
-                res.getRoomID(), "d", res.getPrice(), res.getStarttime(),
+        DInvoiceModel invoiceModel = new DInvoiceModel(room.getName(),
+                res.getRoomID(), res.getFormatDuration(), res.getPrice(), res.getStarttime(),
                 res.getEndtime());
         invoices.add(invoiceModel);
 
-        InvoiceModel invoice = new InvoiceModel("", "company", null, invoices);
+        InvoiceModel invoice = new InvoiceModel(res.getCustomerID(), room.getType().getCompany().getCompanyID(), null,
+                invoices);
         System.out.println("invoice: " + invoice);
         eventPublisher.publishEvent(invoice);
         return res;

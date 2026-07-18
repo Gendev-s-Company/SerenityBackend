@@ -1,7 +1,9 @@
 package gendev.it.serenity.core.listener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.context.event.EventListener;
@@ -42,7 +44,6 @@ public class InvoiceListener {
     @EventListener
     @Transactional
     public void onSaveInvoice(InvoiceModel invoiceModel) throws Exception {
-        // Call the billing service to process the invoice
         // vérifier si le client a déjà une facture non payé
         List<QInvoiceModel> invoices = invoiceModel.getInvoices();
         List<DInvoiceModel> dInvoices = invoiceModel.getdInvoices();
@@ -56,14 +57,6 @@ public class InvoiceListener {
         if (bill == null) {
             buildBilling(invoiceModel, company, dto, bill, taxe);
             return;
-        }
-        // traitement si il en possède déjà un
-        BillingDTO billed = bill.entityToDTO();
-        if (invoices == null || invoices.size()<=0) {
-            dto.setDurationsDetails(billed.getDurationsDetails());
-        }
-        if (dInvoices == null || dInvoices.size()<=0) {
-            dto.setQuantityDetails(billed.getQuantityDetails());
         }
         buildBillingDetails(invoiceModel, dto, bill);
         // Mbola mila tenenina hoe ilay duration tsy miova
@@ -89,7 +82,10 @@ public class InvoiceListener {
         billingService.save(dto);
     }
 
-    private void buildBillingDetails(InvoiceModel model, BillingDTO dto, Billing bill) {
+    private void buildBillingDetails(InvoiceModel model, BillingDTO dto, Billing bill) throws Exception {
+        List<BillingDDetailsDTO> billsDurations = bill != null ? bill.convertToListEntity() : new ArrayList<>();
+        List<BillingQDetailsDTO> billsQuantity = bill != null ? bill.convertToListEntity(bill.getQuantityDetails())
+                : new ArrayList<>();
         if (model.getdInvoices() != null) {
             List<BillingDDetailsDTO> duration = model.getdInvoices().stream()
                     .map(m -> new DurationBillingDetails(m.getServiceName(), m.getServiceCode(),
@@ -97,7 +93,8 @@ public class InvoiceListener {
                             .entityToDTO())
                     .collect(Collectors.toList());
 
-            dto.setDurationsDetails(duration);
+            validateDurationDetails(duration, billsDurations);
+
         }
         if (model.getInvoices() != null) {
             List<BillingQDetailsDTO> quantity = model.getInvoices().stream()
@@ -105,7 +102,54 @@ public class InvoiceListener {
                             m.getUnitPrice(), bill).entityToDTO())
                     .collect(Collectors.toList());
 
-            dto.setQuantityDetails(quantity);
+            validateQuantityDetails(quantity, billsQuantity);
         }
+        dto.setDurationsDetails(billsDurations);
+        dto.setQuantityDetails(billsQuantity);
     }
+
+    private void validateDurationDetails(List<BillingDDetailsDTO> input, List<BillingDDetailsDTO> alreadySaved)
+            throws Exception {
+        Set<String> savedCodes = alreadySaved.stream()
+                .map(BillingDDetailsDTO::getServiceCode)
+                .collect(Collectors.toSet());
+
+        input.forEach(invoice -> {
+            if (!savedCodes.contains(invoice.getServiceCode())) {
+                // La facture n'existe pas encore, on l'ajoute
+                alreadySaved.add(invoice);
+            }
+        });
+    }
+
+    private void validateQuantityDetails(List<BillingQDetailsDTO> input, List<BillingQDetailsDTO> alreadySaved)
+            throws Exception {
+        Set<String> savedCodes = alreadySaved.stream()
+                .map(BillingQDetailsDTO::getServiceCode)
+                .collect(Collectors.toSet());
+
+        input.forEach(invoice -> {
+            if (!savedCodes.contains(invoice.getServiceCode())) {
+                // La facture n'existe pas encore, on l'ajoute
+                alreadySaved.add(invoice);
+            } else {
+                // La facture existe déjà, on met à jour les détails
+                BillingQDetailsDTO existingInvoice;
+                try {
+                    existingInvoice = alreadySaved.stream()
+                            .filter(b -> b.getServiceCode().equals(invoice.getServiceCode()))
+                            .findFirst()
+                            .orElseThrow(() -> new Exception(
+                                    "Erreur lors de la mise à jour de la facture : facture introuvable"));
+                    existingInvoice.setQuantity(invoice.getQuantity() + existingInvoice.getQuantity());
+                    existingInvoice.setUnitPrice(invoice.getUnitPrice());
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
 }

@@ -120,7 +120,7 @@ public class Billing extends BaseEntity<BillingDTO> {
                 convertToListEntity(quantityDetails));
     }
 
-    private List<BillingDDetailsDTO> convertToListEntity() {
+    public List<BillingDDetailsDTO> convertToListEntity() {
         if (durationDetails == null) {
             return null;
         }
@@ -137,7 +137,7 @@ public class Billing extends BaseEntity<BillingDTO> {
                 .collect(Collectors.toList());
     }
 
-    private List<BillingQDetailsDTO> convertToListEntity(List<QuantityBillingDetails> list) {
+    public List<BillingQDetailsDTO> convertToListEntity(List<QuantityBillingDetails> list) {
         if (list == null) {
             return null;
         }

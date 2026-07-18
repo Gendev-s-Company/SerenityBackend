@@ -19,6 +19,7 @@ import gendev.it.serenity.core.models.InvoiceModel;
 import gendev.it.serenity.core.models.QInvoiceModel;
 import gendev.it.serenity.hotel.domain.dto.ActivityOrderDTO;
 import gendev.it.serenity.hotel.domain.dto.ActivityPriceDTO;
+import gendev.it.serenity.hotel.infrastructure.entity.Activity;
 import gendev.it.serenity.hotel.infrastructure.entity.ActivityOrder;
 import gendev.it.serenity.hotel.infrastructure.repository.ActivityOrderRepo;
 import jakarta.persistence.EntityManager;
@@ -29,14 +30,16 @@ public class ActivityOrderService extends CommonService<ActivityOrder, ActivityO
     private final ActivityPriceService priceService;
     private final EntityManager entity;
     private final ApplicationEventPublisher eventPublisher;
+    private final ActivityService activityService;
 
     public ActivityOrderService(ActivityOrderRepo jpa, ActivityPriceService priceService, EntityManager entity,
-            ApplicationEventPublisher eventPublisher) {
+            ApplicationEventPublisher eventPublisher, ActivityService activityService) {
         super(jpa);
         this.priceService = priceService;
         this.entity = entity;
         // TODO Auto-generated constructor stub
         this.eventPublisher = eventPublisher;
+        this.activityService = activityService;
     }
 
     public Page<ActivityOrderDTO> paginateAllByCompanyAndState(int pageNumber, int pageSize, String field, String sort,
@@ -139,14 +142,14 @@ public class ActivityOrderService extends CommonService<ActivityOrder, ActivityO
         ActivityPriceDTO price = priceService.findLastPrice(model.getActivity().getActivityID(), 0);
         model.setPrice(price.getPrice());
         ActivityOrderDTO res = super.save(model);
-
+        Activity activity = activityService.findOneByIdAndStatus(res.getActivity().getActivityID(), 0);
         String company = getJpa().findCompany(res.getAcOrderID());
         List<DInvoiceModel> invoices = new ArrayList<>();
-        DInvoiceModel invoiceModel = new DInvoiceModel( res.getActivity().getName(),
+        DInvoiceModel invoiceModel = new DInvoiceModel( activity.getName(),
         res.getActivity().getActivityID(), "h", res.getPrice(), res.getDateOrder(), res.getDateOrder().plusHours(res.getDuration()));
         invoices.add(invoiceModel);
         
-        InvoiceModel invoice = new InvoiceModel("",company, null, invoices);
+        InvoiceModel invoice = new InvoiceModel(res.getCustomer().getCustomerID(),company, null, invoices);
         System.out.println("invoice: " + invoice);
         eventPublisher.publishEvent(invoice);
         return res;

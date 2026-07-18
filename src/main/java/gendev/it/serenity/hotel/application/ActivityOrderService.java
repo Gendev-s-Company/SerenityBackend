@@ -142,11 +142,11 @@ public class ActivityOrderService extends CommonService<ActivityOrder, ActivityO
 
         String company = getJpa().findCompany(res.getAcOrderID());
         List<DInvoiceModel> invoices = new ArrayList<>();
-        DInvoiceModel invoiceModel = new DInvoiceModel(res.getCustomer().getCustomerID(), res.getActivity().getName(),
+        DInvoiceModel invoiceModel = new DInvoiceModel( res.getActivity().getName(),
         res.getActivity().getActivityID(), "h", res.getPrice(), res.getDateOrder(), res.getDateOrder().plusHours(res.getDuration()));
         invoices.add(invoiceModel);
         
-        InvoiceModel invoice = new InvoiceModel(company, null, invoices);
+        InvoiceModel invoice = new InvoiceModel("",company, null, invoices);
         System.out.println("invoice: " + invoice);
         eventPublisher.publishEvent(invoice);
         return res;

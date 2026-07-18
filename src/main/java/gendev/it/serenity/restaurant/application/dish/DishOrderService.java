@@ -75,11 +75,11 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
         String company = getJpa().findCompany(saved.getOrderID());
         List<QInvoiceModel> invoices = saved.getDetails()
                 .stream()
-                .map(m -> new QInvoiceModel(saved.getTableOccupation().getCustomerID(), m.getDish().getName(),
+                .map(m -> new QInvoiceModel( m.getDish().getName(),
                         m.getDish().getDishID(), m.getQuantity(), m.getUnitPrice()))
                 .collect(Collectors.toList());
                 //  order.getTableOccupation().getCustomer().getCompany().getCompanyID() 
-        InvoiceModel invoiceModel = new InvoiceModel(company, invoices, null);
+        InvoiceModel invoiceModel = new InvoiceModel("", company, invoices, null);
         eventPublisher.publishEvent(invoiceModel);
 
         return saved.entityToDTO();

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DInvoiceModel {
-    private String customerID;
+    
     private String serviceName;
     private String serviceCode;
     private String typeDuration;
@@ -66,14 +66,6 @@ public class DInvoiceModel {
 
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
-    }
-
-    public String getCustomerID() {
-        return customerID;
-    }
-
-    public void setCustomerID(String customerID) {
-        this.customerID = customerID;
     }
 
 }

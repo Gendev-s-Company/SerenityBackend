@@ -9,18 +9,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QInvoiceModel {
-    private String customerID;
     private String serviceName;
     private String serviceCode;
     private Integer quantity;
     private BigDecimal unitPrice;
 
-    public String getCustomerID() {
-        return customerID;
-    }
-    public void setCustomerID(String customerID) {
-        this.customerID = customerID;
-    }
 
     public String getServiceName() {
         return serviceName;

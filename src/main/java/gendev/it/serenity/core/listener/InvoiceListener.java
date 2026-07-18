@@ -8,6 +8,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import gendev.it.serenity.core.models.DInvoiceModel;
 import gendev.it.serenity.core.models.InvoiceModel;
 import gendev.it.serenity.core.models.QInvoiceModel;
 import gendev.it.serenity.facturation.application.BillingService;
@@ -23,10 +24,14 @@ import gendev.it.serenity.facturation.infrastructure.repository.TaxRepo;
 import lombok.RequiredArgsConstructor;
 
 /**
- *  Class permettant de gérer les événements liés à la création d'une facture (Invoice) dans le système.
- *  Il écoute les événements de type InvoiceModel et déclenche le traitement approprié pour créer ou mettre à jour les factures dans le système de facturation.
- *  @author MyRanto Randria
- * InvoiceListener
+ * Class permettant de gérer les événements liés à la création d'une facture
+ * (Invoice) dans le système.
+ * Il écoute les événements de type InvoiceModel et déclenche le traitement
+ * approprié pour créer ou mettre à jour les factures dans le système de
+ * facturation.
+ * 
+ * @author MyRanto Randria
+ *         InvoiceListener
  */
 @Component
 @RequiredArgsConstructor
@@ -40,11 +45,12 @@ public class InvoiceListener {
         // Call the billing service to process the invoice
         // vérifier si le client a déjà une facture non payé
         List<QInvoiceModel> invoices = invoiceModel.getInvoices();
+        List<DInvoiceModel> dInvoices = invoiceModel.getdInvoices();
         String company = invoiceModel.getCompany();
-        if (invoices == null || invoices.size() <= 0) {
+        if ((invoices == null || invoices.size() <= 0) && (dInvoices == null || dInvoices.size() <= 0)) {
             return;
         }
-        Billing bill = billingService.findCustomerInvoiceNotPaid(invoices.get(0).getCustomerID());
+        Billing bill = billingService.findCustomerInvoiceNotPaid(invoiceModel.getCustomerID());
         BillingDTO dto = new BillingDTO();
         Tax taxe = findLastTax(company);
         if (bill == null) {
@@ -53,13 +59,16 @@ public class InvoiceListener {
         }
         // traitement si il en possède déjà un
         BillingDTO billed = bill.entityToDTO();
-        dto.setDurationsDetails(billed.getDurationsDetails());
+        if (invoices == null || invoices.size()<=0) {
+            dto.setDurationsDetails(billed.getDurationsDetails());
+        }
+        if (dInvoices == null || dInvoices.size()<=0) {
+            dto.setQuantityDetails(billed.getQuantityDetails());
+        }
         buildBillingDetails(invoiceModel, dto, bill);
-System.out.println("updating");
         // Mbola mila tenenina hoe ilay duration tsy miova
         billingService.updateBilling(dto, bill.getBillID(), false);
     }
-
 
     private Tax findLastTax(String company) {
         return taxRepo.findLasTaxByCompany(company);
@@ -68,9 +77,8 @@ System.out.println("updating");
     // pour la création de billing sur la quantity
     private void buildBilling(InvoiceModel invoiceModel, String company,
             BillingDTO dto, Billing bill, Tax taxe) throws Exception {
-        List<QInvoiceModel> invoices = invoiceModel.getInvoices();
 
-        dto.setCustomerID(invoices.get(0).getCustomerID());
+        dto.setCustomerID(invoiceModel.getCustomerID());
         dto.setBillingDate(LocalDateTime.now());
         dto.setState(0);
         // traitement si le client ne possède pas de facture

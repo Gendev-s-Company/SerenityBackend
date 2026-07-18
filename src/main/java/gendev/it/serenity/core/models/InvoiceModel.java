@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InvoiceModel {
+    private String customerID;
     private String company;
     private List<QInvoiceModel> invoices;
     private List<DInvoiceModel> dInvoices;//duration invoices
@@ -39,6 +40,14 @@ public class InvoiceModel {
 
     public void setdInvoices(List<DInvoiceModel> dInvoices) {
         this.dInvoices = dInvoices;
+    }
+
+    public String getCustomerID() {
+        return customerID;
+    }
+
+    public void setCustomerID(String customerID) {
+        this.customerID = customerID;
     }
 
 }

@@ -10,7 +10,9 @@ import gendev.it.serenity.facturation.infrastructure.entity.Billing;
 import gendev.it.serenity.facturation.infrastructure.repository.BillingRepo;
 import gendev.it.serenity.pack.application.PackService;
 import gendev.it.serenity.pack.dto.PackDTO;
+import gendev.it.serenity.pack.infrastructure.models.Pack;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -70,16 +72,36 @@ public class BillingService extends CommonService<Billing, BillingDTO, String, B
     public BillingDTO findById(String id, Integer status) throws Exception {
         // TODO Auto-generated method stub
         BillingDTO dto = super.findById(id, status);
-
+        packageManagement(dto);
         return dto;
     }
 
-    private void isBillInsidePack(BillingDTO dto) throws Exception {
+    private void packageManagement(BillingDTO dto) throws Exception {
         List<PackDTO> packs = packService.findAllByCompany(dto.getCompanyID(), 0);
         PackDTO pack = packs.stream()
                 .filter(p -> packBillingUseCase.matchesPack(dto, p))
                 .findFirst()
                 .orElse(null);
+        BigDecimal discount = BigDecimal.valueOf(0);
+        if (dto.getPackID() != null) {
+            Pack entityPack = packService.findOneByIdAndStatus(dto.getPackID(), 0);
+            discount = entityPack.getDiscount();
+        } else if (pack != null) {
+            discount = pack.getDiscount();
+            dto.setPackID(pack.getPackID());
+            updateBillingPack(dto.getBillID(), pack.getPackID());
+        }
+        BigDecimal discountValueHT = dto.getTotalHT().multiply(discount).divide(BigDecimal.valueOf(100));
+        BigDecimal discountValueTTC = dto.getTotalTTC().multiply(discount).divide(BigDecimal.valueOf(100));
+        dto.setTotalHT(dto.getTotalHT().subtract(discountValueHT));
+        dto.setTotalTTC(dto.getTotalTTC().subtract(discountValueTTC));
+    }
+
+    @Transactional
+    private void updateBillingPack(String billid, String packid) throws BusinessException{
+        Billing bill = this.findOneByIdAndStatus(billid, 0);
+        bill.setPackID(packid);
+        getJpa().save(bill);
     }
 
     @Transactional

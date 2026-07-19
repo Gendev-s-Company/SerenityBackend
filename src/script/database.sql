@@ -363,8 +363,9 @@ create table billing(
 );
 
 alter table billing drop column packid;
-serenity=> alter table billing add column packid varchar(10) references pack(packID);
+alter table billing add column packid varchar(10) references pack(packID);
 alter table billing add column state integer default 0 check (state >= 0);
+alter table billing add column companyid varchar(10) references company(companyID);
 
 create table quantityBillingDetails(
     id serial primary key,

@@ -73,6 +73,7 @@ public class InvoiceListener {
 
         dto.setCustomerID(invoiceModel.getCustomerID());
         dto.setBillingDate(LocalDateTime.now());
+        dto.setCompanyID(company);
         dto.setState(0);
         // traitement si le client ne possède pas de facture
         buildBillingDetails(invoiceModel, dto, bill);

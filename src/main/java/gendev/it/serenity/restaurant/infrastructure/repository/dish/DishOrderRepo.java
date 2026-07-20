@@ -29,6 +29,8 @@ public interface DishOrderRepo extends CommonRepository<DishOrder, String>{
     @Query("SELECT a FROM DishOrder a WHERE a.status = :status AND a.tableOccupation.table.tabletype.company.id = :company")
     Page<DishOrder> findPaginateByStatusAndCompany(int status, String company, Pageable pageable);
 
+    @Query("SELECT a.tableOccupation.table.tabletype.company.id FROM DishOrder a WHERE a.status = 0 AND a.orderID = :orderid")
+    String findCompany(String orderid);
    
     @Query("SELECT a FROM DishOrder a WHERE a.status = :status AND a.tableOccupation.table.tabletype.company.id = :company and a.state IN :state")
     List<DishOrder> findAllByStatusAndCompanyAndState(int status, String company, List<Integer> state);

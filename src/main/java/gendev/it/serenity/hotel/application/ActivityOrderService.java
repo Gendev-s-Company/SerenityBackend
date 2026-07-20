@@ -1,8 +1,11 @@
 package gendev.it.serenity.hotel.application;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -11,8 +14,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
+import gendev.it.serenity.core.models.DInvoiceModel;
+import gendev.it.serenity.core.models.InvoiceModel;
+import gendev.it.serenity.core.models.QInvoiceModel;
 import gendev.it.serenity.hotel.domain.dto.ActivityOrderDTO;
 import gendev.it.serenity.hotel.domain.dto.ActivityPriceDTO;
+import gendev.it.serenity.hotel.infrastructure.entity.Activity;
 import gendev.it.serenity.hotel.infrastructure.entity.ActivityOrder;
 import gendev.it.serenity.hotel.infrastructure.repository.ActivityOrderRepo;
 import jakarta.persistence.EntityManager;
@@ -22,12 +29,17 @@ import jakarta.persistence.Query;
 public class ActivityOrderService extends CommonService<ActivityOrder, ActivityOrderDTO, String, ActivityOrderRepo> {
     private final ActivityPriceService priceService;
     private final EntityManager entity;
+    private final ApplicationEventPublisher eventPublisher;
+    private final ActivityService activityService;
 
-    public ActivityOrderService(ActivityOrderRepo jpa, ActivityPriceService priceService, EntityManager entity) {
+    public ActivityOrderService(ActivityOrderRepo jpa, ActivityPriceService priceService, EntityManager entity,
+            ApplicationEventPublisher eventPublisher, ActivityService activityService) {
         super(jpa);
         this.priceService = priceService;
         this.entity = entity;
         // TODO Auto-generated constructor stub
+        this.eventPublisher = eventPublisher;
+        this.activityService = activityService;
     }
 
     public Page<ActivityOrderDTO> paginateAllByCompanyAndState(int pageNumber, int pageSize, String field, String sort,
@@ -129,7 +141,18 @@ public class ActivityOrderService extends CommonService<ActivityOrder, ActivityO
         // TODO Auto-generated method stub
         ActivityPriceDTO price = priceService.findLastPrice(model.getActivity().getActivityID(), 0);
         model.setPrice(price.getPrice());
-        return super.save(model);
+        ActivityOrderDTO res = super.save(model);
+        Activity activity = activityService.findOneByIdAndStatus(res.getActivity().getActivityID(), 0);
+        String company = getJpa().findCompany(res.getAcOrderID());
+        List<DInvoiceModel> invoices = new ArrayList<>();
+        DInvoiceModel invoiceModel = new DInvoiceModel( activity.getName(),
+        res.getActivity().getActivityID(), "h", res.getPrice(), res.getDateOrder(), res.getDateOrder().plusHours(res.getDuration()));
+        invoices.add(invoiceModel);
+        
+        InvoiceModel invoice = new InvoiceModel(res.getCustomer().getCustomerID(),company, null, invoices);
+        System.out.println("invoice: " + invoice);
+        eventPublisher.publishEvent(invoice);
+        return res;
     }
 
     public List<ActivityOrderDTO> findAllByActivity(String activityID, Integer state) throws Exception {

@@ -24,12 +24,29 @@ public class BillingDTO extends DTO<Billing> {
     private Integer state;
     private List<BillingDDetailsDTO> durationsDetails;
     private List<BillingQDetailsDTO> quantityDetails;
+    private BigDecimal totalHT;
+    private BigDecimal totalTTC;
+    private String companyID;
 
+    
+
+    public BillingDTO(String billID, String customerID, LocalDateTime billingDate, BigDecimal taxe, String packID,
+            Integer state, List<BillingDDetailsDTO> durationsDetails, List<BillingQDetailsDTO> quantityDetails) {
+        this.billID = billID;
+        this.customerID = customerID;
+        this.billingDate = billingDate;
+        this.taxe = taxe;
+        this.packID = packID;
+        this.state = state;
+        this.durationsDetails = durationsDetails;
+        this.quantityDetails = quantityDetails;
+    }
     @Override
     public Billing dtoToEntity() throws Exception {
         // TODO Auto-generated method stub
         Billing bill = new Billing(customerID, billingDate, taxe, packID);
         startMapping(bill);
+        bill.setCompanyID(companyID);
         return bill;
     }
     public void publicMapping(Billing bill){

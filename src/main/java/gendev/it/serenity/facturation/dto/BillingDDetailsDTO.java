@@ -1,6 +1,7 @@
 package gendev.it.serenity.facturation.dto;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import gendev.it.serenity.common.dto.DTO;
@@ -35,6 +36,18 @@ public class BillingDDetailsDTO extends DTO<DurationBillingDetails> {
     public DurationBillingDetails dtoToEntityAvoidException() {
         Billing bill = billID != null ? new Billing(billID) : null;
         return new DurationBillingDetails(serviceName, serviceCode, typeDuration, unitPrice, startTime, endTime, bill);
+    }
+
+    public String getFormatDuration() { // heure ou jours
+        if (startTime == null || endTime == null) {
+            return "";
+        }
+
+        // Calcule la durée entre les deux dates
+        Duration duration = Duration.between(startTime, endTime);
+
+        return Math.abs(duration.toHours()) < 24 ? "h" : "d";
+
     }
 
 }

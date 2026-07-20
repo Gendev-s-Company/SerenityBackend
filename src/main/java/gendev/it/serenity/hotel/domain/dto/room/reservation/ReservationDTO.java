@@ -1,6 +1,7 @@
 package gendev.it.serenity.hotel.domain.dto.room.reservation;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import gendev.it.serenity.common.dto.DTO;
@@ -15,10 +16,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReservationDTO extends DTO<Reservation>{
+public class ReservationDTO extends DTO<Reservation> {
     private String reservationID;
     private String roomID;
-    private LocalDateTime  starttime;
+    private LocalDateTime starttime;
     private LocalDateTime endtime;
     private String customerID;
     private BigDecimal price;
@@ -30,7 +31,7 @@ public class ReservationDTO extends DTO<Reservation>{
     private RoomDTO room;
     private UserResponseDTO user;
     private CustomerDTO customer;
-    
+
     public ReservationDTO(String reservationID, String roomID, LocalDateTime starttime, LocalDateTime endtime,
             String customerID, BigDecimal price, Float accountRated, BigDecimal accountPaid,
             LocalDateTime accountPaimentDeadline, String userID, Integer state, RoomDTO room, UserResponseDTO user,
@@ -55,11 +56,23 @@ public class ReservationDTO extends DTO<Reservation>{
     @Override
     public Reservation dtoToEntity() throws Exception {
         // TODO Auto-generated method stub
-        return new Reservation(reservationID, roomID, starttime, endtime, customerID, price, 
-            accountRated, accountPaid, AccountPaimentDeadline, userID, state, getStatus());
+        return new Reservation(reservationID, roomID, starttime, endtime, customerID, price,
+                accountRated, accountPaid, AccountPaimentDeadline, userID, state, getStatus());
     }
-    
+
     public void setState(Integer state) {
         this.state = state;
+    }
+
+    public String getFormatDuration() { // heure ou jours
+        if (starttime == null || endtime == null) {
+            return "";
+        }
+
+        // Calcule la durée entre les deux dates
+        Duration duration = Duration.between(starttime, endtime);
+
+        return Math.abs(duration.toHours()) < 24 ? "h" : "d";
+
     }
 }

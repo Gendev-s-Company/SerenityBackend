@@ -2,9 +2,12 @@ package gendev.it.serenity.hotel.application.room.reservation;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.math.BigDecimal;
 import java.time.Duration;
+
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +17,8 @@ import org.springframework.stereotype.Service;
 import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.common.utils.State;
 import gendev.it.serenity.common.utils.Utils;
+import gendev.it.serenity.core.models.DInvoiceModel;
+import gendev.it.serenity.core.models.InvoiceModel;
 import gendev.it.serenity.hotel.application.room.RoomService;
 import gendev.it.serenity.hotel.domain.dto.room.RoomDTO;
 import gendev.it.serenity.hotel.domain.dto.room.reservation.ResaPriceDTO;
@@ -30,14 +35,19 @@ import java.math.RoundingMode;
 public class ReservationService extends CommonService<Reservation, ReservationDTO, String, ReservationRepo> {
     private final RoomService service;
     private final ReservationHistoryService history;
-    public ReservationService(ReservationRepo jpa, RoomService service, ReservationHistoryService history) {
+    private final ApplicationEventPublisher eventPublisher;
+    private final RoomService roomService;
+
+    public ReservationService(ReservationRepo jpa, RoomService service, ReservationHistoryService history,
+            ApplicationEventPublisher eventPublisher, RoomService roomService) {
         super(jpa);
         this.service = service;
         this.history = history;
         // TODO Auto-generated constructor stub
+        this.eventPublisher = eventPublisher;
+        this.roomService = roomService;
     }
 
-    
     @Override
     public ReservationDTO save(ReservationDTO model) throws Exception {
         // TODO Auto-generated method stub
@@ -45,7 +55,21 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         if (accompte.compareTo(model.getAccountPaid()) == 0) {
             model.setState(2);
         }
-        return super.save(model);
+
+        ReservationDTO res = super.save(model);
+        Room room = roomService.findOneByIdAndStatus(res.getRoomID(), 0);
+        // String company = getJpa().findCompany(res.get());
+        List<DInvoiceModel> invoices = new ArrayList<>();
+        DInvoiceModel invoiceModel = new DInvoiceModel(room.getName(),
+                res.getRoomID(), res.getFormatDuration(), res.getPrice(), res.getStarttime(),
+                res.getEndtime());
+        invoices.add(invoiceModel);
+
+        InvoiceModel invoice = new InvoiceModel(res.getCustomerID(), room.getType().getCompany().getCompanyID(), null,
+                invoices);
+        System.out.println("invoice: " + invoice);
+        eventPublisher.publishEvent(invoice);
+        return res;
     }
 
     @Transactional
@@ -58,14 +82,15 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         }
         Reservation toUpdate = resa.dtoToEntity();
         toUpdate.setState(state);
-        Reservation toArchive =  getJpa().save(toUpdate);
+        Reservation toArchive = getJpa().save(toUpdate);
         toArchive = toArchive.entityToDTO().dtoToEntity();
         toArchive.setState(resa.getState());
         archivateReservation(toArchive);
     }
 
-    private void archivateReservation(Reservation resa) throws Exception{
-        ReservationHistory archive = new ReservationHistory(resa.getReservationID(), LocalDateTime.now(), resa.getState(), 0);
+    private void archivateReservation(Reservation resa) throws Exception {
+        ReservationHistory archive = new ReservationHistory(resa.getReservationID(), LocalDateTime.now(),
+                resa.getState(), 0);
         history.getJpa().save(archive);
     }
 
@@ -125,13 +150,14 @@ public class ReservationService extends CommonService<Reservation, ReservationDT
         }
 
         // BigDecimal accompte = result.multiply(room.getRoomPrice().getAccountRate())
-        //         .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        // .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
         BigDecimal accompte = calculAccompte(result, room.getRoomPrice().getAccountRate());
 
         ResaPriceDTO res = new ResaPriceDTO(result, accompte, deadline);
         return res;
     }
-    private BigDecimal calculAccompte(BigDecimal price, BigDecimal rate){
+
+    private BigDecimal calculAccompte(BigDecimal price, BigDecimal rate) {
         return price.multiply(rate)
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
     }

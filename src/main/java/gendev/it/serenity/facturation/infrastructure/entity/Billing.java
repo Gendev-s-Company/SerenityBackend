@@ -1,6 +1,7 @@
 package gendev.it.serenity.facturation.infrastructure.entity;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,8 @@ public class Billing extends BaseEntity<BillingDTO> {
     private BigDecimal taxe;
     @Column
     private String packID;
+    @Column
+    private String companyID;
 
     @Column
     private int state  = 0;
@@ -116,11 +119,14 @@ public class Billing extends BaseEntity<BillingDTO> {
     @Override
     public BillingDTO entityToDTO() {
         // TODO Auto-generated method stub
-        return new BillingDTO(billID, customerID, billingDate, taxe, packID, this.state, convertToListEntity(),
+
+        BillingDTO invoice = new BillingDTO(billID, customerID, billingDate, taxe, packID, this.state, convertToListEntity(),
                 convertToListEntity(quantityDetails));
+        calculateTotalInvoice(invoice);
+        return invoice;
     }
 
-    private List<BillingDDetailsDTO> convertToListEntity() {
+    public List<BillingDDetailsDTO> convertToListEntity() {
         if (durationDetails == null) {
             return null;
         }
@@ -137,7 +143,7 @@ public class Billing extends BaseEntity<BillingDTO> {
                 .collect(Collectors.toList());
     }
 
-    private List<BillingQDetailsDTO> convertToListEntity(List<QuantityBillingDetails> list) {
+    public List<BillingQDetailsDTO> convertToListEntity(List<QuantityBillingDetails> list) {
         if (list == null) {
             return null;
         }
@@ -175,5 +181,57 @@ public class Billing extends BaseEntity<BillingDTO> {
     public void attachDurationDetail(DurationBillingDetails duration) {
         duration.setBill(this);
         this.durationDetails.add(duration);
+    }
+
+
+    //calcul total price
+    private BigDecimal calculateDurationInvoice(List<BillingDDetailsDTO> durationInvoices) {
+        if (durationInvoices == null || durationInvoices.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+
+        return durationInvoices.stream()
+                .map(item -> {
+                    // Sécurité : si une donnée essentielle est manquante, la ligne coûte 0
+                    if (item.getStartTime() == null || item.getEndTime() == null || item.getUnitPrice() == null) {
+                        return BigDecimal.ZERO;
+                    }
+
+                    // 1. Calcul de la durée absolue entre start et end
+                    Duration duration = Duration.between(item.getStartTime(), item.getEndTime());
+                    long totalHours = Math.abs(duration.toHours());
+
+                    BigDecimal quantity;
+
+                    // 2. Application de la règle tarifaire (< 24h ou >= 24h)
+                    if (totalHours < 24) {
+                        //  l'heure
+                        quantity = BigDecimal.valueOf(totalHours);
+                    } else {
+                        //  jour (24h = 1 jour)
+                        long totalDays = duration.toDays(); // ou totalHours / 24
+                        quantity = BigDecimal.valueOf(totalDays);
+                    }
+
+                    // 3. Calcul du sous-total pour cette ligne
+                    return item.getUnitPrice().multiply(quantity);
+                })
+                // 4. Somme de tous les sous-totaux
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private BigDecimal calculateQuantityInvoice(List<BillingQDetailsDTO> quantityInvoices) {
+        return quantityInvoices.stream()
+                .map(m -> m.getUnitPrice().multiply(BigDecimal.valueOf(m.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    private void calculateTotalInvoice(BillingDTO invoice) {
+        BigDecimal totalDuration = calculateDurationInvoice(invoice.getDurationsDetails());
+        BigDecimal totalQuantity = calculateQuantityInvoice(invoice.getQuantityDetails());
+        BigDecimal totalHT = totalDuration.add(totalQuantity);
+        BigDecimal totalTTC = totalHT.add(totalHT.multiply(invoice.getTaxe().divide(BigDecimal.valueOf(100))));
+        invoice.setTotalHT(totalHT);
+        invoice.setTotalTTC(totalTTC);
     }
 }

@@ -17,4 +17,7 @@ public interface TaxRepo  extends CommonRepository<Tax, Integer> {
     @Override
     @Query("SELECT a FROM Tax a WHERE a.status = :status AND a.companyID = :company")
     Page<Tax> findPaginateByStatusAndCompany(int status, String company, Pageable pageable);
+
+    @Query("SELECT a FROM Tax a WHERE a.status = 0 AND a.companyID = :company order by taxID desc limit 1")
+    Tax findLasTaxByCompany(String company);
 }

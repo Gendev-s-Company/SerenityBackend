@@ -99,6 +99,16 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
             throw new Exception("Modification impossible, ID different");
         }
         validateOrderDetails(init, model.getDetails());
+        String company = getJpa().findCompany(init.getOrderID());
+        List<QInvoiceModel> invoices = model.getDetails()
+                .stream()
+                .map(m -> new QInvoiceModel(m.getDish().getName(),
+                        m.getDish().getDishID(), m.getQuantity(), m.getUnitPrice()))
+                .collect(Collectors.toList());
+                
+        InvoiceModel invoiceModel = new InvoiceModel(init.getTableOccupation().getCustomerID(), company, invoices,
+                null);
+        eventPublisher.publishEvent(invoiceModel);
         return init.entityToDTO();
     }
 

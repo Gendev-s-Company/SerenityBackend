@@ -94,22 +94,23 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
     @Transactional
     public DishOrderDTO update(DishOrderDTO model, String id, Integer status) throws Exception {
         // TODO Auto-generated method stub
-        DishOrder init = super.findOneByIdAndStatus(id, status);
-        if (!init.getOrderID().equals(id)) {
+        DishOrder entity = super.findOneByIdAndStatus(id, status);
+        if (!entity.getOrderID().equals(id)) {
             throw new Exception("Modification impossible, ID different");
         }
-        validateOrderDetails(init, model.getDetails());
-        String company = getJpa().findCompany(init.getOrderID());
+        validateOrderDetails(entity, model.getDetails());
+        String company = getJpa().findCompany(entity.getOrderID());
         List<QInvoiceModel> invoices = model.getDetails()
                 .stream()
                 .map(m -> new QInvoiceModel(m.getDish().getName(),
                         m.getDish().getDishID(), m.getQuantity(), m.getUnitPrice()))
                 .collect(Collectors.toList());
                 
-        InvoiceModel invoiceModel = new InvoiceModel(init.getTableOccupation().getCustomerID(), company, invoices,
+        InvoiceModel invoiceModel = new InvoiceModel(entity.getTableOccupation().getCustomerID(), company, invoices,
                 null);
         eventPublisher.publishEvent(invoiceModel);
-        return init.entityToDTO();
+        
+        return entity.entityToDTO();
     }
 
     private void validateOrderDetails(DishOrder order, List<DishOrderDetailsDTO> details) {

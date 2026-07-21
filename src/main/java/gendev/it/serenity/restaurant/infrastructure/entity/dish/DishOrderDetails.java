@@ -106,4 +106,8 @@ public class DishOrderDetails extends BaseEntity<DishOrderDetailsDTO> {
                 })
                 .toList();
     }
+
+    public String getDishID(){
+        return dish!=null ? dish.getDishID():null;
+    }
 }

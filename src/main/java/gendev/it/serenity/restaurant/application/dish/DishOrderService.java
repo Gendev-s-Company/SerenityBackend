@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationEventPublisher;
@@ -11,14 +12,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.common.utils.State;
+import gendev.it.serenity.core.exception.BusinessException;
 import gendev.it.serenity.core.models.InvoiceModel;
 import gendev.it.serenity.core.models.QInvoiceModel;
 import gendev.it.serenity.restaurant.application.tables.TOccupationService;
 import gendev.it.serenity.restaurant.domain.dto.dish.DishOrderDTO;
+import gendev.it.serenity.restaurant.domain.dto.dish.DishOrderDetailsDTO;
 import gendev.it.serenity.restaurant.infrastructure.entity.dish.DishOrder;
 import gendev.it.serenity.restaurant.infrastructure.entity.dish.DishOrderDetails;
 import gendev.it.serenity.restaurant.infrastructure.entity.tables.TableOccupation;
@@ -75,14 +79,62 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
         String company = getJpa().findCompany(saved.getOrderID());
         List<QInvoiceModel> invoices = saved.getDetails()
                 .stream()
-                .map(m -> new QInvoiceModel( m.getDish().getName(),
+                .map(m -> new QInvoiceModel(m.getDish().getName(),
                         m.getDish().getDishID(), m.getQuantity(), m.getUnitPrice()))
                 .collect(Collectors.toList());
-                //  order.getTableOccupation().getCustomer().getCompany().getCompanyID() 
-        InvoiceModel invoiceModel = new InvoiceModel(saved.getTableOccupation().getCustomerID(), company, invoices, null);
+        // order.getTableOccupation().getCustomer().getCompany().getCompanyID()
+        InvoiceModel invoiceModel = new InvoiceModel(saved.getTableOccupation().getCustomerID(), company, invoices,
+                null);
         eventPublisher.publishEvent(invoiceModel);
 
         return saved.entityToDTO();
+    }
+
+    @Override
+    @Transactional
+    public DishOrderDTO update(DishOrderDTO model, String id, Integer status) throws Exception {
+        // TODO Auto-generated method stub
+        DishOrder init = super.findOneByIdAndStatus(id, status);
+        if (!init.getOrderID().equals(id)) {
+            throw new Exception("Modification impossible, ID different");
+        }
+        validateOrderDetails(init, model.getDetails());
+        return init.entityToDTO();
+    }
+
+    private void validateOrderDetails(DishOrder order, List<DishOrderDetailsDTO> details) {
+        Set<String> savedDish = order.getDetails()
+                .stream()
+                .map(DishOrderDetails::getDishID)
+                .collect(Collectors.toSet());
+
+        details.forEach(dish -> {
+            if (!savedDish.contains(dish.getDish().getDishID())) {
+                try {
+                    order.addDetail(dish.dtoToEntity());
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            } else {
+                DishOrderDetails existingDish;
+                try {
+                    existingDish = order.getDetails().stream()
+                            .filter(b -> b.getDishID().equals(dish.getDish().getDishID()))
+                            .findFirst()
+                            .orElseThrow(() -> new BusinessException(
+                                    "Erreur interne inconnu lors de la modification de commande",
+                                    HttpStatus.INTERNAL_SERVER_ERROR));
+
+                    existingDish.setQuantity(existingDish.getQuantity() + dish.getQuantity());
+                    existingDish.setUnitPrice(dish.getUnitPrice());
+
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private String getUserIdFromOrderDetail(List<DishOrderDetails> list) {

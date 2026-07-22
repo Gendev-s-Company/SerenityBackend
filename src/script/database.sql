@@ -377,6 +377,9 @@ create table quantityBillingDetails(
     status integer check (status >= 0)
 );
 
+alter table quantityBillingDetails drop column quantity;
+alter table quantityBillingDetails add column quantity integer;
+
 create table durationBillingDetails(
     id serial primary key,
     billID varchar(10) not null references billing(billID),

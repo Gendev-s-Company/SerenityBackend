@@ -19,15 +19,19 @@ public class PackService extends CommonService<Pack, PackDTO, String, PackRepo> 
     }
 
     @Transactional
-    public PackDTO updatePack(PackDTO toDelete, String packID, Boolean isDetail) throws BusinessException {
+    public PackDTO updatePack(PackDTO toUpdate, String packID, Boolean isDetail) throws BusinessException {
         Pack pack = findOneByIdAndStatus(packID, State.ACTIVE);
         pack.getActivityPack().clear();
         pack.getHotelsPack().clear();
         pack.getRestoPack().clear();
+        pack.setTitle(toUpdate.getTitle());
+        pack.setDiscount(toUpdate.getDiscount());
+        pack.setStartDate(toUpdate.getStartDate());
+        pack.setEndDate(toUpdate.getEndDate());
         if (!isDetail) {
             pack.setStatus(State.DELETED);
         } else {
-            toDelete.publicMapping(pack);
+            toUpdate.publicMapping(pack);
         }
         return pack.entityToDTO();
     }

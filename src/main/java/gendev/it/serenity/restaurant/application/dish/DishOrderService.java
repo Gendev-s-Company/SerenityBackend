@@ -105,11 +105,11 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
                 .map(m -> new QInvoiceModel(m.getDish().getName(),
                         m.getDish().getDishID(), m.getQuantity(), m.getUnitPrice()))
                 .collect(Collectors.toList());
-                
+
         InvoiceModel invoiceModel = new InvoiceModel(entity.getTableOccupation().getCustomerID(), company, invoices,
                 null);
         eventPublisher.publishEvent(invoiceModel);
-        
+
         return entity.entityToDTO();
     }
 
@@ -136,7 +136,10 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
                             .orElseThrow(() -> new BusinessException(
                                     "Erreur interne inconnu lors de la modification de commande",
                                     HttpStatus.INTERNAL_SERVER_ERROR));
-
+                    if ((existingDish.getQuantity() <= 0) && dish.getQuantity() < 0)
+                        throw new BusinessException(
+                                "Erreur: la quantity de ce plat est deja 0 " + existingDish.getDishID(),
+                                HttpStatus.NOT_ACCEPTABLE);
                     existingDish.setQuantity(existingDish.getQuantity() + dish.getQuantity());
                     existingDish.setUnitPrice(dish.getUnitPrice());
 

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
+import gendev.it.serenity.facturation.dto.TaxDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +31,15 @@ public class Tax extends BaseEntity {
     private LocalDate dateTax;
     @Column(name = "companyid")
     private String companyID;
+    
+
+    public Tax(Integer taxID, BigDecimal taxRate, LocalDate dateTax, String companyID,int status) {
+        this.taxID = taxID;
+        this.taxRate = taxRate;
+        this.dateTax = dateTax;
+        this.companyID = companyID;
+        setStatus(status);
+    }
 
     @Override
     public Object getId() {
@@ -38,15 +48,18 @@ public class Tax extends BaseEntity {
     }
 
     @Override
-    public void updateFromDTO(DTO dto) {
+    public void updateFromDTO(DTO tdto) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateFromDTO'");
+        TaxDTO dto = (TaxDTO) tdto;
+        setTaxRate(dto.getTaxRate());
+        setDateTax(dto.getDatetax());
+        setCompanyID(dto.getCompanyID());
     }
 
     @Override
-    public DTO entityToDTO() {
+    public TaxDTO entityToDTO() {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'entityToDTO'");
+        return new TaxDTO(taxID,taxRate,dateTax,companyID,status);
     }
 
 }

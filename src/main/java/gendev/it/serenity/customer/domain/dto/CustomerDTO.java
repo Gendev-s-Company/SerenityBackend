@@ -97,5 +97,8 @@ public class CustomerDTO extends DTO<Customer>{
         }
         return new Customer(customerID, name, phone, mail, comp, cin, address, getStatus());
     }
+    public void setCompany(CompanyDTO company) {
+        this.company = company;
+    }
     
 }

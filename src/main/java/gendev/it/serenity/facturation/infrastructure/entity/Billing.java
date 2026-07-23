@@ -11,11 +11,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
+import gendev.it.serenity.customer.domain.dto.CustomerDTO;
 import gendev.it.serenity.customer.infrastructure.entity.Customer;
 import gendev.it.serenity.facturation.dto.BillingDDetailsDTO;
 import gendev.it.serenity.facturation.dto.BillingDTO;
 import gendev.it.serenity.facturation.dto.BillingQDetailsDTO;
 import gendev.it.serenity.pack.infrastructure.models.Pack;
+import gendev.it.serenity.users.infrastructure.entity.Company;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -58,6 +60,10 @@ public class Billing extends BaseEntity<BillingDTO> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerID", insertable = false, updatable = false)
     private Customer customer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "companyID", insertable = false, updatable = false)
+    private Company company;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "packID", insertable = false, updatable = false)
@@ -123,6 +129,12 @@ public class Billing extends BaseEntity<BillingDTO> {
         BillingDTO invoice = new BillingDTO(billID, customerID, billingDate, taxe, packID, this.state, convertToListEntity(),
                 convertToListEntity(quantityDetails));
         calculateTotalInvoice(invoice);
+        if (customer!=null) {
+            CustomerDTO customerDTO = customer.entityToDTO();
+            customerDTO.setCompany(null);
+            invoice.setCustomer(customerDTO);
+        }
+        invoice.setCompany(company!=null ? company.getName() : "");
         return invoice;
     }
 

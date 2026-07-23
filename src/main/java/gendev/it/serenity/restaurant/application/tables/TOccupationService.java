@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 import gendev.it.serenity.common.application.CommonService;
 import gendev.it.serenity.common.utils.State;
 import gendev.it.serenity.common.utils.Utils;
-import gendev.it.serenity.hotel.domain.dto.room.reservation.ReservationDTO;
-import gendev.it.serenity.hotel.infrastructure.entity.room.reservation.Reservation;
 import gendev.it.serenity.restaurant.domain.dto.tables.TOccupationDTO;
 import gendev.it.serenity.restaurant.infrastructure.entity.tables.TableOccupation;
 import gendev.it.serenity.restaurant.infrastructure.repository.tables.TOccupationRepo;
@@ -37,7 +35,7 @@ public class TOccupationService extends CommonService<TableOccupation, TOccupati
         }
         TableOccupation toUpdate = resa.dtoToEntity();
         toUpdate.setState(state);
-        TableOccupation toArchive =  getJpa().save(toUpdate);
+         getJpa().save(toUpdate);
         // toArchive = toArchive.entityToDTO().dtoToEntity();
         // toArchive.setState(resa.getState());
         // archivateReservation(toArchive);
@@ -72,7 +70,6 @@ public class TOccupationService extends CommonService<TableOccupation, TOccupati
             return entity.entityToDTO();
         });
         return result;
-
     }
 
     public Page<TOccupationDTO> findDisponibilityBytable(

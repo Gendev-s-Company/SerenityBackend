@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import gendev.it.serenity.common.dto.DTO;
+import gendev.it.serenity.customer.domain.dto.CustomerDTO;
 import gendev.it.serenity.facturation.infrastructure.entity.Billing;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,8 @@ public class BillingDTO extends DTO<Billing> {
     private BigDecimal totalHT;
     private BigDecimal totalTTC;
     private String companyID;
+    private CustomerDTO customer;
+    private String company;
 
     
 

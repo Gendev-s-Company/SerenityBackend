@@ -7,6 +7,7 @@ import java.util.List;
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.customer.domain.dto.CustomerDTO;
 import gendev.it.serenity.facturation.infrastructure.entity.Billing;
+import gendev.it.serenity.users.infrastructure.entity.Company;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,7 @@ public class BillingDTO extends DTO<Billing> {
     private BigDecimal totalTTC;
     private String companyID;
     private CustomerDTO customer;
-    private String company;
+    private Company company;
 
     
 

@@ -134,7 +134,7 @@ public class Billing extends BaseEntity<BillingDTO> {
             customerDTO.setCompany(null);
             invoice.setCustomer(customerDTO);
         }
-        invoice.setCompany(company!=null ? company.getName() : "");
+        invoice.setCompany(company);
         return invoice;
     }
 

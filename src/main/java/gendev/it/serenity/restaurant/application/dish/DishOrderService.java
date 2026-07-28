@@ -191,7 +191,17 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
             states = List.of(State.ACTIVE, State.DELETED);
         }
         List<DishOrder> result = getJpa().findAllByStatusAndCompanyAndState(status, company, states);
-        return super.conversion(result);
+        return this.conversion(result);
+    }
+
+    @Override
+    public List<DishOrderDTO> conversion(List<DishOrder> list) {
+        // TODO Auto-generated method stub
+        List<DishOrderDTO> result = new ArrayList<DishOrderDTO>();
+        for (DishOrder row : list) {
+            result.add(row.oneEntityToDTO());
+        }
+        return result;
     }
 
     public Page<DishOrderDTO> findAllByCompanyAndState(int pageNumber, int pageSize, String field, String sort,

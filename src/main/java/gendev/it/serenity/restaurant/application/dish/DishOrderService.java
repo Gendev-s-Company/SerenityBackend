@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -214,8 +215,10 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
             states = new ArrayList<>();
             states = List.of(State.ACTIVE, State.DELETED);
         }
-        return getJpa().findAllByStatusAndCompanyAndState(state, company, states, pageable)
-                .map(p -> (DishOrderDTO) p.entityToDTO());
+        Page<DishOrder> page = getJpa().findAllByStatusAndCompanyAndState(state,company,states,pageable);
+        List<DishOrderDTO> dishOrderDTOs = this.conversion(page.getContent());
+
+        return new PageImpl<>(dishOrderDTOs, pageable,page.getTotalElements());
     }
 
     public Page<DishOrderDTO> findAllOccupationAndState(int pageNumber, int pageSize, String field, String sort,

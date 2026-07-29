@@ -150,6 +150,7 @@ public class DishOrderService extends CommonService<DishOrder, DishOrderDTO, Str
                 }
             }
         });
+        order.calculateTotalPrice();
     }
 
     private String getUserIdFromOrderDetail(List<DishOrderDetails> list) {

@@ -142,7 +142,8 @@ public class InvoiceListener {
                             .findFirst()
                             .orElseThrow(() -> new Exception(
                                     "Erreur lors de la mise à jour de la facture : facture introuvable"));
-                    existingInvoice.setQuantity(invoice.getQuantity() + existingInvoice.getQuantity());
+                    existingInvoice.setQuantity(invoice.getQuantity());
+                    // existingInvoice.setQuantity(invoice.getQuantity() + existingInvoice.getQuantity());
                     existingInvoice.setUnitPrice(invoice.getUnitPrice());
                 } catch (Exception e) {
                     // TODO Auto-generated catch block

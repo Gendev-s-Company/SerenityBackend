@@ -7,6 +7,7 @@ package gendev.it.serenity.hotel.domain.dto.room;
 public interface RoomDisponibilityDTO {
     public String getRoomID();
     public String getName();
+    public String getDescription();
     public Integer getRoom_state();
     public Integer getReservation_state();
 }

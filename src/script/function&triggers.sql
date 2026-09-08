@@ -173,6 +173,7 @@ CREATE OR REPLACE FUNCTION get_rooms_disponibility(
 RETURNS TABLE (
     roomID varchar,
     name varchar,
+    description TEXT,
     room_state integer,
     reservation_state integer
 ) AS $$
@@ -181,6 +182,7 @@ BEGIN
     SELECT 
         r.roomID,
         r.name,
+        r.description,
         COALESCE(MAX(r.state), 0)::integer AS room_state,
         COALESCE(MAX(res.state), 0)::integer AS reservation_state
     FROM room r
@@ -246,7 +248,7 @@ SELECT * FROM get_rooms_disponibility(
     '2026-03-14 23:59:59', -- Fin de l'affichage
     ARRAY[0, 3]            -- On cherche les réservations et occupations
 ) d 
-where exists (select roomid from v_room where companyID='COMP000001' and v_room.status=0 and v_room.roomID = d.roomID)
+where exists (select roomid from v_room where companyID='COMP000006' and v_room.status=0 and v_room.roomID = d.roomID)
 order by roomid asc;
 
 

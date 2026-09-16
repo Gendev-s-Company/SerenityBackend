@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import gendev.it.serenity.common.dto.DTO;
 import gendev.it.serenity.common.infrastructure.BaseEntity;
+import gendev.it.serenity.hotel.domain.dto.ActivityDTO;
 import gendev.it.serenity.hotel.domain.dto.ActivityPriceDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -69,7 +70,8 @@ public class ActivityPrice extends BaseEntity<ActivityPriceDTO> {
     @Override
     public ActivityPriceDTO entityToDTO() {
         // TODO Auto-generated method stub
-        return new ActivityPriceDTO(priceID, activity.entityToDTO(), price, hourPrice, dateChanged, getStatus());
+        ActivityDTO activityDTO = activity == null ? null : new ActivityDTO(activity.getActivityID());
+        return new ActivityPriceDTO(priceID, activityDTO, price, hourPrice, dateChanged, getStatus());
     }
 
 }

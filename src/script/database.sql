@@ -61,6 +61,7 @@ create table workschedule(
     status integer check (status >= 0)
 );
 alter table workschedule add COLUMN status integer check (status >= 0);
+alter table workschedule add COLUMN description TEXT;
 
 
 ALTER TABLE workschedule

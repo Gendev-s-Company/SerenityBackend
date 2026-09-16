@@ -1,7 +1,15 @@
 package gendev.it.serenity.hotel.domain.dto;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+
 import gendev.it.serenity.common.dto.DTO;
+import gendev.it.serenity.hotel.domain.dto.room.RoomPriceDTO;
 import gendev.it.serenity.hotel.infrastructure.entity.Activity;
+import gendev.it.serenity.hotel.infrastructure.entity.ActivityPrice;
 import gendev.it.serenity.users.domain.dto.CompanyDTO;
 import gendev.it.serenity.users.infrastructure.entity.Company;
 import lombok.AllArgsConstructor;
@@ -17,6 +25,7 @@ public class ActivityDTO extends DTO<Activity> {
     private String name;
     private String description;
     private Boolean isindividual;
+    private ActivityPriceDTO price;
 
     public ActivityDTO(String activityID) {
         this.activityID = activityID;
@@ -63,6 +72,20 @@ public class ActivityDTO extends DTO<Activity> {
 
     public void setIsindividual(Boolean isindividual) {
         this.isindividual = isindividual;
+    }
+
+    public void setPrice(ActivityPriceDTO price) {
+        this.price = price;
+    }
+
+    public ActivityPriceDTO findLastPrice(List<ActivityPrice> prices) {
+        Optional<ActivityPrice> result = prices.stream()
+                .max(Comparator.comparing(ActivityPrice::getDateChanged));
+        return result.isPresent() ? result.get().entityToDTO() :defaultPrice();
+    }
+
+    private ActivityPriceDTO defaultPrice() {
+        return new ActivityPriceDTO(null, new ActivityDTO(activityID), BigDecimal.ZERO, 0, LocalDate.now(), getStatus());
     }
 
     @Override

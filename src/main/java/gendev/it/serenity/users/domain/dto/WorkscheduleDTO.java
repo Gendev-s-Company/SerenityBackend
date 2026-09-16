@@ -15,14 +15,16 @@ public class WorkscheduleDTO extends DTO<Workschedule> {
     public LocalDateTime  starttime;
     public LocalDateTime  endtime;
     public String color;
+    public String description;
 
     
-    public WorkscheduleDTO(Integer scheduleID, String userID, LocalDateTime  starttime, LocalDateTime  endtime,String color) {
+    public WorkscheduleDTO(Integer scheduleID, String userID, LocalDateTime  starttime, LocalDateTime  endtime,String color,String description) {
         this.scheduleID = scheduleID;
         this.userID = userID;
         this.starttime = starttime;
         this.endtime = endtime;
         this.color=color;
+        this.description=description;
     }
 
 
@@ -67,7 +69,8 @@ public class WorkscheduleDTO extends DTO<Workschedule> {
                 userID,
                 starttime, 
                 endtime,
-                color
+                color,
+                description
         );
     }
 

@@ -1,12 +1,16 @@
 package gendev.it.serenity.hotel.infrastructure.entity;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +40,10 @@ public class Activity extends BaseEntity<ActivityDTO> {
     private String description;
     @Column
     private Boolean isindividual;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "activityID", insertable = false, updatable = false)
+    private List<ActivityPrice> activityPrices;
 
     
     public Activity(String activityID) {
@@ -79,6 +87,7 @@ public class Activity extends BaseEntity<ActivityDTO> {
         }
         ActivityDTO act = new ActivityDTO(activityID, comp, name, description, getStatus());
         act.setIsindividual(isindividual);
+        act.setPrice(act.findLastPrice(activityPrices));
         return act;
     }
 }

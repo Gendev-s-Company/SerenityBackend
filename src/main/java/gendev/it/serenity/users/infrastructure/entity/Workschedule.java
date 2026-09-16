@@ -37,14 +37,18 @@ public class Workschedule extends BaseEntity{
     @Column
     private String color;
 
+    @Column
+    private String description;
+
     protected Workschedule() {}
 
     
-    public Workschedule(String userID, LocalDateTime starttime, LocalDateTime endtime, String color) {
+    public Workschedule(String userID, LocalDateTime starttime, LocalDateTime endtime, String color, String description) {
         this.userID = userID;
         this.starttime = starttime;
         this.endtime = endtime;
         this.color = color;
+        this.description = description;
     }
 
 
@@ -61,11 +65,12 @@ public class Workschedule extends BaseEntity{
         setEndtime(dto.getEndtime());
         setStatus(dto.getStatus());
         setColor(dto.getColor());
+        setDescription(dto.getDescription());
     }
 
     @Override
     public DTO entityToDTO() {
-        return new WorkscheduleDTO(scheduleID,userID,starttime,endtime,color);
+        return new WorkscheduleDTO(scheduleID,userID,starttime,endtime,color,description);
     }
 
 }
